@@ -1,0 +1,23 @@
+body{
+  background: #d7d7d7;
+}
+div{
+  background-image: url(../images/111.jpg);
+  color: #d7d7d7
+}
+h1{
+  margin:15px;
+  padding:20px;
+}
+h2{
+  color:#FFFFFF;
+}
+p{
+  padding: 5px;
+}
+button{
+  margin: 10px;
+}
+.float-left{
+  float: left;
+}

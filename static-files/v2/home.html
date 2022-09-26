@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FiveWords - Личный кабинет пользователя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/normalizez.css">
+    <link rel="stylesheet" href="css/resets.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="script/UserDictionary.js" type="module" charset="utf-8"></script>
+    <script src="script/home.js" type="module" charset="utf-8"></script>
+</head>
+<body>
+  <template id="userDictionaryTemplate">
+    <link rel="stylesheet" href="css/style.css">
+    <style> /* тут можно писать стили для темплэйта */
+    /* div {background:  linear-gradient(aquamarine, white)} */
+    </style>
+    <!-- Карточка словаря -->
+    <div class="cards-item">
+        <div class="cards-item__title-block">
+            <h2 class="cards-item__title">
+                Словарь "<slot name='name'></slot>"
+            </h2>
+            <a href="#" id="rename">
+                <img class="cards-item__img" src="img/redact.png" alt="">
+            </a>
+            <a href="#" id="delete">
+                <img class="cards-item__img" src="img/delete.png" alt="">
+            </a>
+        </div>
+        <span class="cards-item__text">Cлов: <slot name='wordsQuantity'></slot></span>
+        <button class="cards-item__button button__orange" id='editContent'>Редактировать словарь</button>
+        <button class="cards-item__button button__green">Начать тест</button>
+    </div>
+  </template>
+    <div class="main-block">
+        <div class="container main-block__menu-reg">
+            <a href="#">
+                <div class="main-block__button button__blue" id="login_Label">Артем_123</div>
+             </a>
+             <a href="#" id="logout_Button">
+                <div class="main-block__button button__green">Выход </div>
+            </a>
+        </div>
+        <div class="dictionaries-block container">
+            <h1 class="title dictionaries-block__title">Ваши словари</h1>
+            <!-- Блок с карточками словарей -->
+            <div class="dictionaries-block__cards" id='userDictionaries_Div'>
+                <!-- Создать словарь -->
+                <div class="cards-item" id='createNewDictionary_Div'>
+                    <button class="cards-item__button-create button__blue" id="createNewDictionary_Button">Создать словарь</button>
+                </div>
+            </div>
+
+
+            <!-- <template id="userDictionaryTemplate">
+                <style media="screen">
+                  div {margin: 30px}
+                </style>
+                <div>
+                  <span class="span1">Словарь "<slot name="name"></slot>
+                    <span> (cлов:
+                      <slot name="wordsQuantity">
+                      </slot>).
+                    </span>
+                  </span>
+                  <label>Использовать в тестах: <input type="checkbox" id="includeInChallenges"></label>
+                  <a id="edit">Редактировать словарь</a>
+                </div>
+            </template> -->
+        </div>
+    </div>
+</body>
+
+</html>

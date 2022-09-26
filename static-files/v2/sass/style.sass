@@ -1,0 +1,148 @@
+
+*
+    box-sizing: border-box
+body
+    margin: 0
+    padding: 0
+    position: relative
+.container
+    max-width: 1140px
+    margin: 0 auto
+.main-block
+    height: 800px
+    padding-top: 50px
+    background-image: url(../img/back-main.jpg)
+    background-size: 100% auto
+    &__content
+        padding-top: 80px
+        display: flex
+        flex-direction: column
+        align-items: center
+        h1
+            color: #D7D7D7
+            font-family: 'Roboto'
+            font-style: normal
+            font-weight: 600
+            font-size: 48px
+            line-height: 56px
+            margin: 0
+            margin-bottom: 70px
+        p
+            width:550px
+            color: #D7D7D7
+            font-size: 18px
+            line-height: 21px
+            font-family: 'Roboto'
+            font-style: normal
+            font-weight: 400
+            text-align: center
+            margin: 0
+            margin-bottom: 30px
+            &:last-child
+                margin-bottom: 70px
+    &__menu-reg
+        display: flex
+        flex-direction: row
+        justify-content: flex-end
+        a
+            text-decoration: none
+            margin-right: 30px
+            &:last-child
+                margin-right: 0
+    &__button
+        display: flex
+        width: 130px
+        height: 40px
+        border-radius: 10px
+        justify-content: center
+        align-items: center
+        margin: 0
+        padding: 0
+        
+        
+        
+.button
+    &__blue
+        background-color: #6081F8
+        color: #D7D7D7
+    &__green
+        background-color: #13B323
+        color: #D7D7D7
+    &__orange
+        background-color: #B76A10
+        color: #D7D7D7
+// Форма регистрации       
+
+.form
+    width: 450px
+    padding-bottom: 48px
+    position: fixed
+    left: 50%
+    top: 50%
+    transform: translate(-50%, -50%)
+    background-color: white
+    display: none
+    padding-left: 48px
+    &__frame
+        width: 355px
+    &__container
+        display: flex
+        flex-direction: column
+        align-items: center
+        h2
+            font-family: 'Roboto'
+            font-style: normal
+            font-weight: 600
+            font-size: 32px
+            line-height: 38px
+            margin-bottom: 45px
+            text-align: center
+        label
+            font-family: 'Roboto'
+            font-style: normal
+            font-weight: 600
+            font-size: 18px
+            line-height: 21px
+            margin-bottom: 10px
+            align-self: flex-start
+        input
+            width: 355px
+            height: 43px
+            border: 1px solid #000000
+            border-radius: 5px
+            font-family: 'Roboto'
+            font-style: normal
+            font-weight: 400
+            font-size: 18px
+            line-height: 21px
+.reg-form
+    height: 520px
+.auth-form
+    height: 471px
+.text-input
+    margin-bottom: 30px 
+.pass-input
+    margin-bottom: 10px
+    &__repeat
+        margin-bottom: 45px
+.reg-button
+    width: 350px
+    height: 45px
+    border-radius: 10px
+    border: none
+    color: #FFFFFF
+    &__login
+        background: #13B223
+        margin-bottom: 10px
+    &__closed
+        background: #DB2626
+.auth-pass-input
+    margin-bottom: 45px
+
+                    
+                    
+
+    
+
+
+
