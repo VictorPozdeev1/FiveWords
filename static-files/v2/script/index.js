@@ -46,7 +46,7 @@ signupForm.addEventListener('submit', (event) => {
                 const signinResponse = await userSigninFetch(loginString, passwordString);
                 if (signinResponse.ok) {
                     const token = await signinResponse.text();
-                    //saveToken(token);
+                    saveToken(token);
                     location.assign('/home');
                 }
                 else {
