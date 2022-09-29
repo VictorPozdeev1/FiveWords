@@ -33,7 +33,7 @@ export class UserDictionary extends HTMLElement {
                     let newData = {};
                     Object.assign(newData, this.data);
                     newData.id = resolved;
-                    const response = await fetchWithAuth(`/dictionary/${this.data.id}`, {
+                    const response = await fetchWithAuth(`/dictionaries/${this.data.id}`, {
                         method: 'PUT',
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(newData)
@@ -52,7 +52,7 @@ export class UserDictionary extends HTMLElement {
             event.preventDefault();
             if (confirm('Удалить словарь? Это действие нельзя будет отменить!')) {
                 try {
-                    const response = await fetchWithAuth(`/dictionary/${this.data.id}`, { method: 'DELETE' });
+                    const response = await fetchWithAuth(`/dictionaries/${this.data.id}`, { method: 'DELETE' });
                     if (response.ok) {
                         this.remove();
                     }
@@ -65,7 +65,7 @@ export class UserDictionary extends HTMLElement {
 
         this.shadowRoot.querySelector('#editContent').addEventListener('click', () => {
             //location.assign();
-            alert(`todo: redirect to ..? \ndictionary/${this.data.id}, method: GET?\ndictionary-content/${this.data.id}?`);
+            alert(`todo: redirect to ..? \ndictionaries/${this.data.id}, method: GET?\ndictionary-content/${this.data.id}?`);
         });
     }
 }
