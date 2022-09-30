@@ -43,7 +43,7 @@ addEventListener('load', async () => {
 
     document.querySelector('#createNewDictionary_Button').addEventListener('click', (event) => {
         //event.preventDefault();
-        showPromptForm('Введите имя:', '', '^[\wа-яA-ЯЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
+        showPromptForm('Введите название:', '', '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
             .then(async resolved => {
                 const newData = { id: resolved };
                 const response = await fetchWithAuth(`/dictionaries`, {
@@ -55,8 +55,16 @@ addEventListener('load', async () => {
                     const createdDictionary = await response.json();
                     dictionariesContainer.insertBefore(new UserDictionary(createdDictionary), createNewDictionary_Div);
                 }
-                else
-                    alert("Что-то пошло не так. Попробуйте обновить страницу...");
+                else {
+                    if (response.status == 400) {
+                        const responseJson = await response.json();
+                        alert(responseJson.errors["Id"][0] ?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                    }
+                    else {
+                        const responseJson = await response.json();
+                        alert(responseJson.error.message ?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                    }
+                }
             });
     });
 });

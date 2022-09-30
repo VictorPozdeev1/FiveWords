@@ -28,7 +28,7 @@ export class UserDictionary extends HTMLElement {
 
         this.shadowRoot.querySelector('#rename').addEventListener('click', event => {
             event.preventDefault();
-            showPromptForm('Введите новое имя:', this.data.id, '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
+            showPromptForm('Введите новое название:', this.data.id, '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
                 .then(async resolved => {
                     let newData = {};
                     Object.assign(newData, this.data);
@@ -45,7 +45,6 @@ export class UserDictionary extends HTMLElement {
                     else {
                         if (response.status == 400) {
                             const responseJson = await response.json();
-                            debugger;
                             alert(responseJson.errors["Id"][0] ?? "Что-то пошло не так. Попробуйте обновить страницу...");
                         }
                         else {
