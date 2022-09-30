@@ -89,7 +89,6 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
 
     private void SaveToFile()
     {
-        System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
         using var writer = new StreamWriter(FilePath);
         using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
         csvWriter.Context.RegisterClassMap(Mapping);
