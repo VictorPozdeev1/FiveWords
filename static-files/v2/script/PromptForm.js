@@ -10,7 +10,7 @@ export function showPromptForm(title, defaultValue, pattern, patternMessage) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="text" name="" value="${defaultValue}" id="input" pattern="${pattern}">
+                        <input type="text" name="" value="${defaultValue}" id="input" required pattern="${pattern}">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
