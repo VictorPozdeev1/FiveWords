@@ -15,6 +15,7 @@ public interface ILanguageRelated
 
 public abstract record BaseEntity<TId>(TId Id)
 //where TId : struct
+where TId: IEquatable<TId>
 {
     public BaseEntity() : this((TId)default) { }
 }

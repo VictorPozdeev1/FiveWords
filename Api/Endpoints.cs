@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FiveWords.DataObjects;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace FiveWords.ApiV1;
 
@@ -94,34 +95,51 @@ static class Endpoints
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
             var dictionaries = userDictionariesRepo.GetAll();
-            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values});
+            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values });
         });
 
         routeBuilder.MapDelete("/dictionaries/{dictionaryName}", [Authorize] (string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
-            Console.WriteLine(dictionaryName);
-            return Results.NoContent();
-            
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var dictionaries = userDictionariesRepo.GetAll();
-            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values });
+            if (userDictionariesRepo.Get(dictionaryName) is null)
+                return Results.NotFound($"Не найден словарь \"{dictionaryName}\".");
+            userDictionariesRepo.DeleteAndImmediatelySave(dictionaryName);
+            return Results.NoContent();
         });
 
-        routeBuilder.MapPut("/dictionaries/{dictionaryName}", [Authorize] (HttpContext httpContext, [FromBody] UserDictionaryHeader updatedDictionary, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
+        routeBuilder.MapPut("/dictionaries/{dictionaryName}", [Authorize] ([FromBody] UserDictionaryHeader updatedDictionary, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
-            Console.WriteLine(dictionaryName);
-            return Results.NoContent();
-
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var dictionaries = userDictionariesRepo.GetAll();
-            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values });
+            if (updatedDictionary.Id != dictionaryName)
+            {
+                if (!Regex.IsMatch(updatedDictionary.Id, @"^[\wа-яA-ЯЁё ]{4,20}$"))
+                {
+                    return Results.ValidationProblem(new Dictionary<string, string[]>()
+                    {
+                        {"Id", new string[]{ "Название словаря должно состоять из 4-20 букв, цифр, пробелов или подчёркиваний." } }
+                    });
+                }
+                var existingDictionary = userDictionariesRepo.Get(updatedDictionary.Id);
+                if (existingDictionary is not null)
+                    return Results.Conflict(new
+                    {
+                        Error = new
+                        {
+                            Message = $"Словарь \"{updatedDictionary.Id}\" уже существует.",
+                            Dictionary = updatedDictionary
+                        }
+                    });
+            }
+            userDictionariesRepo.UpdateAndImmediatelySave(dictionaryName, updatedDictionary);
+            return Results.Json(userDictionariesRepo.Get(updatedDictionary.Id));
         });
 
         routeBuilder.MapPost("/dictionaries", [Authorize] (HttpContext httpContext, [FromBody] UserDictionaryHeader dictionaryToCreate, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
             Console.WriteLine(dictionaryToCreate.Id);
+
             return Results.Json(dictionaryToCreate);
 
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);

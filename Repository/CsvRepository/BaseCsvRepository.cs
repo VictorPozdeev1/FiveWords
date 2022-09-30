@@ -40,19 +40,19 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
     {
         if (allEntities.Count == 0)
         {
-            using (var writer = new StreamWriter(FilePath))
-            using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                csvWriter.WriteRecords(new List<TEntity>() { entity });
+            using var writer = new StreamWriter(FilePath);
+            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csvWriter.WriteRecords(new List<TEntity>() { entity });
         }
         else
         {
             if (allEntities.ContainsKey(entity.Id))
                 throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
 
-            using (var stream = File.Open(FilePath, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csvWriter = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false }))
-                csvWriter.WriteRecords(new List<TEntity>() { entity });
+            using var stream = File.Open(FilePath, FileMode.Append);
+            using var writer = new StreamWriter(stream);
+            using var csvWriter = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false });
+            csvWriter.WriteRecords(new List<TEntity>() { entity });
         }
         allEntities.Add(entity.Id, entity);
     }
@@ -63,6 +63,36 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
         using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
         csvReader.Context.RegisterClassMap(Mapping);
         allEntities = csvReader.GetRecords<TEntity>().ToDictionary(e => e.Id);
+    }
+
+    public void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
+    {
+        if (!allEntities.ContainsKey(id))
+            throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
+        if (!id.Equals(entity.Id))
+        {
+            if (allEntities.ContainsKey(entity.Id))
+                throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
+            allEntities.Remove(id);
+        }
+        allEntities[entity.Id] = entity;
+        SaveToFile();
+    }
+
+    public void DeleteAndImmediatelySave(TEntityId id)
+    {
+        if (!allEntities.ContainsKey(id))
+            throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
+        allEntities.Remove(id);
+        SaveToFile();
+    }
+
+    private void SaveToFile()
+    {
+        using var writer = new StreamWriter(FilePath);
+        using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csvWriter.Context.RegisterClassMap(Mapping);
+        csvWriter.WriteRecords(allEntities.Values);
     }
 
     string FilePath => Path.Combine(homeDirectoryPath, fileName);

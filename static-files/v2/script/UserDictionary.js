@@ -39,11 +39,20 @@ export class UserDictionary extends HTMLElement {
                         body: JSON.stringify(newData)
                     });
                     if (response.ok) {
-                        this.data.id = resolved; //take this.data from response?
+                        this.data = await response.json();
                         this.nameSpan.innerHTML = this.data.id;
                     }
-                    else
-                        alert("Что-то пошло не так. Попробуйте обновить страницу...");
+                    else {
+                        if (response.status == 400) {
+                            const responseJson = await response.json();
+                            debugger;
+                            alert(responseJson.errors["Id"][0] ?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                        }
+                        else {
+                            const responseJson = await response.json();
+                            alert(responseJson.error.message ?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                        }
+                    }
                 })
             //.catch((rej) => alert(rej));
         });
@@ -56,8 +65,10 @@ export class UserDictionary extends HTMLElement {
                     if (response.ok) {
                         this.remove();
                     }
-                    else
-                        alert("Что-то пошло не так. Попробуйте обновить страницу...");
+                    else {
+                        const responseJson = await response.json();
+                        alert(responseJson?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                    }
                 }
                 catch (error) { console.error(error) }
             }
