@@ -114,23 +114,12 @@ static class Endpoints
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
             if (updatedDictionary.Id != dictionaryName)
             {
-                if (!Regex.IsMatch(updatedDictionary.Id, @"^[\wа-яA-ЯЁё ]{4,20}$"))
-                {
-                    return Results.ValidationProblem(new Dictionary<string, string[]>()
-                    {
-                        {"Id", new string[]{ "Название словаря должно состоять из 4-20 букв, цифр, пробелов или подчёркиваний." } }
-                    });
-                }
-                var existingDictionary = userDictionariesRepo.Get(updatedDictionary.Id);
-                if (existingDictionary is not null)
-                    return Results.Conflict(new
-                    {
-                        Error = new
-                        {
-                            Message = $"Словарь \"{updatedDictionary.Id}\" уже существует.",
-                            Dictionary = updatedDictionary
-                        }
-                    });
+                var validationProblems = updatedDictionary.GetValidationProblems();
+                if (validationProblems.Count > 0)
+                    return Results.ValidationProblem(validationProblems);
+                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionary);
+                if (nameAlreadyExistsConflict is not null)
+                    return Results.Conflict(nameAlreadyExistsConflict);
             }
             userDictionariesRepo.UpdateAndImmediatelySave(dictionaryName, updatedDictionary);
             return Results.Json(userDictionariesRepo.Get(updatedDictionary.Id));
@@ -138,14 +127,16 @@ static class Endpoints
 
         routeBuilder.MapPost("/dictionaries", [Authorize] (HttpContext httpContext, [FromBody] UserDictionaryHeader dictionaryToCreate, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
-            Console.WriteLine(dictionaryToCreate.Id);
-
-            return Results.Json(dictionaryToCreate);
-
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var dictionaries = userDictionariesRepo.GetAll();
-            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values });
+            var validationProblems = dictionaryToCreate.GetValidationProblems();
+            if (validationProblems.Count > 0)
+                return Results.ValidationProblem(validationProblems);
+            var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(dictionaryToCreate);
+            if (nameAlreadyExistsConflict is not null)
+                return Results.Conflict(nameAlreadyExistsConflict);
+            userDictionariesRepo.AddAndImmediatelySave(dictionaryToCreate);
+            return Results.Json(userDictionariesRepo.Get(dictionaryToCreate.Id));
         });
 
         routeBuilder.MapGet("/data", [Authorize] (ClaimsPrincipal user) =>

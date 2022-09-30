@@ -8,6 +8,7 @@ record UserPasswordPair(string Login, ushort[] PasswordHash)
     //    public string? IdPropertyForJsonReading { get => Id; init => Id = value; }
     //    public string PasswordHashAsString => checked(BitConverter.ToString(PasswordHash.Select(us => (byte)us).ToArray()));
 
+    // todo Проверить, зачем я сделал это static
     public static Dictionary<string, string[]> GetValidationProblems(UserPasswordPair? userPasswordPair, out byte[]? passwordHash)
     {
         Dictionary<string, string[]> result = new();
