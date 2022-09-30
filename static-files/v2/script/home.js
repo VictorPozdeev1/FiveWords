@@ -15,6 +15,7 @@ addEventListener('load', async () => {
         if (response.ok)
             responseJson = await response.json();
         else {
+            alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");
             removeToken();
             location.assign('/');
         }

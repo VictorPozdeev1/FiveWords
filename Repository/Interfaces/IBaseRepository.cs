@@ -11,6 +11,8 @@ public interface IBaseRepository<TEntity, TEntityId> : IBaseRepository
     TEntity? Get(TEntityId id);
     IReadOnlyDictionary<TEntityId, TEntity> GetAll();
     void AddAndImmediatelySave(TEntity entity);
+    void UpdateAndImmediatelySave(TEntityId id, TEntity entity);
+    void DeleteAndImmediatelySave(TEntityId id);
 }
 
 public interface IOnePasswordRepository : IBaseRepository
