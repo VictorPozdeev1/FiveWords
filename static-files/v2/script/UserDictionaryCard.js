@@ -1,7 +1,7 @@
 import { fetchWithAuth } from "./Auth.js";
 import { showPromptForm } from "./PromptForm.js";
 
-export class UserDictionary extends HTMLElement {
+export class UserDictionaryCard extends HTMLElement {
     constructor(userDictionaryHeader) {
         super();
         if (userDictionaryHeader) {
@@ -79,4 +79,4 @@ export class UserDictionary extends HTMLElement {
         });
     }
 }
-customElements.define("user-dictionary", UserDictionary);
+customElements.define("user-dictionary", UserDictionaryCard);

@@ -12,6 +12,7 @@ using FiveWords.Api.v1;
 using FiveWords.ApiV1;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Rewrite;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -62,7 +63,22 @@ var services = builder.Services;
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("Press Esc to clear console before the next request processing.");
     app.UseDeveloperExceptionPage();
+    app.Use((context, next) => {
+        if (Console.KeyAvailable)
+        {
+            var consoleKey = Console.ReadKey(false).Key;
+            Console.WriteLine(consoleKey);
+            if (consoleKey == ConsoleKey.Escape)
+                Console.Clear();
+        }
+        //else Console.WriteLine("Nothing pressed");
+        return next(context);
+    });
+    
+}
 //else
 //    app.UseExceptionHandler();
 
@@ -94,7 +110,10 @@ app.Map(v1PathBase, false, app =>
     app.UseEndpoints(routeBuilder => EndpointsV1.MapEndpointsV1(routeBuilder, v1PathBase));
 });
 
-app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRewrite("home$", "home.html", true));
+app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions()
+    .AddRewrite("^home$", "home.html", true)
+    .AddRewrite(@"^dictionary/(\w+)$", "dictionary.html", true)
+    );
 
 app.Use((context, next) =>
 {

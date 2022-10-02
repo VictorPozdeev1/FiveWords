@@ -1,5 +1,5 @@
 import { fetchWithAuth, removeToken, isAuthenticated } from "./Auth.js";
-import { UserDictionary } from "./UserDictionary.js";
+import { UserDictionaryCard } from "./UserDictionaryCard.js";
 import { showPromptForm } from "./PromptForm.js";
 
 if (!isAuthenticated())
@@ -28,7 +28,7 @@ addEventListener('load', async () => {
         if (responseJson) {
             document.querySelector('#login_Label').innerHTML = responseJson.user;
             responseJson.dictionaries.forEach(dictionary => {
-                dictionariesContainer.insertBefore(new UserDictionary(dictionary), createNewDictionary_Div);
+                dictionariesContainer.insertBefore(new UserDictionaryCard(dictionary), createNewDictionary_Div);
             });
         }
     } catch (error) {
@@ -53,7 +53,8 @@ addEventListener('load', async () => {
                 });
                 if (response.ok) {
                     const createdDictionary = await response.json();
-                    dictionariesContainer.insertBefore(new UserDictionary(createdDictionary), createNewDictionary_Div);
+                    dictionariesContainer.insertBefore(new UserDictionaryCard(createdDictionary), createNewDictionary_Div);
+                    location.assign(`dictionary/${createdDictionary.id}`);
                 }
                 else {
                     if (response.status == 400) {
