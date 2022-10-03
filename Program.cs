@@ -62,7 +62,20 @@ var services = builder.Services;
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
+{
+    Console.WriteLine("Press Esc to clear console before the next request processing.");
     app.UseDeveloperExceptionPage();
+    app.Use((context, next) => {
+        if (Console.KeyAvailable)
+        {
+            var consoleKey = Console.ReadKey(false).Key;
+            if (consoleKey == ConsoleKey.Escape)
+                Console.Clear();
+        }
+        return next(context);
+    });
+    
+}
 //else
 //    app.UseExceptionHandler();
 
@@ -94,7 +107,7 @@ app.Map(v1PathBase, false, app =>
     app.UseEndpoints(routeBuilder => EndpointsV1.MapEndpointsV1(routeBuilder, v1PathBase));
 });
 
-app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRewrite("home$", "home.html", true));
+app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRewrite("^home$", "home.html", true));
 
 app.Use((context, next) =>
 {
