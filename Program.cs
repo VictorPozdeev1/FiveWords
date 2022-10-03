@@ -107,7 +107,9 @@ app.Map(v1PathBase, false, app =>
     app.UseEndpoints(routeBuilder => EndpointsV1.MapEndpointsV1(routeBuilder, v1PathBase));
 });
 
-app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions().AddRewrite("^home$", "home.html", true));
+app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions()
+    .AddRewrite("^home$", "home.html", true)
+    .AddRewrite(@"^dictionary/(.+)$", "dictionary.html", true));
 
 app.Use((context, next) =>
 {

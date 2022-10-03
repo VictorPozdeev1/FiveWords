@@ -54,6 +54,7 @@ addEventListener('load', async () => {
                 if (response.ok) {
                     const createdDictionary = await response.json();
                     dictionariesContainer.insertBefore(new UserDictionaryCard(createdDictionary), createNewDictionary_Div);
+                    location.assign(`dictionary/${createdDictionary.id}`);
                 }
                 else {
                     if (response.status == 400) {

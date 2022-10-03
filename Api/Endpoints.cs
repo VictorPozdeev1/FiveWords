@@ -139,6 +139,19 @@ static class Endpoints
             return Results.Json(userDictionariesRepo.Get(dictionaryToCreate.Id));
         });
 
+        routeBuilder.MapGet("/dictionaryContent/{dictionaryName}", [Authorize] (string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository/*, UserDictionariesUserRepositoriesManager userDictionariesRepoManager*/) =>
+        {
+            var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
+            //var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+            if (true) // dictionary found
+            {
+                return Results.Json(new { id = dictionaryName });
+            }
+            else
+                return Results.NotFound($"Не найден словарь \"{dictionaryName}\".");
+            //return Results.Json();
+        });
+
         routeBuilder.MapGet("/data", [Authorize] (ClaimsPrincipal user) =>
         {
             StringBuilder sb = new StringBuilder();
@@ -152,6 +165,6 @@ static class Endpoints
                 sb.Append($"<p>{claim.ToString()} </p>");
             }
             return Results.Text(sb.ToString());
-        });
+        }).WithTags("INFO", "AUTHORIZE");
     }
 }
