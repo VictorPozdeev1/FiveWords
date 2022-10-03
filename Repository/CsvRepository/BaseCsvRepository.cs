@@ -40,21 +40,21 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
     {
         if (allEntities.Count == 0)
         {
-            using var writer = new StreamWriter(FilePath);
-            using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            csvWriter.WriteRecords(new List<TEntity>() { entity });
+            allEntities.Add(entity.Id, entity);
+            SaveToFile();
         }
         else
         {
             if (allEntities.ContainsKey(entity.Id))
                 throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
 
+            allEntities.Add(entity.Id, entity);
             using var stream = File.Open(FilePath, FileMode.Append);
             using var writer = new StreamWriter(stream);
             using var csvWriter = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false });
-            csvWriter.WriteRecords(new List<TEntity>() { entity });
+            csvWriter.Context.RegisterClassMap(Mapping);
+            csvWriter.WriteRecords(new TEntity[1] { entity });
         }
-        allEntities.Add(entity.Id, entity);
     }
 
     void LoadFromFile()
