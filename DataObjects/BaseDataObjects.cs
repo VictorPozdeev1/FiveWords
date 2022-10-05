@@ -54,16 +54,3 @@ public record WordTranslation(string Id, string Translation) : BaseEntity<string
 {
     public WordTranslation() : this(default, default) { }
 }
-
-public record UserDictionaryHeader(string Id, int WordsQuantity) : BaseEntity<string>(Id)
-{
-    public UserDictionaryHeader() : this(default, default) { }
-
-    public Dictionary<string, string[]> GetValidationProblems()
-    {
-        Dictionary<string, string[]> result = new();
-        if (!Regex.IsMatch(Id, @"^[\wа-яA-ЯЁё ]{4,20}$"))
-            result["Id"] = new string[] { "Название словаря должно состоять из 4-20 букв, цифр, пробелов или подчёркиваний." };
-        return result;
-    }
-}

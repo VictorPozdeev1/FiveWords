@@ -6,7 +6,7 @@ namespace FiveWords.Repository.CsvRepository;
 
 internal class UserDictionariesCsvRepository: OneFileCsvRepository<UserDictionaryHeader, string, ClassMap<UserDictionaryHeader>>, IUserDictionariesRepository
 {
-    protected internal UserDictionariesCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
+    protected internal UserDictionariesCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath, fileName) { }
 
     protected override ClassMap<UserDictionaryHeader> Mapping => new UserDictionariesMapping();
 

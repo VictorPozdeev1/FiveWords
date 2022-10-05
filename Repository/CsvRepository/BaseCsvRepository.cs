@@ -12,7 +12,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
     where TEntityId : IEquatable<TEntityId>
     where TMapping : ClassMap<TEntity>
 {
-    protected OneFileCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath)
+    protected OneFileCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath)
     {
         this.fileName = fileName;
         LoadFromFile();
@@ -23,20 +23,20 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
     Dictionary<TEntityId, TEntity> allEntities = new();
     abstract protected TMapping Mapping { get; }
 
-    public TEntity? Get(TEntityId id)
+    public virtual TEntity? Get(TEntityId id)
     {
         allEntities.TryGetValue(id, out TEntity? result);
         return result;
     }
 
-    public IReadOnlyDictionary<TEntityId, TEntity> GetAll() => new ReadOnlyDictionary<TEntityId, TEntity>(allEntities);
+    public virtual IReadOnlyDictionary<TEntityId, TEntity> GetAll() => new ReadOnlyDictionary<TEntityId, TEntity>(allEntities);
 
-    public void AddAndImmediatelySave(IEnumerable<TEntity> entities)
+    public virtual void AddAndImmediatelySave(IEnumerable<TEntity> entities)
     {
         throw new NotImplementedException();
     }
 
-    public void AddAndImmediatelySave(TEntity entity)
+    public virtual void AddAndImmediatelySave(TEntity entity)
     {
         if (allEntities.Count == 0)
         {
@@ -49,23 +49,13 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
                 throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
 
             allEntities.Add(entity.Id, entity);
-            using var stream = File.Open(FilePath, FileMode.Append);
-            using var writer = new StreamWriter(stream);
-            using var csvWriter = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false });
-            csvWriter.Context.RegisterClassMap(Mapping);
-            csvWriter.WriteRecords(new TEntity[1] { entity });
+            AppendOneEntityToFile(entity);
         }
     }
 
-    void LoadFromFile()
-    {
-        using var reader = new StreamReader(FilePath, new FileStreamOptions { Mode = FileMode.OpenOrCreate });
-        using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
-        csvReader.Context.RegisterClassMap(Mapping);
-        allEntities = csvReader.GetRecords<TEntity>().ToDictionary(e => e.Id);
-    }
-
-    public void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
+    void LoadFromFile() => allEntities = Utils.ReadAllFromFileToDictionary(FilePath, Mapping, e => e.Id);
+    
+    public virtual void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
     {
         if (!allEntities.ContainsKey(id))
             throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
@@ -79,7 +69,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
         SaveToFile();
     }
 
-    public void DeleteAndImmediatelySave(TEntityId id)
+    public virtual void DeleteAndImmediatelySave(TEntityId id)
     {
         if (!allEntities.ContainsKey(id))
             throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
@@ -87,13 +77,9 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
         SaveToFile();
     }
 
-    private void SaveToFile()
-    {
-        using var writer = new StreamWriter(FilePath);
-        using var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        csvWriter.Context.RegisterClassMap(Mapping);
-        csvWriter.WriteRecords(allEntities.Values);
-    }
+    private void SaveToFile() => Utils.WriteAllToFile(allEntities.Values, FilePath, Mapping);
 
-    string FilePath => Path.Combine(homeDirectoryPath, fileName);
+    private void AppendOneEntityToFile(TEntity value) => Utils.AppendOneEntityToFile(value, FilePath, Mapping);
+
+    string FilePath => Path.Combine(repoDirectoryPath, fileName);
 }
