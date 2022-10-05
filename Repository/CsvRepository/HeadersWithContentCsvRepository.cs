@@ -5,10 +5,9 @@ using System.Globalization;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal abstract class HeadersWithContentCsvRepository<TEntity, TEntityId, THeaderMapping, TContentElement> : OneFileCsvRepository<TEntity, TEntityId, THeaderMapping>
+internal abstract class HeadersWithContentCsvRepository<TEntity, TEntityId, TContentElement> : OneFileCsvRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>, IContaining<TContentElement>
     where TEntityId : IEquatable<TEntityId>
-    where THeaderMapping : ClassMap<TEntity>
 {
     protected HeadersWithContentCsvRepository(string homeDirectoryPath, string headersFileName) : base(homeDirectoryPath, headersFileName)
     {
@@ -37,4 +36,15 @@ internal abstract class HeadersWithContentCsvRepository<TEntity, TEntityId, THea
 
     private List<TContentElement> ReadContentFromFile(TEntity entity)
         => Utils.ReadAllFromFileToList(GetDefaultFilePathForContent(entity), ContentMapping);
+
+    public override void AddAndImmediatelySave(TEntity entity)
+    {
+        base.AddAndImmediatelySave(entity);
+        SaveContent(entity);
+    }
+
+    private void SaveContent(TEntity entity)
+    {
+        Utils.WriteAllToFile(entity.Content, GetDefaultFilePathForContent(entity), ContentMapping);
+    }
 }

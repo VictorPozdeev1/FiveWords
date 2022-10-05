@@ -7,10 +7,9 @@ using System.Globalization;
 
 namespace FiveWords.Repository.CsvRepository;
 
-abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : UsingFileSystemRepository, IBaseRepository<TEntity, TEntityId>
+abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, IBaseRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
-    where TMapping : ClassMap<TEntity>
 {
     protected OneFileCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath)
     {
@@ -21,7 +20,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId, TMapping> : Usi
     private protected string fileName;
 
     Dictionary<TEntityId, TEntity> allEntities = new();
-    abstract protected TMapping Mapping { get; }
+    abstract protected ClassMap<TEntity> Mapping { get; }
 
     public virtual TEntity? Get(TEntityId id)
     {

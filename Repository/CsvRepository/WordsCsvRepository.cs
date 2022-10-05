@@ -4,7 +4,7 @@ using FiveWords.Repository.Interfaces;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal class WordsCsvRepository : OneFileCsvRepository<Word, int, ClassMap<Word>>, IWordsRepository
+internal class WordsCsvRepository : OneFileCsvRepository<Word, int>, IWordsRepository
 {
     protected internal WordsCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
 
@@ -26,7 +26,7 @@ internal class WordsCsvRepository : OneFileCsvRepository<Word, int, ClassMap<Wor
     }
 }
 
-internal class WordsWithEnglishTranslationId_CsvRepository : OneFileCsvRepository<WordWithEnglishTranslationId, int, ClassMap<WordWithEnglishTranslationId>>, IWordsWithEnglishTranslationRepository
+internal class WordsWithEnglishTranslationId_CsvRepository : OneFileCsvRepository<WordWithEnglishTranslationId, int>, IWordsWithEnglishTranslationRepository
 {
     protected internal WordsWithEnglishTranslationId_CsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
 

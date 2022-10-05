@@ -4,7 +4,7 @@ using FiveWords.Repository.Interfaces;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal class UserDictionariesCsvRepository: OneFileCsvRepository<UserDictionaryHeader, string, ClassMap<UserDictionaryHeader>>, IUserDictionariesRepository
+internal class UserDictionariesCsvRepository: OneFileCsvRepository<UserDictionaryHeader, string>, IUserDictionariesRepository
 {
     protected internal UserDictionariesCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath, fileName) { }
 

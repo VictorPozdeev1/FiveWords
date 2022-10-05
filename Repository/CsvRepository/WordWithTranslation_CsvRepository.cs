@@ -5,7 +5,7 @@ using FiveWords.Repository.Interfaces;
 namespace FiveWords.Repository.CsvRepository;
 
 //entrypoint: Начать с того, что новый BaseObject сделать.
-internal class WordWithTranslation_CsvRepository : OneFileCsvRepository<Word, int, ClassMap<Word>>, IWordsRepository
+internal class WordWithTranslation_CsvRepository : OneFileCsvRepository<Word, int>, IWordsRepository
 {
     protected internal WordWithTranslation_CsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
 
