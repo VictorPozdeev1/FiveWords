@@ -4,8 +4,8 @@ namespace FiveWords.Repository;
 
 internal abstract class UsingFileSystemRepository : IBaseRepository
 {
-    protected UsingFileSystemRepository(string homeDirectoryPath) => this.homeDirectoryPath = homeDirectoryPath;
-    protected string homeDirectoryPath;
+    protected UsingFileSystemRepository(string repoDirectoryPath) => this.repoDirectoryPath = repoDirectoryPath;
+    protected string repoDirectoryPath;
 }
 
 internal class OneUserPasswordInFileRepository : UsingFileSystemRepository, IOnePasswordRepository
@@ -15,7 +15,7 @@ internal class OneUserPasswordInFileRepository : UsingFileSystemRepository, IOne
     
 
     private protected string fileName;
-    protected string FilePath => Path.Combine(homeDirectoryPath, fileName);
+    protected string FilePath => Path.Combine(repoDirectoryPath, fileName);
 
     public byte[] GetPasswordHash() => File.ReadAllBytes(FilePath);
     public void SavePasswordHash(byte[] data) => File.WriteAllBytes(FilePath, data);

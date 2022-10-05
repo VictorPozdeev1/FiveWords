@@ -25,19 +25,19 @@ public abstract class UserRepositoriesManager<TRepository>
 
     protected virtual TRepository CreateOneFileRepository(User owner)
     {
-        string homeDirectoryPath = GetRepoHomeDirectoryPath(owner);
-        if (!Directory.Exists(homeDirectoryPath))
-            Directory.CreateDirectory(homeDirectoryPath);
-        return InstantiateRepository(homeDirectoryPath);
+        string repoDirectoryPath = GetRepoDirectoryPath(owner);
+        if (!Directory.Exists(repoDirectoryPath))
+            Directory.CreateDirectory(repoDirectoryPath);
+        return InstantiateRepository(repoDirectoryPath);
     }
 
-    protected string GetRepoHomeDirectoryPath(User owner)
-    {;
+    protected string GetRepoDirectoryPath(User owner)
+    {
         var ownerSubfolderName = owner == User.Default ? "_default" : owner.Guid.ToString();
         return Path.Combine(STORAGE_PATH, ownerSubfolderName, RepoSubfolderName);
     }
 
-    protected abstract TRepository InstantiateRepository(string homeDirectoryPath);
+    protected abstract TRepository InstantiateRepository(string repoDirectoryPath);
 }
 
 public class EnglishWordsUserRepositoriesManager : UserRepositoriesManager<IWordsRepository>
@@ -51,17 +51,17 @@ public class RussianWordsUserRepositoriesManager : UserRepositoriesManager<IWord
 {
     protected override string RepoSubfolderName => @"words-repository";
 
-    protected override IWordsWithEnglishTranslationRepository InstantiateRepository(string homeDirectoryPath) => new WordsWithEnglishTranslationId_CsvRepository(homeDirectoryPath, "russian-words.scv");
+    protected override IWordsWithEnglishTranslationRepository InstantiateRepository(string repoDirectoryPath) => new WordsWithEnglishTranslationId_CsvRepository(repoDirectoryPath, "russian-words.scv");
 }
 
 public class UserPasswordRepositoriesManager: UserRepositoriesManager<IOnePasswordRepository>
 {
     protected override string RepoSubfolderName => "password-hash";
-    protected override IOnePasswordRepository InstantiateRepository(string homeDirectoryPath) => new OneUserPasswordInFileRepository(homeDirectoryPath, "password-hash");
+    protected override IOnePasswordRepository InstantiateRepository(string repoDirectoryPath) => new OneUserPasswordInFileRepository(repoDirectoryPath, "password-hash");
 }
 
 public class UserDictionariesUserRepositoriesManager : UserRepositoriesManager<IUserDictionariesRepository>
 {
     protected override string RepoSubfolderName => @"dictionaries-list";
-    protected override IUserDictionariesRepository InstantiateRepository(string homeDirectoryPath) => new UserDictionariesCsvRepository(homeDirectoryPath, "dictionaries-list.csv");
+    protected override IUserDictionariesRepository InstantiateRepository(string repoDirectoryPath) => new UserDictionariesCsvRepository(repoDirectoryPath, "dictionaries-list.csv");
 }
