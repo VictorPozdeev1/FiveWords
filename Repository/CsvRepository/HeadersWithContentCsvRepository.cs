@@ -9,14 +9,19 @@ internal abstract class HeadersWithContentCsvRepository<TEntity, TEntityId, TCon
     where TEntity : BaseEntity<TEntityId>, IContaining<TContentElement>
     where TEntityId : IEquatable<TEntityId>
 {
-    protected HeadersWithContentCsvRepository(string homeDirectoryPath, string headersFileName) : base(homeDirectoryPath, headersFileName)
+    protected string contentDirectoryPath;
+
+    protected HeadersWithContentCsvRepository(string repoDirectoryPath, string headersFileName) : base(repoDirectoryPath, headersFileName)
     {
+        contentDirectoryPath = Path.Combine(repoDirectoryPath, "Content");
+        if (!Directory.Exists(contentDirectoryPath))
+            Directory.CreateDirectory(contentDirectoryPath);
     }
 
     protected abstract ClassMap<TContentElement> ContentMapping { get; }
 
     protected abstract string GetDefaultFileNameForContent(TEntity entity);
-    private string GetDefaultFilePathForContent(TEntity entity) => Path.Combine(repoDirectoryPath, "Content", GetDefaultFileNameForContent(entity));
+    private string GetDefaultFilePathForContent(TEntity entity) => Path.Combine(contentDirectoryPath, GetDefaultFileNameForContent(entity));
 
     public override TEntity? Get(TEntityId id)
     {

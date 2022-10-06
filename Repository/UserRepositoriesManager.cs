@@ -15,7 +15,7 @@ public abstract class UserRepositoriesManager<TRepository>
         TRepository result;
         if (repositoriesByOwners.TryGetValue(owner.Guid, out result))
             return result;
-        result = CreateOneFileRepository(owner);
+        result = CreateRepository(owner);
         repositoriesByOwners.Add(owner.Guid, result);
         return result;
     }
@@ -23,7 +23,7 @@ public abstract class UserRepositoriesManager<TRepository>
     protected const string STORAGE_PATH = @"users-data";
     protected abstract string RepoSubfolderName { get; }
 
-    protected virtual TRepository CreateOneFileRepository(User owner)
+    protected virtual TRepository CreateRepository(User owner)
     {
         string repoDirectoryPath = GetRepoDirectoryPath(owner);
         if (!Directory.Exists(repoDirectoryPath))
@@ -62,6 +62,6 @@ public class UserPasswordRepositoriesManager: UserRepositoriesManager<IOnePasswo
 
 public class UserDictionariesUserRepositoriesManager : UserRepositoriesManager<IUserDictionariesRepository>
 {
-    protected override string RepoSubfolderName => @"dictionaries-list";
+    protected override string RepoSubfolderName => @"dictionaries";
     protected override IUserDictionariesRepository InstantiateRepository(string repoDirectoryPath) => new UserDictionariesCsvRepository(repoDirectoryPath, "dictionaries-list.csv");
 }
