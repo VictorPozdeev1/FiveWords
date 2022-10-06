@@ -9,7 +9,7 @@ body
     max-width: 1140px
     margin: 0 auto
 .main-block
-    height: 800px
+    min-height: 800px
     padding-top: 50px
     background-image: url(../img/back-main.jpg)
     background-size: 100% auto
@@ -139,7 +139,98 @@ body
 .auth-pass-input
     margin-bottom: 45px
 
-                    
+.title
+    color: #D7D7D7
+    font-family: "Roboto"
+    font-style: normal
+    font-weight: 600
+    font-size: 48px
+    line-height: 56px
+    margin: 0
+    margin-bottom: 70px
+
+.dictionaries-block      
+    background: /*#464F55*/ #09161c
+    min-height: 300px
+    padding-top: 20px
+    padding-left: 20px
+    &__cards
+        display: flex
+        flex-direction: row
+        flex-wrap: wrap
+    &__title
+        margin-bottom: 40px
+        text-align: center
+        text-transform: uppercase
+.cards-item
+    width: 340px
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    border: 2px solid white
+    border-radius: 10px
+    padding-top: 20px
+    margin-right: 40px
+    margin-bottom: 40px
+    &:nth-child(3n)
+        margin-right: 0
+    &__title-block
+        display: flex
+        flex-direction: row
+        align-items: center
+        justify-content: center
+        margin-bottom: 20px
+    &__title-block a
+        width: 20px
+        height: 20px
+    &__title
+        color: #D7D7D7
+        font-family: "Roboto"
+        font-style: normal
+        font-weight: 600
+        font-size: 24px
+        margin: 0
+        margin-right: 10px
+    &__img
+        width: 20px
+        -o-object-fit: contain
+        object-fit: contain
+    &__text
+        color: #D7D7D7
+        font-family: "Roboto"
+        font-style: normal
+        font-weight: 600
+        font-size: 18px
+        margin: 0
+        text-align: center
+        margin-bottom: 20px
+    &__button
+        display: flex
+        width: 130px
+        height: 40px
+        border-radius: 10px
+        justify-content: center
+        align-items: center
+        margin: 0
+        padding: 0
+        margin-bottom: 20px
+        border: none
+    &__button-create
+        display: flex
+        width: 260px
+        height: 80px
+        border-radius: 10px
+        justify-content: center
+        align-items: center
+        margin: 0
+        padding: 0
+        margin-bottom: 20px
+        font-size: 24px
+        border: none
+
+
+
                     
 
     
