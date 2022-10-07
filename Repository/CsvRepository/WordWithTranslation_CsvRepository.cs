@@ -13,7 +13,7 @@ internal class WordWithTranslation_CsvRepository : OneFileCsvRepository<Word, in
         .Where(kvp => writingFilter(kvp.Value.Writing))
         .Select(kvp => kvp.Value);
 
-    protected override ClassMap<Word> Mapping => new WordMapping();
+    protected override ClassMap<Word> InitialisingMapping => new WordMapping();
 
     private class WordMapping : ClassMap<Word>
     {

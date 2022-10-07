@@ -12,7 +12,7 @@ internal class WordsCsvRepository : OneFileCsvRepository<Word, int>, IWordsRepos
         .Where(kvp => writingFilter(kvp.Value.Writing))
         .Select(kvp => kvp.Value);
 
-    protected override ClassMap<Word> Mapping => new WordMapping();
+    protected override ClassMap<Word> InitialisingMapping => new WordMapping();
 
     private class WordMapping : ClassMap<Word>
     {
@@ -35,7 +35,7 @@ internal class WordsWithEnglishTranslationId_CsvRepository : OneFileCsvRepositor
         return GetAll().Where(kvp => kvp.Value.DefaultEnglishTranslationId != null).Select(kvp => kvp.Value);
     }
 
-    protected override ClassMap<WordWithEnglishTranslationId> Mapping => new WordWithEnglishTranslationMapping();
+    protected override ClassMap<WordWithEnglishTranslationId> InitialisingMapping => new WordWithEnglishTranslationMapping();
 
     private class WordWithEnglishTranslationMapping : ClassMap<WordWithEnglishTranslationId>
     {

@@ -8,7 +8,7 @@ internal class UsersCsvRepository : OneFileCsvRepository<User, string>, IUsersRe
 {
     protected internal UsersCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
 
-    protected override ClassMap<User> Mapping => new UsersMapping();
+    protected override ClassMap<User> InitialisingMapping => new UsersMapping();
 
     private class UsersMapping : ClassMap<User>
     {

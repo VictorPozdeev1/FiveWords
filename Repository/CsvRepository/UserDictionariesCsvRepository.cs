@@ -8,7 +8,7 @@ internal class UserDictionariesCsvRepository: OneFileCsvRepository<UserDictionar
 {
     protected internal UserDictionariesCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath, fileName) { }
 
-    protected override ClassMap<UserDictionaryHeader> Mapping => new UserDictionariesMapping();
+    protected override ClassMap<UserDictionaryHeader> InitialisingMapping => new UserDictionariesMapping();
 
     private class UserDictionariesMapping : ClassMap<UserDictionaryHeader>
     {

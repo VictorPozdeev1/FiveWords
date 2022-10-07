@@ -20,7 +20,19 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSyst
     private protected string fileName;
 
     Dictionary<TEntityId, TEntity> allEntities = new();
-    abstract protected ClassMap<TEntity> Mapping { get; }
+
+    private ClassMap<TEntity> mapping;
+    protected ClassMap<TEntity> Mapping
+    {
+        get
+        {
+            if (mapping == null)
+                mapping = InitialisingMapping;
+            return mapping;
+        }
+    }
+
+    abstract protected ClassMap<TEntity> InitialisingMapping { get; }
 
     public virtual TEntity? Get(TEntityId id)
     {
@@ -53,7 +65,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSyst
     }
 
     void LoadFromFile() => allEntities = Utils.ReadAllFromFileToDictionary(FilePath, Mapping, e => e.Id);
-    
+
     public virtual void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
     {
         if (!allEntities.ContainsKey(id))
