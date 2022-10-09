@@ -1,55 +1,86 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using FiveWords.DataObjects;
-using System.Globalization;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal abstract class HeadersWithContentCsvRepository<TEntity, TEntityId, TContentElement> : OneFileCsvRepository<TEntity, TEntityId>
-    where TEntity : BaseEntity<TEntityId>, IContaining<TContentElement>
-    where TEntityId : IEquatable<TEntityId>
-{
-    protected string contentDirectoryPath;
 
-    protected HeadersWithContentCsvRepository(string repoDirectoryPath, string headersFileName) : base(repoDirectoryPath, headersFileName)
+
+internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THeaderWithContent, THeader, THeaderWithContentLength, THeaderId, TContentElement>
+where THeaderWithContent : IHeaderWithContent<THeader, THeaderId, TContentElement>
+where THeader : BaseEntity<THeaderId>, IHeaderAttachingContentLength<THeaderWithContentLength>
+where THeaderWithContentLength : BaseEntity<THeaderId>, IHeaderDetachingContentLength<THeader>, IHeaderAttachingContent<THeaderWithContent, TContentElement>
+
+where THeaderId : IEquatable<THeaderId>
+{
+    protected SavingContentLength_HeadersWithContentCsvRepository(string repoDirectoryPath, string headersFileName, ClassMap<THeaderWithContentLength> headersWithContentLengthMapping, ClassMap<TContentElement> contentMapping)
     {
+        headersRepository = new OneFileCsvRepository<THeaderWithContentLength, THeaderId>(repoDirectoryPath, headersFileName, headersWithContentLengthMapping);
         contentDirectoryPath = Path.Combine(repoDirectoryPath, "Content");
         if (!Directory.Exists(contentDirectoryPath))
             Directory.CreateDirectory(contentDirectoryPath);
+        this.contentMapping = contentMapping;
     }
 
-    protected abstract ClassMap<TContentElement> ContentMapping { get; }
+    private readonly OneFileCsvRepository<THeaderWithContentLength, THeaderId> headersRepository;
 
-    protected abstract string GetDefaultFileNameForContent(TEntity entity);
-    private string GetDefaultFilePathForContent(TEntity entity) => Path.Combine(contentDirectoryPath, GetDefaultFileNameForContent(entity));
+    protected readonly string contentDirectoryPath;
+    protected readonly ClassMap<TContentElement> contentMapping;
 
-    public override TEntity? Get(TEntityId id)
+    protected abstract string GetDefaultFileNameForContent(THeaderId id);
+    private string GetDefaultFilePathForContent(THeaderId id) => Path.Combine(contentDirectoryPath, GetDefaultFileNameForContent(id));
+
+    public bool Exists(THeaderId id) => headersRepository.Exists(id);
+
+    public THeaderWithContentLength? GetHeaderWithContentLength(THeaderId id) => headersRepository.Get(id);
+    public IReadOnlyDictionary<THeaderId, THeaderWithContentLength> GetAllHeadersWithContentLength() => headersRepository.GetAll();
+
+    public THeader? GetHeader(THeaderId id) => GetHeaderWithContentLength(id)?.GetHeaderWithoutContentLength();
+
+    public THeaderWithContent? GetHeaderWithContent(THeaderId id)
     {
-        TEntity? result = base.Get(id);
-        if (result is not null)
-            result.Content = ReadContentFromFile(result);
-        return result;
+        var headerWithContentLength = headersRepository.Get(id);
+        if (headerWithContentLength is null)
+            return default;
+        return headerWithContentLength.GetHeaderWithContent(ReadContentFromFile(id));
     }
 
-    public override IReadOnlyDictionary<TEntityId, TEntity> GetAll()
+    private List<TContentElement> ReadContentFromFile(THeaderId id)
+        => Utils.ReadAllFromFileToList(GetDefaultFilePathForContent(id), contentMapping);
+
+
+    public void AddAndImmediatelySave(THeaderWithContent headerWithContent)
     {
-        var result = base.GetAll();
-        foreach (var kvp in result)
-            kvp.Value.Content = ReadContentFromFile(kvp.Value);
-        return result;
+        headersRepository.AddAndImmediatelySave(headerWithContent.Header.GetHeaderWithContentLength(headerWithContent.Content.Count));
+        SaveContent(headerWithContent);
     }
 
-    private List<TContentElement> ReadContentFromFile(TEntity entity)
-        => Utils.ReadAllFromFileToList(GetDefaultFilePathForContent(entity), ContentMapping);
-
-    public override void AddAndImmediatelySave(TEntity entity)
+    public void DeleteAndImmediatelySave(THeaderId id)
     {
-        base.AddAndImmediatelySave(entity);
-        SaveContent(entity);
+        DeleteContent(id);
+        headersRepository.DeleteAndImmediatelySave(id);
     }
 
-    private void SaveContent(TEntity entity)
+    private void SaveContent(THeaderWithContent headerWithContent)
     {
-        Utils.WriteAllToFile(entity.Content, GetDefaultFilePathForContent(entity), ContentMapping);
+        Utils.WriteAllToFile(headerWithContent.Content, GetDefaultFilePathForContent(headerWithContent.Header.Id), contentMapping);
+    }
+
+    private void DeleteContent(THeaderId id)
+    {
+        File.Delete(GetDefaultFilePathForContent(id));
+    }
+
+    public void UpdateHeaderAndImmediatelySave(THeaderId id, THeader header)
+    {
+        var currentContentLength = GetHeaderWithContentLength(id)?.ContentLength;
+        headersRepository.UpdateAndImmediatelySave(id, header.GetHeaderWithContentLength(currentContentLength ?? default));
+    }
+
+    public void UpdateAndImmediatelySave(THeaderId id, THeaderWithContent headerWithContent)
+    {
+        throw new NotImplementedException();
+        //headersRepository.AddAndImmediatelySave(headerWithContent.Header.GetHeaderWithContentLength(headerWithContent.Content.Count));
+        //SaveContent(headerWithContent);
     }
 }

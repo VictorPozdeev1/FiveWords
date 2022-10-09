@@ -6,7 +6,7 @@ namespace FiveWords.Repository.CsvRepository;
 
 internal static class Utils
 {
-    public static List<TEntity> ReadAllFromFileToList<TEntity>(string filePath, ClassMap<TEntity> mapping )
+    public static List<TEntity> ReadAllFromFileToList<TEntity>(string filePath, ClassMap<TEntity> mapping)
     {
         using var reader = new StreamReader(filePath, new FileStreamOptions { Mode = FileMode.OpenOrCreate });
         using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
@@ -15,6 +15,7 @@ internal static class Utils
     }
 
     public static Dictionary<TEntityId, TEntity> ReadAllFromFileToDictionary<TEntityId, TEntity>(string filePath, ClassMap<TEntity> mapping, Func<TEntity, TEntityId> keySelector)
+        where TEntityId : IEquatable<TEntityId>
     {
         using var reader = new StreamReader(filePath, new FileStreamOptions { Mode = FileMode.OpenOrCreate });
         using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);

@@ -8,6 +8,7 @@ public interface IBaseRepository<TEntity, TEntityId> : IBaseRepository
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
 {
+    public bool Exists(TEntityId id);
     TEntity? Get(TEntityId id);
     IReadOnlyDictionary<TEntityId, TEntity> GetAll();
     void AddAndImmediatelySave(TEntity entity);
@@ -25,22 +26,4 @@ public interface IOnePasswordRepository : IBaseRepository
 public interface IUsersRepository : IBaseRepository<User, string>
 {
     //User? FindByLogin(string login);
-}
-
-public interface IUserDictionariesRepository : IBaseRepository<UserDictionaryHeader, string>
-{
-    public object? FindConflict_DictionaryWithSuchNameAlreadyExists(UserDictionaryHeader dictionaryToCheck)
-    {
-        var existingDictionary = Get(dictionaryToCheck.Id);
-        if (existingDictionary is not null)
-            return new
-            {
-                Error = new
-                {
-                    Message = $"Словарь \"{dictionaryToCheck.Id}\" уже существует.",
-                    Dictionary = dictionaryToCheck
-                }
-            };
-        return null;
-    }
 }

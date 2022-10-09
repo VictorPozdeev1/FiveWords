@@ -109,7 +109,7 @@ app.Map(v1PathBase, false, app =>
 
 app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions()
     .AddRewrite("^home$", "home.html", true)
-    .AddRewrite(@"^dictionary/(.+)$", "dictionary.html", true));
+    .AddRewrite(@"^dictionary-page/(.+)$", "dictionary.html", true));
 
 app.Use((context, next) =>
 {

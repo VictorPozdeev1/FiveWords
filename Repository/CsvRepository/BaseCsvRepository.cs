@@ -7,13 +7,14 @@ using System.Globalization;
 
 namespace FiveWords.Repository.CsvRepository;
 
-abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, IBaseRepository<TEntity, TEntityId>
+internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, IBaseRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
 {
-    protected OneFileCsvRepository(string repoDirectoryPath, string fileName) : base(repoDirectoryPath)
+    public OneFileCsvRepository(string repoDirectoryPath, string fileName, ClassMap<TEntity> mapping) : base(repoDirectoryPath)
     {
         this.fileName = fileName;
+        this.mapping = mapping;
         LoadFromFile();
     }
 
@@ -21,33 +22,21 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSyst
 
     Dictionary<TEntityId, TEntity> allEntities = new();
 
-    private ClassMap<TEntity> mapping;
-    protected ClassMap<TEntity> Mapping
-    {
-        get
-        {
-            if (mapping == null)
-                mapping = InitialisingMapping;
-            return mapping;
-        }
-    }
+    private readonly ClassMap<TEntity> mapping;
+    protected ClassMap<TEntity> Mapping => mapping;
 
-    abstract protected ClassMap<TEntity> InitialisingMapping { get; }
+    public bool Exists(TEntityId id) => allEntities.ContainsKey(id);
 
-    public virtual TEntity? Get(TEntityId id)
+    public TEntity? Get(TEntityId id)
     {
         allEntities.TryGetValue(id, out TEntity? result);
         return result;
     }
 
-    public virtual IReadOnlyDictionary<TEntityId, TEntity> GetAll() => new ReadOnlyDictionary<TEntityId, TEntity>(allEntities);
+    public IReadOnlyDictionary<TEntityId, TEntity> GetAll() => new ReadOnlyDictionary<TEntityId, TEntity>(allEntities);
 
-    public virtual void AddAndImmediatelySave(IEnumerable<TEntity> entities)
-    {
-        throw new NotImplementedException();
-    }
 
-    public virtual void AddAndImmediatelySave(TEntity entity)
+    public void AddAndImmediatelySave(TEntity entity)
     {
         if (allEntities.Count == 0)
         {
@@ -66,7 +55,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSyst
 
     void LoadFromFile() => allEntities = Utils.ReadAllFromFileToDictionary(FilePath, Mapping, e => e.Id);
 
-    public virtual void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
+    public void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
     {
         if (!allEntities.ContainsKey(id))
             throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
@@ -80,7 +69,7 @@ abstract internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSyst
         SaveToFile();
     }
 
-    public virtual void DeleteAndImmediatelySave(TEntityId id)
+    public void DeleteAndImmediatelySave(TEntityId id)
     {
         if (!allEntities.ContainsKey(id))
             throw new ArgumentException($"Ключ {id} не представлен в коллекции.");

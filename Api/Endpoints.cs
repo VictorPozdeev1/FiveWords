@@ -90,66 +90,84 @@ static class Endpoints
             //context.SignInAsync() - проверить,как работает.. а точнее, Results.Signin
         });
 
-        routeBuilder.MapGet("/dictionaries", [Authorize] (ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
+        routeBuilder.MapGet("/dictionaryHeaders", [Authorize] (ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var dictionaries = userDictionariesRepo.GetAll();
-            return Results.Json(new { User = currentUser!.Login, Dictionaries = dictionaries.Values });
+            var dictionaryHeaders = userDictionariesRepo.GetAllHeadersWithContentLength();
+            return Results.Json(new { User = currentUser!.Login, DictionaryHeaders = dictionaryHeaders.Values });
         });
 
         routeBuilder.MapDelete("/dictionaries/{dictionaryName}", [Authorize] (string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            if (userDictionariesRepo.Get(dictionaryName) is null)
+            if (!userDictionariesRepo.Exists(dictionaryName))
                 return Results.NotFound($"Не найден словарь \"{dictionaryName}\".");
             userDictionariesRepo.DeleteAndImmediatelySave(dictionaryName);
             return Results.NoContent();
         });
 
-        routeBuilder.MapPut("/dictionaries/{dictionaryName}", [Authorize] ([FromBody] UserDictionaryHeader updatedDictionary, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
+        routeBuilder.MapPut("/dictionaryHeaders/{dictionaryName}", [Authorize] ([FromBody] UserDictionaryHeader updatedDictionaryHeader, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
+            var validationProblems = updatedDictionaryHeader.GetValidationProblems();
+            if (validationProblems.Count > 0)
+                return Results.ValidationProblem(validationProblems);
+
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            if (updatedDictionary.Id != dictionaryName)
+
+            if (updatedDictionaryHeader.Id != dictionaryName)
             {
-                var validationProblems = updatedDictionary.GetValidationProblems();
-                if (validationProblems.Count > 0)
-                    return Results.ValidationProblem(validationProblems);
-                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionary);
+                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionaryHeader);
+                if (nameAlreadyExistsConflict is not null)
+                    return Results.Conflict(nameAlreadyExistsConflict);
+            }
+
+            userDictionariesRepo.UpdateHeaderAndImmediatelySave(dictionaryName, updatedDictionaryHeader);
+            return Results.Json(userDictionariesRepo.GetHeaderWithContentLength(updatedDictionaryHeader.Id));
+        });
+
+        routeBuilder.MapPut("/dictionaries/{dictionaryName}", [Authorize] ([FromBody] UserDictionary updatedDictionary, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
+        {
+            var validationProblems = updatedDictionary.GetValidationProblems();
+            if (validationProblems.Count > 0)
+                return Results.ValidationProblem(validationProblems);
+
+            var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
+            var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+
+            if (updatedDictionary.Header.Id != dictionaryName)
+            {
+                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionary.Header);
                 if (nameAlreadyExistsConflict is not null)
                     return Results.Conflict(nameAlreadyExistsConflict);
             }
             userDictionariesRepo.UpdateAndImmediatelySave(dictionaryName, updatedDictionary);
-            return Results.Json(userDictionariesRepo.Get(updatedDictionary.Id));
+            return Results.Json(userDictionariesRepo.GetHeaderWithContent(updatedDictionary.Header.Id));
         });
 
-        routeBuilder.MapPost("/dictionaries", [Authorize] (HttpContext httpContext, [FromBody] UserDictionaryHeader dictionaryToCreate, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
+        routeBuilder.MapPost("/dictionaries", [Authorize] (HttpContext httpContext, [FromBody] UserDictionary dictionaryToCreate, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
-            var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
-            var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
             var validationProblems = dictionaryToCreate.GetValidationProblems();
             if (validationProblems.Count > 0)
                 return Results.ValidationProblem(validationProblems);
-            var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(dictionaryToCreate);
+
+            var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
+            var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+            var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(dictionaryToCreate.Header);
             if (nameAlreadyExistsConflict is not null)
                 return Results.Conflict(nameAlreadyExistsConflict);
             userDictionariesRepo.AddAndImmediatelySave(dictionaryToCreate);
-            return Results.Json(userDictionariesRepo.Get(dictionaryToCreate.Id));
+            return Results.Json(userDictionariesRepo.GetHeaderWithContent(dictionaryToCreate.Header.Id));
         });
 
-        routeBuilder.MapGet("/dictionaryContent/{dictionaryName}", [Authorize] (string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository/*, UserDictionariesUserRepositoriesManager userDictionariesRepoManager*/) =>
+        routeBuilder.MapGet("/dictionaries/{dictionaryName}", [Authorize] (string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
-            //var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            if (true) // dictionary found
-            {
-                return Results.Json(new { id = dictionaryName });
-            }
-            else
-                return Results.NotFound($"Не найден словарь \"{dictionaryName}\".");
-            //return Results.Json();
+            var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+            var dictionary = userDictionariesRepo.GetHeaderWithContent(dictionaryName);
+            return dictionary is null ? Results.NotFound($"Не найден словарь \"{dictionaryName}\".") : Results.Json(dictionary);
         });
 
         routeBuilder.MapGet("/data", [Authorize] (ClaimsPrincipal user) =>

@@ -6,17 +6,21 @@ if (!isAuthenticated())
     location.assign('/');
 
 addEventListener('load', async () => {
-    //const dictionariesContainer = document.querySelector('#userDictionaries_Div');
-    //const createNewDictionary_Div = document.querySelector('#createNewDictionary_Div');
     let responseJson = null;
     try {
-        let sections = location.pathname.split('/').filter(x => x.length > 0);
-        let dictionaryName = sections.pop();
-        let url = new URL(`dictionaryContent/${dictionaryName}`, location.origin);
+        const sections = location.pathname.split('/').filter(x => x.length > 0);
+        const dictionaryName = sections.pop();
+        const url = new URL(`dictionaries/${dictionaryName}`, location.origin);
         const response = await fetchWithAuth(url);
         if (response.ok) {
             responseJson = await response.json();
-            document.querySelector('#dictionaryName').innerHTML = responseJson.id;
+            document.querySelector('#dictionaryName').innerHTML = responseJson.header.id;
+            responseJson.content.forEach(wordTranslation => {
+                const wordTranslationElement = document.createElement('p');
+                wordTranslationElement.innerHTML = `${wordTranslation.id} - ${wordTranslation.translation}`;
+                wordTranslationElement.style.color = 'gray';
+                document.querySelector('.dictionaries-block').append(wordTranslationElement);
+            });
         }
         else {
             alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");

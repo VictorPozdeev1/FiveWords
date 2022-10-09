@@ -31,15 +31,15 @@ export class UserDictionaryCard extends HTMLElement {
             showPromptForm('Введите новое название:', this.data.id, '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
                 .then(async resolved => {
                     let newData = {};
-                    Object.assign(newData, this.data);
-                    newData.id = resolved;
-                    const response = await fetchWithAuth(`/dictionaries/${this.data.id}`, {
+                    Object.assign(newData, this.data, { id: resolved });
+                    const response = await fetchWithAuth(`/dictionaryHeaders/${this.data.id}`, {
                         method: 'PUT',
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(newData)
                     });
                     if (response.ok) {
-                        this.data = await response.json();
+                        const responseJson = await response.json();
+                        this.data = responseJson;
                         this.nameSpan.innerHTML = this.data.id;
                     }
                     else {
@@ -66,7 +66,7 @@ export class UserDictionaryCard extends HTMLElement {
                     }
                     else {
                         const responseJson = await response.json();
-                        alert(responseJson?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                        alert(responseJson ?? "Что-то пошло не так. Попробуйте обновить страницу...");
                     }
                 }
                 catch (error) { console.error(error) }
@@ -74,8 +74,7 @@ export class UserDictionaryCard extends HTMLElement {
         });
 
         this.shadowRoot.querySelector('#editContent').addEventListener('click', () => {
-            //location.assign();
-            alert(`todo: redirect to ..? \ndictionaries/${this.data.id}, method: GET?\ndictionary-content/${this.data.id}?`);
+            location.assign(`dictionary-page/${this.data.id}`);
         });
     }
 }

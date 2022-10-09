@@ -6,9 +6,7 @@ namespace FiveWords.Repository.CsvRepository;
 
 internal class UsersCsvRepository : OneFileCsvRepository<User, string>, IUsersRepository
 {
-    protected internal UsersCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
-
-    protected override ClassMap<User> InitialisingMapping => new UsersMapping();
+    protected internal UsersCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName, new UsersMapping()) { }
 
     private class UsersMapping : ClassMap<User>
     {

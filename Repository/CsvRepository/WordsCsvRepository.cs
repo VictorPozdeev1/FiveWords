@@ -6,13 +6,11 @@ namespace FiveWords.Repository.CsvRepository;
 
 internal class WordsCsvRepository : OneFileCsvRepository<Word, int>, IWordsRepository
 {
-    protected internal WordsCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
+    protected internal WordsCsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName, new WordMapping()) { }
 
     public IEnumerable<Word> GetByWritingFilter(Predicate<string?> writingFilter) => GetAll()
         .Where(kvp => writingFilter(kvp.Value.Writing))
         .Select(kvp => kvp.Value);
-
-    protected override ClassMap<Word> InitialisingMapping => new WordMapping();
 
     private class WordMapping : ClassMap<Word>
     {
@@ -28,15 +26,13 @@ internal class WordsCsvRepository : OneFileCsvRepository<Word, int>, IWordsRepos
 
 internal class WordsWithEnglishTranslationId_CsvRepository : OneFileCsvRepository<WordWithEnglishTranslationId, int>, IWordsWithEnglishTranslationRepository
 {
-    protected internal WordsWithEnglishTranslationId_CsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName) { }
+    protected internal WordsWithEnglishTranslationId_CsvRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath, fileName, new WordWithEnglishTranslationMapping()) { }
 
     public IEnumerable<WordWithEnglishTranslationId> GetWordsHavingEnglishTranslationId()
     {
         return GetAll().Where(kvp => kvp.Value.DefaultEnglishTranslationId != null).Select(kvp => kvp.Value);
     }
-
-    protected override ClassMap<WordWithEnglishTranslationId> InitialisingMapping => new WordWithEnglishTranslationMapping();
-
+    
     private class WordWithEnglishTranslationMapping : ClassMap<WordWithEnglishTranslationId>
     {
         public WordWithEnglishTranslationMapping()
