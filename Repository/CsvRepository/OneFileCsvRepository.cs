@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, IBaseRepository<TEntity, TEntityId>
+internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, ISimpleEntityRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
 {

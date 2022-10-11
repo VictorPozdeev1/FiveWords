@@ -2,12 +2,12 @@
 
 namespace FiveWords.Repository.Interfaces;
 
-public interface IWordsRepository : IBaseRepository<Word, int>
+public interface IWordsRepository : ISimpleEntityRepository<Word, int>
 {
     IEnumerable<Word> GetByWritingFilter(Predicate<string?> writingFilter);
 }
 
-public interface IWordsWithEnglishTranslationRepository : IBaseRepository<WordWithEnglishTranslationId, int>
+public interface IWordsWithEnglishTranslationRepository : ISimpleEntityRepository<WordWithEnglishTranslationId, int>
 {
     IEnumerable<WordWithEnglishTranslationId> GetWordsHavingEnglishTranslationId();
 }

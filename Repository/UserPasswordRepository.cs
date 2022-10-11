@@ -2,12 +2,6 @@
 
 namespace FiveWords.Repository;
 
-internal abstract class UsingFileSystemRepository : IBaseRepository
-{
-    protected UsingFileSystemRepository(string repoDirectoryPath) => this.repoDirectoryPath = repoDirectoryPath;
-    protected string repoDirectoryPath;
-}
-
 internal class OneUserPasswordInFileRepository : UsingFileSystemRepository, IOnePasswordRepository
 {
     protected internal OneUserPasswordInFileRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath)

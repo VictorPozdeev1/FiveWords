@@ -10,7 +10,6 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
 where THeaderWithContent : IHeaderWithContent<THeader, THeaderId, TContentElement>
 where THeader : BaseEntity<THeaderId>, IHeaderAttachingContentLength<THeaderWithContentLength>
 where THeaderWithContentLength : BaseEntity<THeaderId>, IHeaderDetachingContentLength<THeader>, IHeaderAttachingContent<THeaderWithContent, TContentElement>
-
 where THeaderId : IEquatable<THeaderId>
 {
     protected SavingContentLength_HeadersWithContentCsvRepository(string repoDirectoryPath, string headersFileName, ClassMap<THeaderWithContentLength> headersWithContentLengthMapping, ClassMap<TContentElement> contentMapping)

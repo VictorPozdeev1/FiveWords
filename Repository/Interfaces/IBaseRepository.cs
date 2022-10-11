@@ -4,7 +4,7 @@ namespace FiveWords.Repository.Interfaces;
 
 public interface IBaseRepository { }
 
-public interface IBaseRepository<TEntity, TEntityId> : IBaseRepository
+public interface ISimpleEntityRepository<TEntity, TEntityId> : IBaseRepository
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
 {
@@ -23,7 +23,7 @@ public interface IOnePasswordRepository : IBaseRepository
 }
 
 
-public interface IUsersRepository : IBaseRepository<User, string>
+public interface IUsersRepository : ISimpleEntityRepository<User, string>
 {
     //User? FindByLogin(string login);
 }
