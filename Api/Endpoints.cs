@@ -16,7 +16,7 @@ using FiveWords.DataObjects;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
-namespace FiveWords.ApiV1;
+namespace FiveWords.Api;
 
 static class Endpoints
 {
@@ -37,16 +37,9 @@ static class Endpoints
             if (validationProblems.Count > 0)
                 return Results.ValidationProblem(validationProblems);
 
-            var existingUser = usersRepository.Get(userPasswordPair!.Login);
-            if (existingUser != null)
-                return Results.Conflict(new
-                {
-                    Error = new
-                    {
-                        Message = $"Пользователь с логином {userPasswordPair!.Login} уже существует.",
-                        User = userPasswordPair!.Login
-                    }
-                });
+            var userAlreadyExistsError = usersRepository.FindError_UserWithSuchLoginAlreadyExists(userPasswordPair!.Login);
+            if (userAlreadyExistsError is not null)
+                return Results.Conflict(new { Error = userAlreadyExistsError });
 
             var registeringUser = new User(userPasswordPair.Login, Guid.NewGuid());
             usersRepository.AddAndImmediatelySave(registeringUser);
@@ -69,14 +62,7 @@ static class Endpoints
 
             User? user = usersRepository.Get(userPasswordPair!.Login);
             if (user is null || !passwordHash!.SequenceEqual(passwordRepositoriesManager.GetRepository(user).GetPasswordHash()))
-                return Results.Conflict(new
-                {
-                    Error = new
-                    {
-                        Message = $"Неверный логин и/или пароль.",
-                        User = userPasswordPair!.Login
-                    }
-                });
+                return Results.Conflict(new { Error = new RequestError("Неверный логин и/или пароль.", userPasswordPair) });
 
             //todo Ключ надо бы вынести, например, в файл или в конфигурацию. А ещё можно в utils вынести SigningCredentials, а также issuer (или вообще генерацию токена).
 
@@ -117,11 +103,15 @@ static class Endpoints
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
 
+            var dictionaryNotFoundError = userDictionariesRepo.FindError_DictionaryNotFound(dictionaryName);
+            if (dictionaryNotFoundError is not null)
+                return Results.NotFound(new { Error = dictionaryNotFoundError });
+
             if (updatedDictionaryHeader.Id != dictionaryName)
             {
-                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionaryHeader);
+                var nameAlreadyExistsConflict = userDictionariesRepo.FindError_DictionaryWithSuchNameAlreadyExists(updatedDictionaryHeader);
                 if (nameAlreadyExistsConflict is not null)
-                    return Results.Conflict(nameAlreadyExistsConflict);
+                    return Results.Conflict(new { Error = nameAlreadyExistsConflict });
             }
 
             userDictionariesRepo.UpdateHeaderAndImmediatelySave(dictionaryName, updatedDictionaryHeader);
@@ -137,9 +127,13 @@ static class Endpoints
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
 
+            var dictionaryNotFoundError = userDictionariesRepo.FindError_DictionaryNotFound(dictionaryName);
+            if (dictionaryNotFoundError is not null)
+                return Results.NotFound(new { Error = dictionaryNotFoundError });
+
             if (updatedDictionary.Header.Id != dictionaryName)
             {
-                var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(updatedDictionary.Header);
+                var nameAlreadyExistsConflict = userDictionariesRepo.FindError_DictionaryWithSuchNameAlreadyExists(updatedDictionary.Header);
                 if (nameAlreadyExistsConflict is not null)
                     return Results.Conflict(nameAlreadyExistsConflict);
             }
@@ -155,9 +149,10 @@ static class Endpoints
 
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var nameAlreadyExistsConflict = userDictionariesRepo.FindConflict_DictionaryWithSuchNameAlreadyExists(dictionaryToCreate.Header);
+            var nameAlreadyExistsConflict = userDictionariesRepo.FindError_DictionaryWithSuchNameAlreadyExists(dictionaryToCreate.Header);
             if (nameAlreadyExistsConflict is not null)
-                return Results.Conflict(nameAlreadyExistsConflict);
+                return Results.Conflict(new { Error = nameAlreadyExistsConflict });
+
             userDictionariesRepo.AddAndImmediatelySave(dictionaryToCreate);
             return Results.Json(userDictionariesRepo.GetHeaderWithContent(dictionaryToCreate.Header.Id));
         });
@@ -166,8 +161,12 @@ static class Endpoints
         {
             var currentUser = usersRepository.Get(claimsPrincipal!.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
-            var dictionary = userDictionariesRepo.GetHeaderWithContent(dictionaryName);
-            return dictionary is null ? Results.NotFound($"Не найден словарь \"{dictionaryName}\".") : Results.Json(dictionary);
+
+            var dictionaryNotFoundError = userDictionariesRepo.FindError_DictionaryNotFound(dictionaryName);
+            if (dictionaryNotFoundError is not null)
+                return Results.NotFound(new { Error = dictionaryNotFoundError });
+
+            return Results.Json(userDictionariesRepo.GetHeaderWithContent(dictionaryName));
         });
 
         routeBuilder.MapGet("/data", [Authorize] (ClaimsPrincipal user) =>

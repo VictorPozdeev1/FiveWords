@@ -1,4 +1,6 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.Api;
+using FiveWords.DataObjects;
+using System.Collections;
 
 namespace FiveWords.Repository.Interfaces;
 
@@ -30,17 +32,9 @@ public interface IHeaderWithContentRepository<THeaderWithContent, THeader, THead
 
 public interface IUserDictionariesRepository : IHeaderWithContentRepository<UserDictionary, UserDictionaryHeader, UserDictionaryHeaderWithWordsQuantity, string, WordTranslation>
 {
-    public object? FindConflict_DictionaryWithSuchNameAlreadyExists(UserDictionaryHeader dictionaryToCheck)
-    {
-        if (Exists(dictionaryToCheck.Id))
-            return new
-            {
-                Error = new
-                {
-                    Message = $"Словарь \"{dictionaryToCheck.Id}\" уже существует.",
-                    Dictionary = dictionaryToCheck
-                }
-            };
-        return null;
-    }
+    public RequestError? FindError_DictionaryWithSuchNameAlreadyExists(UserDictionaryHeader dictionaryToCheck)
+        => Exists(dictionaryToCheck.Id) ? new RequestError($"Словарь \"{dictionaryToCheck.Id}\" уже существует.", dictionaryToCheck) : null;
+
+    public RequestError? FindError_DictionaryNotFound(string dictionaryName)
+        => !Exists(dictionaryName) ? new RequestError($"Словарь \"{dictionaryName}\" не найден.", dictionaryName) : null;
 }

@@ -8,8 +8,8 @@ using FiveWords.Model;
 using FiveWords.View;
 using FiveWords.Repository.CsvRepository;
 using FiveWords.Utils;
+using FiveWords.Api;
 using FiveWords.Api.v1;
-using FiveWords.ApiV1;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Rewrite;
 

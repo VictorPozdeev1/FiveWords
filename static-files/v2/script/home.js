@@ -62,7 +62,7 @@ addEventListener('load', async () => {
                 else {
                     if (response.status == 400) {
                         const responseJson = await response.json();
-                        alert(responseJson.errors["Id"][0] ?? "Что-то пошло не так. Попробуйте обновить страницу...");
+                        alert(responseJson.errors["Header.Id"][0] ?? "Что-то пошло не так. Попробуйте обновить страницу...");
                     }
                     else {
                         const responseJson = await response.json();
