@@ -31,8 +31,8 @@ export class UserDictionaryCard extends HTMLElement {
             showPromptForm('Введите новое название:', this.data.id, '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
                 .then(async resolved => {
                     let newData = {};
-                    Object.assign(newData, this.data, { id: resolved });
-                    const response = await fetchWithAuth(`/dictionaryHeaders/${this.data.id}`, {
+                    Object.assign(newData, this.data, { id: resolved.trim() });
+                    const response = await fetchWithAuth(encodeURI(`/dictionaryHeaders/${this.data.id}`), {
                         method: 'PUT',
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(newData)
@@ -60,7 +60,7 @@ export class UserDictionaryCard extends HTMLElement {
             event.preventDefault();
             if (confirm('Удалить словарь? Это действие нельзя будет отменить!')) {
                 try {
-                    const response = await fetchWithAuth(`/dictionaries/${this.data.id}`, { method: 'DELETE' });
+                    const response = await fetchWithAuth(encodeURI(`/dictionaries/${this.data.id}`), { method: 'DELETE' });
                     if (response.ok) {
                         this.remove();
                     }
