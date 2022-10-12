@@ -70,10 +70,22 @@ where THeaderId : IEquatable<THeaderId>
         File.Delete(GetDefaultFilePathForContent(id));
     }
 
+    private void RenameContent(THeaderId oldHeaderId, THeaderId newHeaderId)
+    {
+        File.Move(GetDefaultFilePathForContent(oldHeaderId), GetDefaultFilePathForContent(newHeaderId));
+    }
+
     public void UpdateHeaderAndImmediatelySave(THeaderId id, THeader header)
     {
-        var currentContentLength = GetHeaderWithContentLength(id)?.ContentLength;
-        headersRepository.UpdateAndImmediatelySave(id, header.GetHeaderWithContentLength(currentContentLength ?? default));
+        headersRepository.ThrowIfNotExists(id);
+        if (!id.Equals(header.Id))
+            headersRepository.ThrowIfExists(header.Id);
+
+        var oldHeaderWithContentLength = GetHeaderWithContentLength(id);
+        var currentContentLength = oldHeaderWithContentLength!.ContentLength;
+        headersRepository.UpdateAndImmediatelySave(id, header.GetHeaderWithContentLength(currentContentLength));
+        if (!id.Equals(header.Id))
+            RenameContent(id, header.Id);
     }
 
     public void UpdateAndImmediatelySave(THeaderId id, THeaderWithContent headerWithContent)

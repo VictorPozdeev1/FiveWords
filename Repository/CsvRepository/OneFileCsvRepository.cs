@@ -45,9 +45,7 @@ internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemReposit
         }
         else
         {
-            if (allEntities.ContainsKey(entity.Id))
-                throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
-
+            ThrowIfExists(entity.Id);
             allEntities.Add(entity.Id, entity);
             AppendOneEntityToFile(entity);
         }
@@ -57,12 +55,10 @@ internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemReposit
 
     public void UpdateAndImmediatelySave(TEntityId id, TEntity entity)
     {
-        if (!allEntities.ContainsKey(id))
-            throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
+        ThrowIfNotExists(id);
         if (!id.Equals(entity.Id))
         {
-            if (allEntities.ContainsKey(entity.Id))
-                throw new ArgumentException($"Ключ {entity.Id} уже представлен в коллекции.");
+            ThrowIfExists(entity.Id);
             allEntities.Remove(id);
         }
         allEntities[entity.Id] = entity;
@@ -71,8 +67,7 @@ internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemReposit
 
     public void DeleteAndImmediatelySave(TEntityId id)
     {
-        if (!allEntities.ContainsKey(id))
-            throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
+        ThrowIfNotExists(id);
         allEntities.Remove(id);
         SaveToFile();
     }
@@ -82,4 +77,16 @@ internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemReposit
     private void AppendOneEntityToFile(TEntity value) => Utils.AppendOneEntityToFile(value, FilePath, Mapping);
 
     string FilePath => Path.Combine(repoDirectoryPath, fileName);
+
+    public void ThrowIfExists(TEntityId id)
+    {
+        if (allEntities.ContainsKey(id))
+            throw new ArgumentException($"Ключ {id} уже представлен в коллекции.");
+    }
+
+    public void ThrowIfNotExists(TEntityId id)
+    {
+        if (!allEntities.ContainsKey(id))
+            throw new ArgumentException($"Ключ {id} не представлен в коллекции.");
+    }
 }
