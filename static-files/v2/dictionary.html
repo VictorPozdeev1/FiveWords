@@ -10,7 +10,14 @@
     <!--<link rel="stylesheet" href="css/normalizez.css">
     <link rel="stylesheet" href="css/resets.css">-->
     <link rel="stylesheet" href="../css/style.css">
-    <!--<script src="script/UserDictionary.js" type="module" charset="utf-8"></script>-->
+
+    <!--<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>-->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel" src="../react/dictionary.jsx"></script>
     <script src="../script/UserDictionaryPage.js" type="module" charset="utf-8"></script>
 </head>
 <body>
@@ -18,6 +25,9 @@
         <div class="dictionaries-block container">
             <font color="white">
                 <h1 color=yellow>Cловарь "<span id="dictionaryName"></span>" (страница-заглушка)</h1>
+            </font>
+            <font color="yellow">
+                <div id="reactRoot"></div>
             </font>
         </div>
     </div>
