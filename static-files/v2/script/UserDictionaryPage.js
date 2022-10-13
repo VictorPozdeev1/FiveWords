@@ -10,7 +10,7 @@ addEventListener('load', async () => {
     try {
         const sections = location.pathname.split('/').filter(x => x.length > 0);
         const dictionaryName = sections.pop();
-        const url = new URL(encodeURI(`dictionaries/${dictionaryName}`), location.origin);
+        const url = new URL(`dictionaries/${dictionaryName}`, location.origin);
         const response = await fetchWithAuth(url);
         if (response.ok) {
             responseJson = await response.json();
