@@ -13,9 +13,8 @@ addEventListener('load', async () => {
         if (response.ok) {
             responseJson = await response.json();
             document.querySelector('#dictionaryName').innerHTML = responseJson.header.id;
-            ReactDOM
-                .createRoot(document.querySelector("#reactRoot"))
-                .render(WordTranslationsContainer(responseJson));
+            ReactDOM.createRoot(document.querySelector("#reactRoot"))
+                .render(React.createElement(WordTranslationsContainer, { content: responseJson.content }));
         }
         else {
             alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");
