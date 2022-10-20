@@ -3,7 +3,7 @@
     return React.useCallback(() => setValue(value => value + 1), []);
 }
 
-const EditableText = ({ initialText, handleEditAccept }) => {
+const EditableText = ({ initialText, handleEditAccept, handleRestoreDefault }) => {
     const style = { border: '1px #ccc solid', marginRight: '120px' }
     const [isBeingEdited, setIsBeingEdited] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(initialText);
@@ -26,6 +26,7 @@ const EditableText = ({ initialText, handleEditAccept }) => {
 
     const cancelEdit = () => {
         setCurrentText(initialText);
+        handleRestoreDefault();
         setIsBeingEdited(false);
     }
 
@@ -50,10 +51,8 @@ const EditableText = ({ initialText, handleEditAccept }) => {
     )
 }
 
-const WordTranslation = ({ id, translation, processingStatus, handleUpdate, handleDelete }) => {
+const WordTranslation = ({ id, translation, processingStatus, handleUpdate, handleDelete, handleRestoreDefault }) => {
     console.log('render WordTranslation', id);
-    const [currentId, setCurrentId] = React.useState(id);
-    const [currentTranslation, setCurrentTranslation] = React.useState(translation);
     React.useEffect(() => {
         console.log('created', id, translation);
         return () => { console.log('destroyed', id, translation); }
@@ -63,28 +62,31 @@ const WordTranslation = ({ id, translation, processingStatus, handleUpdate, hand
         newValue = newValue.trim();
         if (newValue.length < 5) //заглушка нормальной проверки
             return false;
-        if (newValue === id)
-            return true;
-        if (handleUpdate({ id: newValue, translation }))
-            setCurrentId(newValue);
+        return handleUpdate({ id: newValue, translation });
     }
     const handleTranslationEditAccept = newValue => {
         newValue = newValue.trim();
         if (newValue.length < 5) //заглушка нормальной проверки
             return false;
-        if (newValue === translation)
-            return true;
-        if (handleUpdate({ id, translation: newValue }))
-                setCurrentTranslation(newValue);
+        return handleUpdate({ id, translation: newValue });
     }
     return (
         <div>
             Слово:
-            <EditableText initialText={currentId} handleEditAccept={handleIdEditAccept} />
+            <EditableText
+                initialText={id}
+                handleEditAccept={handleIdEditAccept}
+                handleRestoreDefault={handleRestoreDefault} />
             Перевод:
-            <EditableText initialText={currentTranslation} handleEditAccept={handleTranslationEditAccept} />
-            <button onClick={handleDelete}>Удалить</button>
-            {processingStatus && <span style={{ marginLeft: 20 }}>{processingStatus}</span>}
+            <EditableText
+                initialText={translation}
+                handleEditAccept={handleTranslationEditAccept}
+                handleRestoreDefault={handleRestoreDefault} />
+            <button
+                onClick={handleDelete}>
+                Удалить
+            </button>
+            {processingStatus && <span style={{ marginLeft: 100, color: 'deeppink' }}>{processingStatus}</span>}
         </div>
     )
 }
@@ -107,15 +109,11 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
             id,
             () => new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000)),
             () => {
-                setCurrentContent(currentContent => currentContent.map(element => element.id === id ? newValue : element));
+                setCurrentContent(currentContent => currentContent.map(element =>
+                    element.id === id ? newValue : element));
                 if (newValue.id !== id) {
-                    console.log('statuses count:', elementsProcessingStatuses.current.size);
-                    console.log('old old:', elementsProcessingStatuses.current.get(id));
-                    console.log('old new:', elementsProcessingStatuses.current.get(newValue.id));
                     elementsProcessingStatuses.current.delete(id);
                     elementsProcessingStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
-                    console.log('new old:', elementsProcessingStatuses.current.get(id));
-                    console.log('new new:', elementsProcessingStatuses.current.get(newValue.id));
                 }
             }
         )
@@ -149,10 +147,22 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
 
 const WordTranslationsContainer = ({ content }) => {
     console.log('render WordTranslationContainer');
+    const forceUpdate = useForceUpdate();
     const { currentContent, elementsProcessingStatuses, fetchCreate, fetchUpdate, fetchDelete }
         = useFetchStoreUpdater({ initialContent: content, urlPathBase: 'hzhzpokakudatut..' })
 
+    const handleRestoreDefault = (id) => {
+        elementsProcessingStatuses.current.delete(id);
+        forceUpdate();
+    }
+
     const handleUpdate = React.useCallback((id, newValue) => {
+        const currentElementState = currentContent.find(element => element.id === id);
+        if (newValue.id === currentElementState.id && newValue.translation === currentElementState.translation) {
+            elementsProcessingStatuses.current.delete(id);
+            forceUpdate();
+            return true;
+        }
         if (false) //написать проверку на дублирование id.
             return false;
         fetchUpdate(id, newValue);
@@ -170,6 +180,7 @@ const WordTranslationsContainer = ({ content }) => {
                     processingStatus={elementsProcessingStatuses.current.get(wordTranslation.id)}
                     handleDelete={() => handleDelete(wordTranslation.id)}
                     handleUpdate={(newValue) => handleUpdate(wordTranslation.id, newValue)}
+                    handleRestoreDefault={() => handleRestoreDefault(wordTranslation.id)}
                 />
             )}
             <br />
