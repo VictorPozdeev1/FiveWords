@@ -3,18 +3,27 @@
     return React.useCallback(() => setValue(value => value + 1), []);
 }
 
-const EditableText = ({ initialText, onEditAccepted }) => {
+const EditableText = ({ initialText, handleEditAccept }) => {
     const style = { border: '1px #ccc solid', marginRight: '120px' }
     const [isBeingEdited, setIsBeingEdited] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(initialText);
-    const focusAndSelect = React.useCallback(domElement => { domElement?.focus(); domElement?.select(); }, []);
+
+    const focusAndSelect = React.useCallback(domElement => {
+        domElement?.focus();
+        domElement?.select();
+    }, []);
+
     const startEdit = () => {
         setIsBeingEdited(true)
     }
-    const acceptEdit = () => {
-        onEditAccepted(currentText);
-        setIsBeingEdited(false);
+
+    const acceptEdit = e => {
+        if (handleEditAccept(currentText))
+            setIsBeingEdited(false);
+        //else
+        //    focusAndSelect(e.target);
     }
+
     const cancelEdit = () => {
         setCurrentText(initialText);
         setIsBeingEdited(false);
@@ -51,21 +60,29 @@ const WordTranslation = ({ id, translation, processingStatus, handleUpdate, hand
     }, []);
 
     const handleIdEditAccept = newValue => {
-        setCurrentId(newValue);
-        if (newValue !== id)
-            handleUpdate({ id: newValue, translation });
+        newValue = newValue.trim();
+        if (newValue.length < 5) //заглушка нормальной проверки
+            return false;
+        if (newValue === id)
+            return true;
+        if (handleUpdate({ id: newValue, translation }))
+            setCurrentId(newValue);
     }
     const handleTranslationEditAccept = newValue => {
-        setCurrentTranslation(newValue);
-        if (newValue !== translation)
-            handleUpdate({ id, translation: newValue });
+        newValue = newValue.trim();
+        if (newValue.length < 5) //заглушка нормальной проверки
+            return false;
+        if (newValue === translation)
+            return true;
+        if (handleUpdate({ id, translation: newValue }))
+                setCurrentTranslation(newValue);
     }
     return (
         <div>
             Слово:
-            <EditableText initialText={currentId} onEditAccepted={handleIdEditAccept} />
+            <EditableText initialText={currentId} handleEditAccept={handleIdEditAccept} />
             Перевод:
-            <EditableText initialText={currentTranslation} onEditAccepted={handleTranslationEditAccept} />
+            <EditableText initialText={currentTranslation} handleEditAccept={handleTranslationEditAccept} />
             <button onClick={handleDelete}>Удалить</button>
             {processingStatus && <span style={{ marginLeft: 20 }}>{processingStatus}</span>}
         </div>
@@ -135,6 +152,15 @@ const WordTranslationsContainer = ({ content }) => {
     const { currentContent, elementsProcessingStatuses, fetchCreate, fetchUpdate, fetchDelete }
         = useFetchStoreUpdater({ initialContent: content, urlPathBase: 'hzhzpokakudatut..' })
 
+    const handleUpdate = React.useCallback((id, newValue) => {
+        if (false) //написать проверку на дублирование id.
+            return false;
+        fetchUpdate(id, newValue);
+        return true;
+    });
+
+    const handleDelete = React.useCallback((id) => fetchDelete(id));
+
     return currentContent.length > 0 ?
         <div>
             {currentContent.map(wordTranslation =>
@@ -142,8 +168,8 @@ const WordTranslationsContainer = ({ content }) => {
                     {...wordTranslation}
                     key={wordTranslation.id}
                     processingStatus={elementsProcessingStatuses.current.get(wordTranslation.id)}
-                    handleDelete={() => fetchDelete(wordTranslation.id)}
-                    handleUpdate={(newValue) => fetchUpdate(wordTranslation.id, newValue)}
+                    handleDelete={() => handleDelete(wordTranslation.id)}
+                    handleUpdate={(newValue) => handleUpdate(wordTranslation.id, newValue)}
                 />
             )}
             <br />

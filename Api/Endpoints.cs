@@ -120,6 +120,10 @@ static class Endpoints
 
         routeBuilder.MapPut("/dictionaries/{dictionaryName}", [Authorize] ([FromBody] UserDictionary updatedDictionary, string dictionaryName, ClaimsPrincipal claimsPrincipal, IUsersRepository usersRepository, UserDictionariesUserRepositoriesManager userDictionariesRepoManager) =>
         {
+            return Results.StatusCode(501);
+            // Видимо, в будущем этот эндпойнт можно будет удалить.
+            // Если всё же окажется, что он нужен, то не забыть реализовать вызываемую функцию в репозитории (UpdateAndImmediatelySave).
+
             var validationProblems = updatedDictionary.GetValidationProblems();
             if (validationProblems.Count > 0)
                 return Results.ValidationProblem(validationProblems);
