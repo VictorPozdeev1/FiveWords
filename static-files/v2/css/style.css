@@ -71,6 +71,7 @@ body {
   align-items: center;
   margin: 0;
   padding: 0;
+  cursor: pointer;
   margin-bottom: 20px;
 }
 
@@ -161,6 +162,7 @@ body {
   border-radius: 10px;
   border: none;
   color: #FFFFFF;
+  cursor: pointer
 }
 .reg-button__login {
   background: #13B223;
