@@ -17,6 +17,7 @@ body {
   min-height: 800px;
   padding-top: 50px;
   background-image: url(../img/back-main.jpg);
+  background-repeat: round;
   background-size: 100% auto;
 }
 .main-block__content {
@@ -66,11 +67,33 @@ body {
   display: flex;
   width: 130px;
   height: 40px;
+  border: none;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
+  cursor: pointer;
+  position: relative;
+}
+.main-block__button:not(:last-child) {
+  margin-right: 10px;
+}
+.main-block__button:hover {
+  transform: translateY(-2px);
+}
+.main-block__button-hover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.main-block__button:hover .main-block__button-hover {
+  background: white;
+  opacity: 0.1;
 }
 
 .button__blue {
@@ -160,6 +183,7 @@ body {
   border-radius: 10px;
   border: none;
   color: #FFFFFF;
+  cursor: pointer;
 }
 .reg-button__login {
   background: #13B223;
@@ -189,6 +213,7 @@ body {
   min-height: 300px;
   padding-top: 20px;
   padding-left: 20px;
+  opacity: 0.7;
 }
 .dictionaries-block__cards {
   display: flex;
