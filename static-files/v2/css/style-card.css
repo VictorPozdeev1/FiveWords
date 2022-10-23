@@ -1,5 +1,6 @@
 .cards-item {
-width: 340px;
+width: 320px;
+height: 170px;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -32,12 +33,27 @@ font-weight: 600;
 font-size: 24px;
 margin: 0;
 margin-right: 10px;
+text-align: center;
+}
+
+.cards-item__button-img{
+  opacity: 1;
+  background: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.cards-item__button-img:not(:last-child){
+  margin-right: 10px;
 }
 .cards-item__img {
 width: 20px;
 -o-object-fit: contain;
  object-fit: contain;
 }
+
+
 .cards-item__text {
 color: #D7D7D7;
 font-family: "Roboto";
@@ -45,7 +61,6 @@ font-style: normal;
 font-weight: 600;
 font-size: 18px;
 margin: 0;
-text-align: center;
 margin-bottom: 20px;
 }
 .cards-item__button {
@@ -82,3 +97,17 @@ border: none;
   background-color: #B76A10;
   color: #D7D7D7;
 }
+
+.cards-item_link-edit-dict{
+  color: #D7D7D7;
+font-family: "Roboto";
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+
+}
+
+.cards-item_edit-dict{
+  margin-bottom: 20px;
+}
+
