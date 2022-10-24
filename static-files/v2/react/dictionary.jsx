@@ -3,11 +3,13 @@
     return React.useCallback(() => setValue(value => value + 1), []);
 }
 
-const EditableText = ({ initialText, validate, handleEditAccept }) => {
+const EditableText = ({ initialText, validateAndHandleEditAccept, handleEditCancel }) => {
     const style = { border: '1px #ccc solid', marginRight: '120px', fontSize: '18px' }
     const [isBeingEdited, setIsBeingEdited] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(initialText ?? '');
     const [validationError, setValidationError] = React.useState(null);
+
+    React.useEffect(() => setCurrentText(initialText), [initialText]);
 
     const focusAndSelect = React.useCallback(domElement => {
         domElement?.focus();
@@ -19,19 +21,19 @@ const EditableText = ({ initialText, validate, handleEditAccept }) => {
         setValidationError(null);
     }
 
-    const acceptEdit = e => {
-        const currentError = validate(currentText);
+    const acceptEdit = () => {
+        const currentError = validateAndHandleEditAccept(currentText);
         setValidationError(currentError);
         //if (currentError) focusAndSelect(e.target);
         if (!currentError)
-            if (handleEditAccept(currentText))
-                setIsBeingEdited(false);
+            setIsBeingEdited(false);
     }
 
     const cancelEdit = () => {
         setCurrentText(initialText);
         setIsBeingEdited(false);
         setValidationError(null);
+        handleEditCancel();
     }
 
     return (isBeingEdited
@@ -81,44 +83,65 @@ const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
 
     const lastEditedState = React.useRef({ id, translation });
 
-    const handleIdEditAccept = newValue => {
+    const handleIdEditCancel = React.useCallback(() => {
+        lastEditedState.current.id = id;
+    }, [lastEditedState.current, id]);
+
+    const handleTranslationEditCancel = React.useCallback(() => {
+        lastEditedState.current.translation = translation;
+    }, [lastEditedState.current, translation]);
+
+    const validateAndHandleIdEditAccept = React.useCallback(newValue => {
         lastEditedState.current.id = newValue.trim();
-        return handleUpdate(Object.assign({}, lastEditedState.current));
-    }
-    const handleTranslationEditAccept = newValue => {
+        const validateIdError = validateId(lastEditedState.current.id);
+        if (validateIdError)
+            return validateIdError;
+        if (!validateTranslation(lastEditedState.current.translation))
+            handleUpdate(Object.assign({}, lastEditedState.current));
+        return null;
+    }, [lastEditedState.current, lastEditedState.current.id, lastEditedState.current.translation]);
+
+    const validateAndHandleTranslationEditAccept = React.useCallback(newValue => {
         lastEditedState.current.translation = newValue.trim();
-        return handleUpdate(Object.assign({}, lastEditedState.current));
-    }
+        const validateTranslationError = validateTranslation(lastEditedState.current.translation);
+        if (validateTranslationError)
+            return validateTranslationError;
+        if (!validateId(lastEditedState.current.id))
+            handleUpdate(Object.assign({}, lastEditedState.current));
+        return null;
+    }, [lastEditedState.current, lastEditedState.current.id, lastEditedState.current.translation]);
 
-    const validateId = (id) => {
-        if (!id) return 'Empty id';
+    const validateId = React.useCallback(idToValidate => {
+        if (!idToValidate)
+            return 'Empty id';
         const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$/;
-        if (regex.test(id.trim()))
-            return null;
-        return regex;
-    }
+        if (!regex.test(idToValidate))
+            return regex;
+        return null;
+    }, []);
 
-    const validateTranslation = (translation) => {
-        if (!translation) return 'Empty translation';
+    const validateTranslation = React.useCallback(translationToValidate => {
+        if (!translationToValidate)
+            return 'Empty translation';
         const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$/;
-        if (regex.test(translation.trim()))
-            return null;
-        return regex;
-    }
+        if (!regex.test(translationToValidate))
+            return regex;
+        return null;
+    }, []);
 
     return (
         <span style={{ marginTop: '10px', display: 'inline-block' }}>
             Слово:
             <EditableText
                 initialText={id}
-                validate={validateId}
-                handleEditAccept={handleIdEditAccept}
+                validateAndHandleEditAccept={validateAndHandleIdEditAccept}
+                handleEditCancel={handleIdEditCancel}
             />
             Перевод:
             <EditableText
                 initialText={translation}
-                validate={validateTranslation}
-                handleEditAccept={handleTranslationEditAccept}
+                validateAndHandleEditAccept={validateAndHandleTranslationEditAccept}
+                handleEditCancel={handleTranslationEditCancel}
             />
             <button
                 onClick={handleDelete}>
@@ -135,22 +158,23 @@ const FETCH_STATUSES = {
 }
 
 const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
-    const [currentContent, setCurrentContent] = React.useState(initialContent);
+    const [currentContent, setCurrentContent] = React.useState(initialContent.slice(0));
     const elementsFetchStatuses = React.useRef(new Map()); //Так, или всё же стейтом сделать , чтоб не форсапдейтить?
-    const [addedElementFetchStatus, setAddedElementFetchStatus] = React.useState(null);
+    const [createdElementFetchStatus, setCreatedElementFetchStatus] = React.useState(null);
+    const [elementCreatorIsActive, setElementCreatorIsActive] = React.useState(false);
     const forceUpdate = useForceUpdate();
 
     const fetchCreate = (newValue) => {
-        setAddedElementFetchStatus(FETCH_STATUSES.PENDING);
+        setCreatedElementFetchStatus(FETCH_STATUSES.PENDING);
         new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
             .then(() => {
-                currentContent.push(newValue);
-                setCurrentContent(currentContent => currentContent.slice(0));
-                setAddedElementFetchStatus(null);
+                setCurrentContent(currentContent => [...currentContent, newValue]);
                 elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
+                setCreatedElementFetchStatus(null);
+                setElementCreatorIsActive(false);
             })
             .catch(() => {
-                setAddedElementFetchStatus(FETCH_STATUSES.ERROR);
+                setCreatedElementFetchStatus(FETCH_STATUSES.ERROR);
             });
     };
 
@@ -185,7 +209,13 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
             });
     };
 
-    return { currentContent, elementsFetchStatuses, fetchCreate, fetchUpdate, fetchDelete, addedElementFetchStatus, setAddedElementFetchStatus, fetchCreate };
+    return {
+        fetchCreate, fetchUpdate, fetchDelete,
+        currentContent,
+        elementsFetchStatuses,
+        createdElementFetchStatus, setCreatedElementFetchStatus,
+        elementCreatorIsActive, setElementCreatorIsActive
+    };
 }
 
 const WordTranslationsContainer = ({ content }) => {
@@ -206,10 +236,9 @@ const WordTranslationsContainer = ({ content }) => {
         if (newValue.id === currentElementState.id && newValue.translation === currentElementState.translation) {
             elementsFetchStatuses.current.delete(id);
             forceUpdate();
-            return true;
         }
-        fetchUpdate(id, newValue);
-        return true;
+        else
+            fetchUpdate(id, newValue);
     });
 
     const handleDelete = React.useCallback((id) => fetchDelete(id));
@@ -237,32 +266,31 @@ const WordTranslationsContainer = ({ content }) => {
         : null;
 }
 
-const WordTranslationCreator = ({ fetchCreate, addedElementFetchStatus, setAddedElementFetchStatus }) => {
-    const [isActive, setIsActive] = React.useState(false);
-
-    const handleUpdate = (newValue) => {
-        if (newValue.id && newValue.translation)
+const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElementCreatorIsActive, createdElementFetchStatus, setCreatedElementFetchStatus }) => {
+    const handleUpdate = React.useCallback((newValue) => {
+        if (newValue.id && newValue.translation) {
             fetchCreate(newValue);
-        return true;
-    };
+        }
+    }, []);
 
-    const handleDelete = () => {
-        setIsActive(false);
-        return true;
-    };
+    const handleDelete = React.useCallback(() => {
+        setCreatedElementFetchStatus(null);
+        setElementCreatorIsActive(false)
+    }, []);
 
-    const handleClearFetchStatus = () => {
-        if (addedElementFetchStatus === FETCH_STATUSES.ERROR)
+
+    const handleClearFetchStatus = React.useCallback(() => {
+        if (createdElementFetchStatus === FETCH_STATUSES.ERROR)
             alert('Вот тут, наверное, надо скрыть этот компонент?!');
-        setAddedElementFetchStatus(null);
-    }
+        setCreatedElementFetchStatus(null);
+    }, []);
 
     return (
         <div>
-            {isActive || <button onClick={() => { setIsActive(true) }}> Добавить слово...</button >}
-            {isActive &&
+            {elementCreatorIsActive || <button onClick={() => { setElementCreatorIsActive(true) }}> Добавить слово...</button >}
+            {elementCreatorIsActive &&
                 <FetchStateDisplay
-                    fetchStatus={addedElementFetchStatus}
+                    fetchStatus={createdElementFetchStatus}
                     handleClearFetchStatus={handleClearFetchStatus}
                 >
                     <WordTranslation
