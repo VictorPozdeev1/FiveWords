@@ -74,6 +74,7 @@ margin: 0;
 padding: 0;
 margin-bottom: 20px;
 border: none;
+cursor: pointer;
 }
 .cards-item__button-create {
 display: flex;
@@ -91,8 +92,14 @@ border: none;
 
 .button__green {
   background-color: #13B323;
-  color: #D7D7D7;
+  color: #ffffff;
+  transition: 0.5s all;
 }
+.button__green:hover{
+  background-color: #38cc46;
+  transform: translateY(-2px);
+}
+
 .button__orange {
   background-color: #B76A10;
   color: #D7D7D7;
@@ -111,3 +118,10 @@ font-size: 18px;
   margin-bottom: 20px;
 }
 
+.cards-item__name-dict{
+  display: block;
+  width: 230px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

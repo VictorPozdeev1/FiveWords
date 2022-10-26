@@ -20,7 +20,7 @@
     <div class="cards-item">
         <div class="cards-item__title-block">
             <h2 class="cards-item__title">
-                Словарь "<slot name='name'></slot>"
+                <slot class="cards-item__name-dict" name='name'></slot>
             </h2>
             <div class="cards-item__button-container"></div>
             <button class="cards-item__button-img" id="rename">
@@ -41,12 +41,8 @@
   </template>
     <div class="main-block">
         <div class="container main-block__menu-reg">
-            <a href="#">
-                <div class="main-block__button button__blue" id="login_Label">Артем_123</div>
-             </a>
-             <a href="#" id="logout_Button">
-                <div class="main-block__button button__green">Выход </div>
-            </a>
+                <button class="main-block__button button__blue" id="login_Label">Артем_123</button>
+                <button class="main-block__button button__green" id="logout_Button">Выход </button>
         </div>
         <div class="dictionaries-block container">
             <h1 class="title dictionaries-block__title">Ваши словари</h1>
