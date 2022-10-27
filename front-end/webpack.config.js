@@ -1,15 +1,19 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const prodMode = process.env.NODE_ENV === 'production';
+let mode = 'development';
+if (process.env.NODE_ENV === 'production')
+    mode = 'production';
+console.log(`mode: ${mode} (NOW NOT EXPORTING, uncomment that if needed.)`);
 
 module.exports = {
+    //mode: mode,
     entry: {
         dictionary: path.resolve(__dirname, './src/dictionary-index.js')
     },
     output: {
-        path: path.resolve(__dirname, './dist/script'),
-        filename: '[name].[contenthash].js'
+        path: path.resolve(__dirname, './dist'),
+        filename: 'script/[name].[contenthash].js'
     },
     module: {
         rules: [
@@ -21,7 +25,12 @@ module.exports = {
             {
                 test: /\.(sc|sa|c)ss$/,
                 exclude: /node_modules/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: [
+                    //? Тут, видимо, чтобы css-ки выгружались, нужно будет MiniCssExtractPlugin.loader - ну и не забыть в plugins добавить new...
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
             }
         ]
     },
@@ -30,7 +39,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, './src/dictionary2.html'),
+            template: path.resolve(__dirname, './src/dictionary.html'),
             filename: 'dictionary.html'
         })
     ]

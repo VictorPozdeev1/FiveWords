@@ -1,5 +1,6 @@
 users-data/
 users-list/
+front-end/dist/
 
 # [For Artem] Ignore executable files and settings
 *.dll
