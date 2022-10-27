@@ -13,7 +13,8 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './dist'),
-        filename: 'script/[name].[contenthash].js'
+        filename: 'script/[name].[contenthash].js',
+        clean: true
     },
     module: {
         rules: [
@@ -40,7 +41,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/dictionary.html'),
-            filename: 'dictionary.html'
+            filename: 'html/dictionary.html'
         })
     ]
 }

@@ -1,12 +1,11 @@
 import { fetchWithAuth, removeToken, isAuthenticated } from "./modules/Auth";
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client'
 import WordTranslationsContainer from './components/dictionary';
 
 if (!isAuthenticated())
     location.assign('/');
 
 addEventListener('load', async () => {
-    console.log('hello im here! React=', React);
     let responseJson = null;
     try {
         const sections = location.pathname.split('/').filter(x => x.length > 0);
@@ -16,8 +15,8 @@ addEventListener('load', async () => {
         if (response.ok) {
             responseJson = await response.json();
             document.querySelector('#dictionaryName').innerHTML = responseJson.header.id;
-            ReactDOM.createRoot(document.querySelector("#reactRoot"))
-                .render(React.createElement(WordTranslationsContainer, { content: responseJson.content }));
+            createRoot(document.querySelector("#reactRoot"))
+                .render(<WordTranslationsContainer content={responseJson.content} />);
         }
         else {
             alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");

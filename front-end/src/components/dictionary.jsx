@@ -1,4 +1,5 @@
-﻿import styles from './styles.module.css';
+﻿import React from 'react';
+import styles from './styles.module.css';
 
 function useForceUpdate() {
     const [_, setValue] = React.useState(0);
@@ -220,7 +221,7 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
     };
 }
 
-export default WordTranslationsContainer = ({ content }) => {
+const WordTranslationsContainer = ({ content }) => {
     console.log('render WordTranslationContainer');
     const forceUpdate = useForceUpdate();
     const { currentContent, elementsFetchStatuses, fetchUpdate, fetchDelete, ...elementCreatorProps }
@@ -305,3 +306,5 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
         </div>
     )
 }
+
+export default WordTranslationsContainer
