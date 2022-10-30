@@ -1,6 +1,6 @@
 import { fetchWithAuth, removeToken, isAuthenticated } from "./modules/Auth";
 import { createRoot } from 'react-dom/client'
-import WordTranslationsContainer from './components/dictionary';
+import WordTranslationsContainer from './components/WordTranslationsContainer/WordTranslationsContainer';
 
 if (!isAuthenticated())
     location.assign('/');
