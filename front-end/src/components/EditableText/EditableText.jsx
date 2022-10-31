@@ -1,5 +1,6 @@
 ﻿import React from 'react';
-import styles from './EditableText.module.css';
+import styles from './EditableText.module';
+import classnames from 'classnames';
 
 export const EditableText = ({ initialText, validateAndHandleEditAccept, handleEditCancel }) => {
     const [isBeingEdited, setIsBeingEdited] = React.useState(false);
@@ -35,7 +36,7 @@ export const EditableText = ({ initialText, validateAndHandleEditAccept, handleE
 
     return (isBeingEdited
         ? <input
-            style={validationError ? { border: '2px solid red' } : {}}
+            className={classnames({ [styles.EditableText_ValidationError]: validationError })}
             value={currentText}
             ref={focusAndSelect}
             onChange={e => { setCurrentText(e.target.value); }}

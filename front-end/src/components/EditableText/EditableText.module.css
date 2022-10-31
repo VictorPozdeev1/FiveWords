@@ -4,6 +4,6 @@
     font-size: 18px
 }
 
-.EditableText_Error{
-
+.EditableText_ValidationError {
+    border: 2px solid red;
 }
