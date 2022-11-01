@@ -1,9 +1,12 @@
-.EditableText {
+.default {
     border: 1px #ccc solid;
-    margin-right: 120px;
     font-size: 18px
 }
 
-.EditableText_ValidationError {
-    border: 2px solid red;
+.underEdit {
+    font-size: 18px
+}
+
+.validationError {
+    border: 2px solid red
 }

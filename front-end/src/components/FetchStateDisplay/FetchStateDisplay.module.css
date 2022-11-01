@@ -1,2 +1,15 @@
-﻿body {
+﻿.statusValue {
+    margin-left: 100px;
+    color: deeppink
+}
+
+.clearStatusButton {
+    cursor: default;
+    margin-left: 20px;
+    border: 1px #ccc solid
+}
+
+.pending {
+    pointer-events: none;
+    opacity: 0.4
 }

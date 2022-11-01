@@ -1,4 +1,19 @@
-﻿.WordTranslation {
-    margin-top: 10px;
-    display: inline-block
+﻿.default {
+}
+
+.wordLabel {
+}
+
+.wordValue {
+}
+
+.translationLabel {
+    margin-left: 120px;
+}
+
+.translationValue {
+}
+
+.deleteButton {
+    margin-left: 60px;
 }

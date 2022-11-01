@@ -1,8 +1,8 @@
 ﻿import { useCallback, useRef } from 'react';
-import { EditableText } from '../EditableText/EditableText.jsx';
+import EditableText from '../EditableText/EditableText';
 import styles from './WordTranslation.module';
 
-export const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
+const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
 
     const lastEditedState = useRef({ id, translation });
 
@@ -53,23 +53,33 @@ export const WordTranslation = ({ id, translation, handleUpdate, handleDelete })
     }, []);
 
     return (
-        <span className={styles.WordTranslation}>
-            Слово:
-            <EditableText
-                initialText={id}
-                validateAndHandleEditAccept={validateAndHandleIdEditAccept}
-                handleEditCancel={handleIdEditCancel}
-            />
-            Перевод:
-            <EditableText
-                initialText={translation}
-                validateAndHandleEditAccept={validateAndHandleTranslationEditAccept}
-                handleEditCancel={handleTranslationEditCancel}
-            />
-            <button
+        <span className={styles.default}>
+            <span className={styles.wordLabel}>
+                Слово:
+            </span>
+            <span className={styles.wordValue}>
+                <EditableText
+                    initialText={id}
+                    validateAndHandleEditAccept={validateAndHandleIdEditAccept}
+                    handleEditCancel={handleIdEditCancel}
+                />
+            </span>
+            <span className={styles.translationLabel}>
+                Перевод:
+            </span>
+            <span className={styles.translationValue}>
+                <EditableText
+                    initialText={translation}
+                    validateAndHandleEditAccept={validateAndHandleTranslationEditAccept}
+                    handleEditCancel={handleTranslationEditCancel}
+                />
+            </span>
+            <button className={styles.deleteButton}
                 onClick={handleDelete}>
                 Удалить
             </button>
         </span>
     )
-}
+};
+
+export default WordTranslation;

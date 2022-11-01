@@ -1,21 +1,22 @@
 ﻿import styles from './FetchStateDisplay.module';
+import classnames from 'classnames';
 import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
 
 const FetchStateDisplay = ({ fetchStatus, handleClearFetchStatus, children }) => {
     return (
-        <div style={fetchStatus === FETCH_STATUSES.PENDING ? { pointerEvents: 'none', opacity: '0.4' } : {}}>
+        <span className={classnames({ [styles.pending]: fetchStatus === FETCH_STATUSES.PENDING })}>
             {children}
             {fetchStatus &&
                 <span>
-                    <span style={{ marginLeft: 100, color: 'deeppink' }}>
+                    <span className={styles.statusValue}>
                         {fetchStatus}
                     </span>
-                    <span onClick={handleClearFetchStatus} style={{ cursor: 'default', marginLeft: 20, border: '1px #ccc solid' }}>
+                    <span onClick={handleClearFetchStatus} className={styles.clearStatusButton}>
                         (X)
                     </span>
                 </span>
             }
-        </div>
+        </span>
     )
 }
 

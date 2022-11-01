@@ -2,7 +2,7 @@
 import styles from './EditableText.module';
 import classnames from 'classnames';
 
-export const EditableText = ({ initialText, validateAndHandleEditAccept, handleEditCancel }) => {
+const EditableText = ({ initialText, validateAndHandleEditAccept, handleEditCancel }) => {
     const [isBeingEdited, setIsBeingEdited] = React.useState(false);
     const [currentText, setCurrentText] = React.useState(initialText ?? '');
     const [validationError, setValidationError] = React.useState(null);
@@ -36,7 +36,7 @@ export const EditableText = ({ initialText, validateAndHandleEditAccept, handleE
 
     return (isBeingEdited
         ? <input
-            className={classnames({ [styles.EditableText_ValidationError]: validationError })}
+            className={classnames(styles.underEdit, { [styles.validationError]: validationError })}
             value={currentText}
             ref={focusAndSelect}
             onChange={e => { setCurrentText(e.target.value); }}
@@ -48,7 +48,9 @@ export const EditableText = ({ initialText, validateAndHandleEditAccept, handleE
                     acceptEdit();
             }}
         />
-        : <span onClick={startEdit} className={styles.EditableText}>
+        : <span onClick={startEdit} className={styles.default}>
             {currentText ? currentText : 'Введите текст...'}
         </span>)
-}
+};
+
+export default EditableText;

@@ -1,5 +1,7 @@
 ﻿import React from 'react';
-import { WordTranslation } from '../WordTranslation/WordTranslation';
+import WordTranslation from '../WordTranslation/WordTranslation';
+import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
+import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
 
 const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElementCreatorIsActive, createdElementFetchStatus, setCreatedElementFetchStatus }) => {
     const handleUpdate = React.useCallback((newValue) => {
@@ -29,6 +31,8 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
                     handleClearFetchStatus={handleClearFetchStatus}
                 >
                     <WordTranslation
+                        id=''
+                        translation=''
                         handleUpdate={handleUpdate}
                         handleDelete={handleDelete}
                     />
