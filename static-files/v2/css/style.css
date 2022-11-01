@@ -55,6 +55,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  margin-bottom: 10px;
 }
 .main-block__menu-reg a {
   text-decoration: none;
@@ -75,6 +76,7 @@ body {
   padding: 0;
   cursor: pointer;
   position: relative;
+  transition: 0.3s all;
 }
 .main-block__button:not(:last-child) {
   margin-right: 10px;
@@ -82,27 +84,22 @@ body {
 .main-block__button:hover {
   transform: translateY(-2px);
 }
-.main-block__button-hover {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-.main-block__button:hover .main-block__button-hover {
-  background: white;
-  opacity: 0.1;
-}
 
 .button__blue {
   background-color: #6081F8;
   color: #D7D7D7;
+  transition: 0.5s all;
+}
+.button__blue:hover {
+  background: #728ef5;
 }
 .button__green {
-  background-color: #13B323;
+  background-color: #118e1e;
   color: #D7D7D7;
+  transition: 0.5s all;
+}
+.button__green:hover {
+  background: #24ac32;
 }
 .button__orange {
   background-color: #B76A10;
@@ -227,14 +224,14 @@ body {
 }
 
 .cards-item {
-  width: 340px;
+  width: 320px;
+  height: 190px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
   border-radius: 10px;
-  padding-top: 20px;
   margin-right: 40px;
   margin-bottom: 40px;
 }
@@ -297,7 +294,6 @@ body {
   align-items: center;
   margin: 0;
   padding: 0;
-  margin-bottom: 20px;
   font-size: 24px;
   border: none;
 }/*# sourceMappingURL=style.css.map */

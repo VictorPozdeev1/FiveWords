@@ -1,5 +1,6 @@
 .cards-item {
-width: 340px;
+width: 320px;
+height: 170px;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -32,12 +33,27 @@ font-weight: 600;
 font-size: 24px;
 margin: 0;
 margin-right: 10px;
+text-align: center;
+}
+
+.cards-item__button-img{
+  opacity: 1;
+  background: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.cards-item__button-img:not(:last-child){
+  margin-right: 10px;
 }
 .cards-item__img {
 width: 20px;
 -o-object-fit: contain;
  object-fit: contain;
 }
+
+
 .cards-item__text {
 color: #D7D7D7;
 font-family: "Roboto";
@@ -45,7 +61,6 @@ font-style: normal;
 font-weight: 600;
 font-size: 18px;
 margin: 0;
-text-align: center;
 margin-bottom: 20px;
 }
 .cards-item__button {
@@ -59,6 +74,7 @@ margin: 0;
 padding: 0;
 margin-bottom: 20px;
 border: none;
+cursor: pointer;
 }
 .cards-item__button-create {
 display: flex;
@@ -76,9 +92,36 @@ border: none;
 
 .button__green {
   background-color: #13B323;
-  color: #D7D7D7;
+  color: #ffffff;
+  transition: 0.5s all;
 }
+.button__green:hover{
+  background-color: #38cc46;
+  transform: translateY(-2px);
+}
+
 .button__orange {
   background-color: #B76A10;
   color: #D7D7D7;
+}
+
+.cards-item_link-edit-dict{
+  color: #D7D7D7;
+font-family: "Roboto";
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+
+}
+
+.cards-item_edit-dict{
+  margin-bottom: 20px;
+}
+
+.cards-item__name-dict{
+  display: block;
+  width: 230px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
