@@ -1,0 +1,12 @@
+.default {
+    border: 1px #ccc solid;
+    font-size: 18px
+}
+
+.underEdit {
+    font-size: 18px
+}
+
+.validationError {
+    border: 2px solid red
+}
