@@ -4,8 +4,8 @@ using FiveWords.Repository.Interfaces;
 
 namespace FiveWords.Repository.CsvRepository;
 
-internal class UserDictionariesCsvRepository 
-    : SavingContentLength_HeadersWithContentCsvRepository<UserDictionary, UserDictionaryHeader, UserDictionaryHeaderWithWordsQuantity, string, WordTranslation>
+internal class UserDictionariesCsvRepository
+    : SavingContentLength_HeadersWithContentCsvRepository<UserDictionary, UserDictionaryHeader, UserDictionaryHeaderWithWordsQuantity, string, WordTranslation, string>
     , IUserDictionariesRepository
 {
     protected internal UserDictionariesCsvRepository(string repoDirectoryPath, string fileName)

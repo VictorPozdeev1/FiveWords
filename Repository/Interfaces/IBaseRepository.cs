@@ -1,5 +1,4 @@
-﻿using FiveWords.Api;
-using FiveWords.DataObjects;
+﻿using FiveWords.DataObjects;
 
 namespace FiveWords.Repository.Interfaces;
 
@@ -26,6 +25,6 @@ public interface IOnePasswordRepository : IBaseRepository
 
 public interface IUsersRepository : ISimpleEntityRepository<User, string>
 {
-    public RequestError? FindError_UserWithSuchLoginAlreadyExists(string login)
-        => Exists(login) ? new RequestError($"Пользователь с логином \"{login}\" уже существует.", login) : null;
+    public ActionError? FindError_UserWithSuchLoginAlreadyExists(string login)
+        => Exists(login) ? new ActionError($"Пользователь с логином \"{login}\" уже существует.", login) : null;
 }

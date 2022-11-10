@@ -6,11 +6,13 @@ namespace FiveWords.Repository.CsvRepository;
 
 
 
-internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THeaderWithContent, THeader, THeaderWithContentLength, THeaderId, TContentElement>
-where THeaderWithContent : IHeaderWithContent<THeader, THeaderId, TContentElement>
-where THeader : BaseEntity<THeaderId>, IHeaderAttachingContentLength<THeaderWithContentLength>
-where THeaderWithContentLength : BaseEntity<THeaderId>, IHeaderDetachingContentLength<THeader>, IHeaderAttachingContent<THeaderWithContent, TContentElement>
-where THeaderId : IEquatable<THeaderId>
+internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THeaderWithContent, THeader, THeaderWithContentLength, THeaderId, TContentElement, TContentElementId>
+    where THeaderWithContent : IHeaderWithContent<THeader, THeaderId, TContentElement>
+    where THeader : BaseEntity<THeaderId>, IHeaderAttachingContentLength<THeaderWithContentLength>
+    where THeaderWithContentLength : BaseEntity<THeaderId>, IHeaderDetachingContentLength<THeader>, IHeaderAttachingContent<THeaderWithContent, TContentElement>
+    where THeaderId : IEquatable<THeaderId>
+    where TContentElement : BaseEntity<TContentElementId>
+    where TContentElementId : IEquatable<TContentElementId>
 {
     protected SavingContentLength_HeadersWithContentCsvRepository(string repoDirectoryPath, string headersFileName, ClassMap<THeaderWithContentLength> headersWithContentLengthMapping, ClassMap<TContentElement> contentMapping)
     {
@@ -51,7 +53,7 @@ where THeaderId : IEquatable<THeaderId>
     public void AddAndImmediatelySave(THeaderWithContent headerWithContent)
     {
         headersRepository.AddAndImmediatelySave(headerWithContent.Header.GetHeaderWithContentLength(headerWithContent.Content.Count));
-        SaveContent(headerWithContent);
+        SaveContent(headerWithContent.Header.Id, headerWithContent.Content);
     }
 
     public void DeleteAndImmediatelySave(THeaderId id)
@@ -60,9 +62,9 @@ where THeaderId : IEquatable<THeaderId>
         headersRepository.DeleteAndImmediatelySave(id);
     }
 
-    private void SaveContent(THeaderWithContent headerWithContent)
+    private void SaveContent(THeaderId headerId, IEnumerable<TContentElement> content)
     {
-        Utils.WriteAllToFile(headerWithContent.Content, GetDefaultFilePathForContent(headerWithContent.Header.Id), contentMapping);
+        Utils.WriteAllToFile(content, GetDefaultFilePathForContent(headerId), contentMapping);
     }
 
     private void DeleteContent(THeaderId id)
@@ -93,5 +95,26 @@ where THeaderId : IEquatable<THeaderId>
         throw new NotImplementedException();
         //headersRepository.AddAndImmediatelySave(headerWithContent.Header.GetHeaderWithContentLength(headerWithContent.Content.Count));
         //SaveContent(headerWithContent);
+    }
+
+    public void TryUpdateContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, TContentElement newValue, out ActionError? error)
+    {
+        error = null;
+        var content = ReadContentFromFile(headerId);
+        var currentIndex = content.FindIndex(it => it.Id.Equals(contentElementId));
+        if (currentIndex == -1)
+        {
+            error = new ActionError($"Ключ {contentElementId} не представлен в коллекции.", contentElementId);
+            return;
+        }
+        if (!contentElementId.Equals(newValue.Id)
+            && content.Find(it => it.Id.Equals(newValue.Id)) is not null)
+        {
+            error = new ActionError($"Ключ {newValue.Id} уже представлен в коллекции.", newValue.Id);
+            return;
+        }
+        content.RemoveAt(currentIndex);
+        content.Add(newValue);
+        SaveContent(headerId, content);
     }
 }

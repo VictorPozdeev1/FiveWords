@@ -62,7 +62,7 @@ static class Endpoints
 
             User? user = usersRepository.Get(userPasswordPair!.Login);
             if (user is null || !passwordHash!.SequenceEqual(passwordRepositoriesManager.GetRepository(user).GetPasswordHash()))
-                return Results.Conflict(new { Error = new RequestError("Неверный логин и/или пароль.", userPasswordPair) });
+                return Results.Conflict(new { Error = new ActionError("Неверный логин и/или пароль.", userPasswordPair) });
 
             //todo Ключ надо бы вынести, например, в файл или в конфигурацию. А ещё можно в utils вынести SigningCredentials, а также issuer (или вообще генерацию токена).
 

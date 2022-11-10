@@ -58,6 +58,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 
+builder.Services.AddControllers();
+
 var services = builder.Services;
 var app = builder.Build();
 
@@ -131,6 +133,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
 
 Endpoints.MapEndpoints(app);
 app.MapGet("/services", (HttpContext context)=> ServiceInfo.PrintDIServices(services)).WithTags("INFO");
