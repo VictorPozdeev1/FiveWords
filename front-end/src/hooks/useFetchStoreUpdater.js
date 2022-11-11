@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import useForceUpdate from './useForceUpdate';
+import { fetchWithAuth } from '../modules/Auth.js';
 
 export const FETCH_STATUSES = {
     OK: 'ok!',
@@ -31,13 +32,29 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
     const fetchUpdate = (id, newValue) => {
         elementsFetchStatuses.current.set(id, FETCH_STATUSES.PENDING);
         forceUpdate();
-        new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
-            .then(() => {
-                setCurrentContent(currentContent => currentContent.map(element =>
-                    element.id === id ? newValue : element));
-                if (newValue.id !== id)
-                    elementsFetchStatuses.current.delete(id);
-                elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
+
+        const url = encodeURI(`${urlPathBase}/${id}`);
+        const options = {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newValue)
+        };
+        //new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
+        fetchWithAuth(url, options)
+            .then((response) => {
+                if (response.ok) {
+                    setCurrentContent(currentContent => currentContent.map(element =>
+                        element.id === id ? newValue : element));
+                    if (newValue.id !== id)
+                        elementsFetchStatuses.current.delete(id);
+                    elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
+                }
+                else {
+                    response.json().then(json => {
+                        elementsFetchStatuses.current.set(id, json.error.message ?? FETCH_STATUSES.ERROR);
+                        forceUpdate();
+                    })
+                }
             })
             .catch(() => {
                 elementsFetchStatuses.current.set(id, FETCH_STATUSES.ERROR)

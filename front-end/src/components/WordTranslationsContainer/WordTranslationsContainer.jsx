@@ -7,10 +7,10 @@ import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
 import WordTranslationCreator from '../WordTranslationCreator/WordTranslationCreator';
 import styles from './WordTranslationsContainer.module';
 
-const WordTranslationsContainer = ({ content }) => {
+const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const forceUpdate = useForceUpdate();
     const { currentContent, elementsFetchStatuses, fetchUpdate, fetchDelete, ...elementCreatorProps }
-        = useFetchStoreUpdater({ initialContent: content, urlPathBase: 'hzhzpokakudatut..' })
+        = useFetchStoreUpdater({ initialContent: content, urlPathBase: `/DictionaryContentElements/${dictionaryName}` })
 
     const handleClearFetchStatus = (id) => {
         if (elementsFetchStatuses.current.get(id) === FETCH_STATUSES.ERROR)

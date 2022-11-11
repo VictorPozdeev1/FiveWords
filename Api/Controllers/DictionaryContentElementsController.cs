@@ -25,7 +25,7 @@ public class DictionaryContentElementsController : ControllerBase
         var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
         userDictionariesRepo.TryUpdateContentElementAndImmediatelySave(dictionaryName, id, newValue, out ActionError actionError);
         if (actionError is not null)
-            return Conflict(actionError);
+            return Conflict(new { Error = actionError });
         return Ok(new { dictionaryName, id, newValue });
     }
 }
