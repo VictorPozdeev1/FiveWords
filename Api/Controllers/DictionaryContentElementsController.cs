@@ -24,7 +24,19 @@ public class DictionaryContentElementsController : ControllerBase
         var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
         userDictionariesRepo.TryUpdateContentElementAndImmediatelySave(dictionaryName, id, newValue, out ActionError actionError);
         if (actionError is not null)
-            return Conflict(new { Error = actionError });
+            return UnprocessableEntity(new { Error = actionError });
         return Ok(new { dictionaryName, id, newValue });
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public IActionResult DeleteWordTranslation(string dictionaryName, string id, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
+    {
+        var currentUser = usersRepository.Get(User.Identity!.Name!);
+        var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+        userDictionariesRepo.TryDeleteContentElementAndImmediatelySave(dictionaryName, id, out ActionError actionError);
+        if (actionError is not null)
+            return UnprocessableEntity(new { Error = actionError });
+        return NoContent();
     }
 }

@@ -66,10 +66,27 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
     const fetchDelete = (id) => {
         elementsFetchStatuses.current.set(id, FETCH_STATUSES.PENDING);
         forceUpdate();
-        new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
-            .then(() => {
-                setCurrentContent(currentContent => currentContent.filter(element => element.id !== id));
-                elementsFetchStatuses.current.delete(id);
+
+        const url = encodeURI(`${urlPathBase}/${id}`);
+        const options = {
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json" }
+        };
+
+        //new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
+        fetchWithAuth(url, options)
+            .then((response) => {
+                if (response.ok) {
+                    setCurrentContent(currentContent => currentContent.filter(element => element.id !== id));
+                    elementsFetchStatuses.current.delete(id);
+                }
+                else {
+                    response.json().then(json => {
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
+                        elementsFetchStatuses.current.set(id, errorMessage)
+                        forceUpdate();
+                    })
+                }
             })
             .catch(() => {
                 elementsFetchStatuses.current.set(id, FETCH_STATUSES.ERROR)

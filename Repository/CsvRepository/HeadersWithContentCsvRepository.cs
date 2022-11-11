@@ -117,4 +117,18 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
         content.Add(newValue);
         SaveContent(headerId, content);
     }
+
+    public void TryDeleteContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, out ActionError? error)
+    {
+        error = null;
+        var content = ReadContentFromFile(headerId);
+        var currentIndex = content.FindIndex(it => it.Id.Equals(contentElementId));
+        if (currentIndex == -1)
+        {
+            error = new ActionError($"Ключ {contentElementId} не представлен в коллекции.", contentElementId);
+            return;
+        }
+        content.RemoveAt(currentIndex);
+        SaveContent(headerId, content);
+    }
 }
