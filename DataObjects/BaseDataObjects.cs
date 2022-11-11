@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace FiveWords.DataObjects;
@@ -14,9 +16,9 @@ public interface ILanguageRelated
     Language Language { get; }
 }
 
-public abstract record BaseEntity<TId>(TId Id)
+public abstract record BaseEntity<TId>([property: Required] TId Id)
 //where TId : struct
-where TId: IEquatable<TId>
+where TId : IEquatable<TId>
 {
     public BaseEntity() : this((TId)default) { }
 }
@@ -48,9 +50,4 @@ public record User(string Id, Guid Guid) : BaseEntity<string>(Id)
     public static User Default => _default ??= new User();
 
     public string Login { get { return Id; } }
-}
-
-public record WordTranslation(string Id, string Translation) : BaseEntity<string>(Id)
-{
-    public WordTranslation() : this(default, default) { }
 }

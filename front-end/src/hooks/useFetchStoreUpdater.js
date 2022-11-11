@@ -51,7 +51,8 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
                 }
                 else {
                     response.json().then(json => {
-                        elementsFetchStatuses.current.set(id, json.error.message ?? FETCH_STATUSES.ERROR);
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
+                        elementsFetchStatuses.current.set(id, errorMessage);
                         forceUpdate();
                     })
                 }

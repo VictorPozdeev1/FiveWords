@@ -14,12 +14,11 @@ namespace FiveWords.Api.Controllers;
 public class DictionaryContentElementsController : ControllerBase
 {
     [HttpPut("{id}")]
-    //[Route("{id}")]
     [Authorize]
     public IActionResult UpdateWordTranslation(string dictionaryName, string id, [FromBody] WordTranslation newValue, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
     {
-        if (!ModelState.IsValid)
-            return ValidationProblem();
+        //if (!ModelState.IsValid)
+        //    return ValidationProblem();
 
         var currentUser = usersRepository.Get(User.Identity!.Name!);
         var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
