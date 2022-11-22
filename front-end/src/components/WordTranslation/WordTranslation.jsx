@@ -37,7 +37,7 @@ const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
     const validateId = useCallback(idToValidate => {
         if (!idToValidate)
             return 'Empty id';
-        const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$/;
+        const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,:' ]{1,30}$/;
         if (!regex.test(idToValidate))
             return regex;
         return null;
@@ -46,7 +46,7 @@ const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
     const validateTranslation = useCallback(translationToValidate => {
         if (!translationToValidate)
             return 'Empty translation';
-        const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$/;
+        const regex = /^[\wА-Яа-яЁё\-\.\?!\)\(,:' ]{1,30}$/;
         if (!regex.test(translationToValidate))
             return regex;
         return null;

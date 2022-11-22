@@ -104,13 +104,13 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
         var currentIndex = content.FindIndex(it => it.Id.Equals(contentElementId));
         if (currentIndex == -1)
         {
-            error = new ActionError($"Ключ {contentElementId} не представлен в коллекции.", contentElementId);
+            error = new ActionError($"Ключ \"{contentElementId}\" не представлен в коллекции.", contentElementId);
             return;
         }
         if (!contentElementId.Equals(newValue.Id)
             && content.Find(it => it.Id.Equals(newValue.Id)) is not null)
         {
-            error = new ActionError($"Ключ {newValue.Id} уже представлен в коллекции.", newValue.Id);
+            error = new ActionError($"Ключ \"{newValue.Id}\" уже представлен в коллекции.", newValue.Id);
             return;
         }
         content.RemoveAt(currentIndex);
@@ -125,10 +125,32 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
         var currentIndex = content.FindIndex(it => it.Id.Equals(contentElementId));
         if (currentIndex == -1)
         {
-            error = new ActionError($"Ключ {contentElementId} не представлен в коллекции.", contentElementId);
+            error = new ActionError($"Ключ \"{contentElementId}\" не представлен в коллекции.", contentElementId);
             return;
         }
         content.RemoveAt(currentIndex);
         SaveContent(headerId, content);
+        SaveContentLength(headerId, content.Count);
+    }
+
+    public void TryAddContentElementAndImmediatelySave(THeaderId headerId, TContentElement valueToAdd, out ActionError? error)
+    {
+        error = null;
+        var content = ReadContentFromFile(headerId);
+        if (content.Find(it => it.Id.Equals(valueToAdd.Id)) is not null)
+        {
+            error = new ActionError($"Ключ \"{valueToAdd.Id}\" уже представлен в коллекции.", valueToAdd.Id);
+            return;
+        }
+        content.Add(valueToAdd);
+        SaveContent(headerId, content);
+        SaveContentLength(headerId, content.Count);
+    }
+
+    private void SaveContentLength(THeaderId headerId, int contentLength)
+    {
+        var header = headersRepository.Get(headerId)!.GetHeaderWithoutContentLength();
+        var headerWithNewContentLength = header.GetHeaderWithContentLength(contentLength);
+        headersRepository.UpdateAndImmediatelySave(headerId, headerWithNewContentLength);
     }
 }

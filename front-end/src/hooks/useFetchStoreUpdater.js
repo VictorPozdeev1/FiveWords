@@ -17,12 +17,28 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
 
     const fetchCreate = (newValue) => {
         setCreatedElementFetchStatus(FETCH_STATUSES.PENDING);
-        new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
-            .then(() => {
-                setCurrentContent(currentContent => [...currentContent, newValue]);
-                elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
-                setCreatedElementFetchStatus(null);
-                setElementCreatorIsActive(false);
+        const url = encodeURI(urlPathBase);
+        const options = {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newValue)
+        }
+        //new Promise((resolve, reject) => setTimeout(confirm('Успешный запрос к серверу?') ? resolve : reject, 3000))
+        fetchWithAuth(url, options)
+            .then((response) => {
+                if (response.ok) {
+                    setCurrentContent(currentContent => [...currentContent, newValue]);
+                    elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
+                    setCreatedElementFetchStatus(null);
+                    setElementCreatorIsActive(false);
+                }
+                else {
+                    response.json().then(json => {
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
+                        setCreatedElementFetchStatus(errorMessage);
+                        forceUpdate();
+                    })
+                }
             })
             .catch(() => {
                 setCreatedElementFetchStatus(FETCH_STATUSES.ERROR);

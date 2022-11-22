@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace FiveWords.DataObjects;
 
 [WordValidation]
-public record WordTranslation(string Id, [property: RegularExpression(@"^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$", ErrorMessage = "Разрешённый формат для перевода: 1-30 букв (плюс некоторые знаки препинания).")] string Translation) : BaseEntity<string>(Id)
+public record WordTranslation(string Id, [property: RegularExpression(@"^[\wА-Яа-яЁё\-\.\?!\)\(,:' ]{1,30}$", ErrorMessage = "Разрешённый формат для перевода: 1-30 букв (плюс некоторые знаки препинания).")] string Translation) : BaseEntity<string>(Id)
 {
     public WordTranslation() : this(default, default) { }
 }
@@ -22,6 +22,6 @@ public class WordValidationAttribute : ValidationAttribute
         if (wordTranslation is null)
             return false;
         var word = wordTranslation.Id;
-        return !string.IsNullOrWhiteSpace(word) && Regex.IsMatch(word, @"^[\wА-Яа-яЁё\-\.\?!\)\(,: ]{1,30}$");
+        return !string.IsNullOrWhiteSpace(word) && Regex.IsMatch(word, @"^[\wА-Яа-яЁё\-\.\?!\)\(,:' ]{1,30}$");
     }
 }

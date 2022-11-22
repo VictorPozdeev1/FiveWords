@@ -28,6 +28,18 @@ public class DictionaryContentElementsController : ControllerBase
         return Ok(new { dictionaryName, id, newValue });
     }
 
+    [HttpPost]
+    [Authorize]
+    public IActionResult AddWordTranslation(string dictionaryName, [FromBody] WordTranslation valueToAdd, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
+    {
+        var currentUser = usersRepository.Get(User.Identity!.Name!);
+        var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
+        userDictionariesRepo.TryAddContentElementAndImmediatelySave(dictionaryName, valueToAdd, out ActionError actionError);
+        if (actionError is not null)
+            return Conflict(new { Error = actionError });
+        return Ok(new { dictionaryName, valueToAdd});
+    }
+
     [HttpDelete("{id}")]
     [Authorize]
     public IActionResult DeleteWordTranslation(string dictionaryName, string id, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
