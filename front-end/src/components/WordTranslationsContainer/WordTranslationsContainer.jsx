@@ -31,30 +31,35 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
 
     const handleDelete = React.useCallback((id) => fetchDelete(id));
 
-    return currentContent.length > 0 ?
+    return (
         <div className={styles.default}>
-            <React.StrictMode>
-                {currentContent.map(wordTranslation =>
-                    <div className={styles.item} key={wordTranslation.id}>
-                        <FetchStateDisplay
-                            fetchStatus={elementsFetchStatuses.current.get(wordTranslation.id)}
-                            handleClearFetchStatus={() => handleClearFetchStatus(wordTranslation.id)}
-                        >
-                            <WordTranslation
-                                {...wordTranslation}
-                                handleDelete={() => handleDelete(wordTranslation.id)}
-                                handleUpdate={(newValue) => handleUpdate(wordTranslation.id, newValue)}
-                            />
-                        </FetchStateDisplay>
-                    </div>
-                )}
-                <hr></hr>
-                <div className={styles.creatorSection}>
-                    <WordTranslationCreator {...elementCreatorProps} />
-                </div>
-            </React.StrictMode>
+            {currentContent.length > 0 ?
+                <React.StrictMode>
+                    <fieldset>
+                        <legend>Список слов</legend>
+                        {currentContent.map(wordTranslation =>
+                            <div className={styles.item} key={wordTranslation.id}>
+                                <FetchStateDisplay
+                                    fetchStatus={elementsFetchStatuses.current.get(wordTranslation.id)}
+                                    handleClearFetchStatus={() => handleClearFetchStatus(wordTranslation.id)}
+                                >
+                                    <WordTranslation
+                                        {...wordTranslation}
+                                        handleDelete={() => handleDelete(wordTranslation.id)}
+                                        handleUpdate={(newValue) => handleUpdate(wordTranslation.id, newValue)}
+                                    />
+                                </FetchStateDisplay>
+                            </div>
+                        )}
+                    </fieldset>
+                </React.StrictMode>
+                : <div>Словарь пуст. Добавьте слова вручную или загрузите из файла.</div>
+            }
+            <div className={styles.creatorSection}>
+                <WordTranslationCreator {...elementCreatorProps} />
+            </div>
         </div>
-        : null;
+    );
 }
 
 export default WordTranslationsContainer;

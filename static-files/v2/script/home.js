@@ -46,7 +46,7 @@ addEventListener('load', async () => {
         showPromptForm('Введите название:', '', '^[\\wА-Яа-яЁё ]{4,20}$', '4-20 букв, цифр, пробелов или подчёркиваний')
             .then(async resolved => {
                 const newData = { Header: { id: resolved.trim() } };
-                newData.Content = [{ "translation": "English1", "id": "Русское1" }, { "translation": "English2", "id": "Русское2" }, { "translation": "English3", "id": "Русское15" }];
+                newData.Content = [];
                 const response = await fetchWithAuth(`/dictionaries`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },

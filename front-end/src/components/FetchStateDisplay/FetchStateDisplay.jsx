@@ -7,14 +7,14 @@ const FetchStateDisplay = ({ fetchStatus, handleClearFetchStatus, children }) =>
         <span className={classnames({ [styles.pending]: fetchStatus === FETCH_STATUSES.PENDING })}>
             {children}
             {fetchStatus &&
-                <span>
+                <div>
                     <span className={styles.statusValue}>
                         {fetchStatus}
                     </span>
                     <span onClick={handleClearFetchStatus} className={styles.clearStatusButton}>
                         (X)
                     </span>
-                </span>
+                </div>
             }
         </span>
     )
