@@ -5,6 +5,8 @@
 }
 
 .wordValue {
+    display:inline-block;
+    width: 300px
 }
 
 .translationLabel {
@@ -12,6 +14,8 @@
 }
 
 .translationValue {
+    display: inline-block;
+    width: 300px
 }
 
 .deleteButton {
