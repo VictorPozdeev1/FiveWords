@@ -1,4 +1,5 @@
 ﻿.default {
+    background-color: #250041;
 }
 
 .item {
@@ -8,4 +9,7 @@
 
 .creatorSection {
     margin-top: 20px
+}
+
+.translationsFileSection{
 }

@@ -5,6 +5,7 @@ import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
 import WordTranslation from '../WordTranslation/WordTranslation';
 import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
 import WordTranslationCreator from '../WordTranslationCreator/WordTranslationCreator';
+import WordTranslationsFile from '../WordTranslationsFile/WordTranslationsFile';
 import styles from './WordTranslationsContainer.module';
 
 const WordTranslationsContainer = ({ content, dictionaryName }) => {
@@ -57,6 +58,10 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
             }
             <div className={styles.creatorSection}>
                 <WordTranslationCreator {...elementCreatorProps} />
+            </div>
+            <div className={styles.translationsFileSection}>
+                <WordTranslationsFile
+                />
             </div>
         </div>
     );

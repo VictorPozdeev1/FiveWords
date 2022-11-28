@@ -2,6 +2,7 @@
 import WordTranslation from '../WordTranslation/WordTranslation';
 import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
 import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
+import styles from './WordTranslationCreator.module';
 
 const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElementCreatorIsActive, createdElementFetchStatus, setCreatedElementFetchStatus }) => {
     const handleUpdate = React.useCallback((newValue) => {
@@ -24,7 +25,14 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
 
     return (
         <div>
-            {elementCreatorIsActive || <button onClick={() => { setElementCreatorIsActive(true) }}> Добавить слово...</button >}
+            {elementCreatorIsActive ||
+                <button
+                    onClick={() => { setElementCreatorIsActive(true) }}
+                    className={styles.button}
+                >
+                    Добавить слово...
+                </button>
+            }
             {elementCreatorIsActive &&
                 <FetchStateDisplay
                     fetchStatus={createdElementFetchStatus}
