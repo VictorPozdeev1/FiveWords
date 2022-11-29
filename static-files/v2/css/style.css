@@ -64,6 +64,14 @@ body {
 .main-block__menu-reg a:last-child {
   margin-right: 0;
 }
+
+.main-block__nickname{
+  color: #D7D7D7;
+}
+
+.main-block__nickname::before{
+  content:"Логин: "
+}
 .main-block__button {
   display: flex;
   width: 130px;
@@ -104,6 +112,13 @@ body {
 .button__orange {
   background-color: #B76A10;
   color: #D7D7D7;
+}
+.no-button{
+  cursor: auto;
+}
+
+.no-button:hover {
+  transform: none;
 }
 
 .form {

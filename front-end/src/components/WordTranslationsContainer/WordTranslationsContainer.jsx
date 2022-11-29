@@ -33,7 +33,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const handleDelete = React.useCallback((id) => fetchDelete(id));
 
     return (
-        <div className={styles.default}>
+        <div className={styles.default + ' container'} >
             {currentContent.length > 0 ?
                 <React.StrictMode>
                     <fieldset>
