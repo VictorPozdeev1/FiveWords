@@ -33,6 +33,7 @@ public interface IHeaderWithContentRepository<THeaderWithContent, THeader, THead
     void TryUpdateContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, TContentElement newValue, out ActionError error);
     void TryDeleteContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, out ActionError error);
     void TryAddContentElementAndImmediatelySave(THeaderId headerId, TContentElement valueToAdd, out ActionError error);
+    void TryAddContentElementsAndImmediatelySave(THeaderId headerId, IEnumerable<TContentElement> valuesToAdd, out ActionError error);
 }
 
 public interface IUserDictionariesRepository : IHeaderWithContentRepository<UserDictionary, UserDictionaryHeader, UserDictionaryHeaderWithWordsQuantity, string, WordTranslation, string>

@@ -147,6 +147,21 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
         SaveContentLength(headerId, content.Count);
     }
 
+    public void TryAddContentElementsAndImmediatelySave(THeaderId headerId, IEnumerable<TContentElement> valuesToAdd, out ActionError? error)
+    {
+        error = null;
+        var content = ReadContentFromFile(headerId);
+        var conflicts = content.IntersectBy(valuesToAdd.Select(it => it.Id), it => it.Id).ToArray();
+        if (conflicts.Length > 0)
+        {
+            error = new ActionError($"Ключи уже представлены в коллекции.", conflicts);
+            return;
+        }
+        content.AddRange(valuesToAdd);
+        SaveContent(headerId, content);
+        SaveContentLength(headerId, content.Count);
+    }
+
     private void SaveContentLength(THeaderId headerId, int contentLength)
     {
         var header = headersRepository.Get(headerId)!.GetHeaderWithoutContentLength();
