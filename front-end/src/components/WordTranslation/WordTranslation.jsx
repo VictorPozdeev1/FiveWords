@@ -54,18 +54,12 @@ const WordTranslation = ({ id, translation, handleUpdate, handleDelete }) => {
 
     return (
         <span className={styles.default}>
-            <span className={styles.wordLabel}>
-                Слово:
-            </span>
             <span className={styles.wordValue}>
                 <EditableText
                     initialText={id}
                     validateAndHandleEditAccept={validateAndHandleIdEditAccept}
                     handleEditCancel={handleIdEditCancel}
                 />
-            </span>
-            <span className={styles.translationLabel}>
-                Перевод:
             </span>
             <span className={styles.translationValue}>
                 <EditableText

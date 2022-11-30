@@ -7,6 +7,7 @@ import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
 import WordTranslationCreator from '../WordTranslationCreator/WordTranslationCreator';
 import WordTranslationsFile from '../WordTranslationsFile/WordTranslationsFile';
 import styles from './WordTranslationsContainer.module';
+import classnames from 'classnames';
 
 const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const forceUpdate = useForceUpdate();
@@ -33,7 +34,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const handleDelete = React.useCallback((id) => fetchDelete(id));
 
     return (
-        <div className={styles.default + ' container'} >
+        <div className={classnames(styles.default, 'container')} >
             {currentContent.length > 0 ?
                 <React.StrictMode>
                     <fieldset>

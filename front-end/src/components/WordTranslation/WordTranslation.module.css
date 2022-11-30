@@ -1,26 +1,27 @@
 ﻿.default {
 }
 
-.wordLabel {
-}
-
 .wordValue {
     display: inline-block;
-    width: 300px
+    width: 440px
 }
 
-.translationLabel {
-    margin-left: 120px;
-}
+    .wordValue::before {
+        content: "Слово: ";
+    }
 
 .translationValue {
     display: inline-block;
-    width: 300px
+    width: 440px
 }
+
+    .translationValue::before {
+        content: "Перевод: ";
+    }
 
 .deleteButton {
     margin-left: 60px;
-    background-color: #118e1e;
+    background-color: #B76A10;
     color: #D7D7D7;
     width: 110px;
     height: 30px;

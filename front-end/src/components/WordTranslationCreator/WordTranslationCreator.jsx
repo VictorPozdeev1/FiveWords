@@ -28,7 +28,7 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
             {elementCreatorIsActive ||
                 <button
                     onClick={() => { setElementCreatorIsActive(true) }}
-                    className={styles.button}
+                    className={styles.addWordButton}
                 >
                     Добавить слово...
                 </button>

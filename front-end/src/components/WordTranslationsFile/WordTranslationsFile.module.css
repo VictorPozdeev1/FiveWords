@@ -1,5 +1,26 @@
 ﻿.addFromFileButton {
+    background-color: #118e1e;
+    color: #D7D7D7;
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+    margin-right: 30px;
 }
 
 .loadSampleFileButton {
+    background-color: #728ef5;
+    color: #D7D7D7;
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
 }

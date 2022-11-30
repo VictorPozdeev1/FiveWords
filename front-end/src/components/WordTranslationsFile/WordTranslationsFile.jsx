@@ -46,7 +46,7 @@ const WordTranslationsFile = () => {
                 onClick={saveSampleFile}
                 className={styles.loadSampleFileButton}
             >
-                Скачать образец файла...
+                Скачать образец файла
             </button>
         </div>
     )
