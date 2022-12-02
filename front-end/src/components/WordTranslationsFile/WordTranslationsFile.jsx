@@ -2,7 +2,7 @@
 import styles from './WordTranslationsFile.module';
 import { fetchWithAuth } from '../../modules/Auth.js';
 
-const WordTranslationsFile = ({ addValuesToContent }) => {
+const WordTranslationsFile = ({ dictionaryName, addValuesToContent }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const saveSampleFile = useCallback(() => {
         const link = document.createElement('a');
@@ -22,12 +22,12 @@ const WordTranslationsFile = ({ addValuesToContent }) => {
         if (files && files.length) {
             const file = files[0];
             if (file.size > 50000) {
-                setErrorMessage(`Разрешённый размер файла: не более 50 Кб. Размер выбранного файла: ${Math.ceil(file.size/1024)} Кб.`);
+                setErrorMessage(`Разрешённый размер файла: не более 50 Кб. Размер выбранного файла: ${Math.ceil(file.size / 1024)} Кб.`);
                 return;
             }
             const formData = new FormData();
             formData.append('uploadingFile', file, 'words-to-add.csv');
-            const url = encodeURI('/DictionaryContentFile/Test1');
+            const url = encodeURI(`/DictionaryContentFile/${dictionaryName}`);
             const options = {
                 method: 'POST',
                 body: formData

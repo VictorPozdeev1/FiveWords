@@ -63,6 +63,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
             <div className={styles.translationsFileSection}>
                 <WordTranslationsFile
                     addValuesToContent={valuesToAdd => { setCurrentContent(currentContent => [...currentContent, ...valuesToAdd]) }}
+                    dictionaryName={dictionaryName}
                 />
             </div>
         </div>
