@@ -1,8 +1,9 @@
-﻿import { useCallback } from 'react';
+﻿import { useCallback, useState } from 'react';
 import styles from './WordTranslationsFile.module';
 import { fetchWithAuth } from '../../modules/Auth.js';
 
-const WordTranslationsFile = () => {
+const WordTranslationsFile = ({ addValuesToContent }) => {
+    const [errorMessage, setErrorMessage] = useState(null);
     const saveSampleFile = useCallback(() => {
         const link = document.createElement('a');
         link.setAttribute('href', '/sample-dictionary/words.csv');
@@ -18,9 +19,12 @@ const WordTranslationsFile = () => {
     }, []);
 
     const handleFiles = async files => {
-        if (files && files.length && files[0].size < 50000) {
+        if (files && files.length) {
             const file = files[0];
-            console.log('size:', file.size);
+            if (file.size > 50000) {
+                setErrorMessage(`Разрешённый размер файла: не более 50 Кб. Размер выбранного файла: ${Math.ceil(file.size/1024)} Кб.`);
+                return;
+            }
             const formData = new FormData();
             formData.append('uploadingFile', file, 'words-to-add.csv');
             const url = encodeURI('/DictionaryContentFile/Test1');
@@ -29,8 +33,17 @@ const WordTranslationsFile = () => {
                 body: formData
             }
             const response = await fetchWithAuth(url, options);
-            const json = await response.json();
-            console.log(json);
+            if (response.ok) {
+                const responseJson = await response.json();
+                addValuesToContent(responseJson.wordsToAdd);
+                setErrorMessage(null);
+            }
+            else {
+                const responseJson = await response.json();
+                const responseErrorMessage = responseJson.error?.message ?? responseJson.errors[Object.keys(responseJson.errors)[0]] ?? FETCH_STATUSES.ERROR;
+                console.log(responseJson);
+                setErrorMessage(responseErrorMessage);
+            }
         }
     }
 
@@ -48,6 +61,10 @@ const WordTranslationsFile = () => {
             >
                 Скачать образец файла
             </button>
+            {errorMessage &&
+                <p className={styles.errorMessage}>
+                    {errorMessage}
+                </p>}
         </div>
     )
 }

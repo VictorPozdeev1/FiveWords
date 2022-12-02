@@ -154,7 +154,7 @@ internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THea
         var conflicts = content.IntersectBy(valuesToAdd.Select(it => it.Id), it => it.Id).ToArray();
         if (conflicts.Length > 0)
         {
-            error = new ActionError($"Ключи уже представлены в коллекции.", conflicts);
+            error = new ActionError($"Ключ(и) уже представлен(ы) в коллекции: {string.Join(", ", conflicts.Select(it => it.Id))}.", conflicts);
             return;
         }
         content.AddRange(valuesToAdd);

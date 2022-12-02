@@ -112,7 +112,7 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
 
     return {
         fetchCreate, fetchUpdate, fetchDelete,
-        currentContent,
+        currentContent, setCurrentContent,
         elementsFetchStatuses,
         createdElementFetchStatus, setCreatedElementFetchStatus,
         elementCreatorIsActive, setElementCreatorIsActive

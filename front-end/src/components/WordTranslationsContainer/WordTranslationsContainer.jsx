@@ -11,7 +11,7 @@ import classnames from 'classnames';
 
 const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const forceUpdate = useForceUpdate();
-    const { currentContent, elementsFetchStatuses, fetchUpdate, fetchDelete, ...elementCreatorProps }
+    const { currentContent, setCurrentContent, elementsFetchStatuses, fetchUpdate, fetchDelete, ...elementCreatorProps }
         = useFetchStoreUpdater({ initialContent: content, urlPathBase: `/DictionaryContentElements/${dictionaryName}` })
 
     const handleClearFetchStatus = (id) => {
@@ -38,7 +38,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
             {currentContent.length > 0 ?
                 <React.StrictMode>
                     <fieldset>
-                        <legend>Список слов</legend>
+                        <legend>Список слов (кликните по слову или переводу для его редактирования)</legend>
                         {currentContent.map(wordTranslation =>
                             <div className={styles.item} key={wordTranslation.id}>
                                 <FetchStateDisplay
@@ -62,6 +62,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
             </div>
             <div className={styles.translationsFileSection}>
                 <WordTranslationsFile
+                    addValuesToContent={valuesToAdd => { setCurrentContent(currentContent => [...currentContent, ...valuesToAdd]) }}
                 />
             </div>
         </div>

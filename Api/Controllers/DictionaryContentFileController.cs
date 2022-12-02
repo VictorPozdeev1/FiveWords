@@ -22,11 +22,20 @@ namespace FiveWords.Api.Controllers
             var currentUser = usersRepository.Get(User.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
             var dictionaryName = Uri.UnescapeDataString(dictionaryNameEscaped);
-            using var stream = uploadingFile.OpenReadStream();
-            using var reader = new StreamReader(stream);
-            using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
-            csvReader.Context.RegisterClassMap(new TempMapping());
-            var wordsToAdd = csvReader.GetRecords<WordTranslation>().ToList();
+
+            IEnumerable<WordTranslation> wordsToAdd = null;
+            try
+            {
+                using var stream = uploadingFile.OpenReadStream();
+                using var reader = new StreamReader(stream);
+                using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+                csvReader.Context.RegisterClassMap(new TempMapping());
+                wordsToAdd = csvReader.GetRecords<WordTranslation>().ToList();
+            }
+            catch (Exception exc)
+            {
+                return BadRequest(new { Error = new ActionError("Не удалось прочитать данные из файла.", exc.Message) });
+            }
             userDictionariesRepo.TryAddContentElementsAndImmediatelySave(dictionaryName, wordsToAdd, out ActionError actionError);
             if (actionError is not null)
                 return Conflict(new { Error = actionError });
