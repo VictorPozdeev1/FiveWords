@@ -355,4 +355,15 @@ body {
     font-size: 24px;
     border: none;
 }
+
+.button-back{
+    
+    text-align: right;
+}
+.link__button-back{
+    text-decoration: none;
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+}
 /*# sourceMappingURL=style.css.map */
