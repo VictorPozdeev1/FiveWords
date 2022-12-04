@@ -17,9 +17,7 @@ public class DictionaryContentElementsController : ControllerBase
     [Authorize]
     public IActionResult UpdateWordTranslation(string dictionaryNameEscaped, string id, [FromBody] WordTranslation newValue, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
     {
-        //if (!ModelState.IsValid)
-        //    return ValidationProblem();
-
+        // todo Надо бы попробовать получать модель (dictionaryName, userDictionariesRepo) в нужном виде в фильтрах, а не тут.
         var currentUser = usersRepository.Get(User.Identity!.Name!);
         var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
         var dictionaryName = Uri.UnescapeDataString(dictionaryNameEscaped);

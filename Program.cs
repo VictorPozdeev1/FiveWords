@@ -12,6 +12,7 @@ using FiveWords.Api;
 using FiveWords.Api.v1;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Rewrite;
+using FiveWords.Api.ModelBinding;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -19,7 +20,8 @@ builder.Configuration.AddJsonFile("appsettings_my.json");
 builder.Services.Configure<JsonSerializerOptions>("Internal", builder.Configuration.GetSection("JsonSerializerOptions:Internal"));
 builder.Services.AddOptions<JsonSerializerOptions>("Web")
     .Bind(builder.Configuration.GetSection("JsonSerializerOptions:Web"))
-    .Configure(options => {
+    .Configure(options =>
+    {
         if (bool.TryParse(builder.Configuration["JsonSerializerOptions:Web:UseCamelCaseForPropertyNaming"], out bool useCamelCase))
             if (useCamelCase)
                 options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -58,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => { options.ModelBinderProviders.Insert(0, new WordTranslationsFromFile_ModelBinderProvider()); });
 
 var services = builder.Services;
 var app = builder.Build();
@@ -67,7 +69,8 @@ if (app.Environment.IsDevelopment())
 {
     Console.WriteLine("Press Esc to clear console before the next request processing.");
     app.UseDeveloperExceptionPage();
-    app.Use((context, next) => {
+    app.Use((context, next) =>
+    {
         if (Console.KeyAvailable)
         {
             var consoleKey = Console.ReadKey(false).Key;
@@ -76,7 +79,7 @@ if (app.Environment.IsDevelopment())
         }
         return next(context);
     });
-    
+
 }
 //else
 //    app.UseExceptionHandler();
@@ -136,7 +139,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 Endpoints.MapEndpoints(app);
-app.MapGet("/services", (HttpContext context)=> ServiceInfo.PrintDIServices(services)).WithTags("INFO");
+app.MapGet("/services", (HttpContext context) => ServiceInfo.PrintDIServices(services)).WithTags("INFO");
 app.UseEndpoints(_ => { }); //(routeBuilder => FiveWords.EndpointMapper.MapEndpoints(routeBuilder));
 
 app.Run();
