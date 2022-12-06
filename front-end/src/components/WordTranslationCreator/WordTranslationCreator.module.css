@@ -1,12 +1,15 @@
-﻿.addWordButton {
-  background-color: #118e1e;
-  color: #D7D7D7;
-  width: 150px;
-  height: 30px;
-  border: none;
-  border-radius: 15px;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  cursor: pointer;
+﻿.default {
+}
+
+.addWordButton {
+    background-color: #118e1e;
+    color: #FFFFFF;
+    width: 150px;
+    height: 30px;
+    border: none;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
 }

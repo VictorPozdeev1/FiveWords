@@ -24,7 +24,7 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
     }, []);
 
     return (
-        <div>
+        <div className={styles.default}>
             {elementCreatorIsActive ||
                 <button
                     onClick={() => { setElementCreatorIsActive(true) }}
