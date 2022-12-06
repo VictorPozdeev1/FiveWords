@@ -1,4 +1,8 @@
-﻿.addFromFileButton {
+﻿.default {
+    display: flex;
+}
+
+.addFromFileButton {
     background-color: #118e1e;
     color: #D7D7D7;
     width: 150px;
@@ -37,8 +41,4 @@
 
 .errorMessage {
     color: red;
-}
-
-.loadFiles{
-    display: flex;
 }

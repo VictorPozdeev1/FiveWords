@@ -34,17 +34,20 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
                 </button>
             }
             {elementCreatorIsActive &&
-                <FetchStateDisplay
-                    fetchStatus={createdElementFetchStatus}
-                    handleClearFetchStatus={handleClearFetchStatus}
-                >
-                    <WordTranslation
-                        id=''
-                        translation=''
-                        handleUpdate={handleUpdate}
-                        handleDelete={handleDelete}
-                    />
-                </FetchStateDisplay>
+                <fieldset>
+                    <legend>Добавление нового слова</legend>
+                    <FetchStateDisplay
+                        fetchStatus={createdElementFetchStatus}
+                        handleClearFetchStatus={handleClearFetchStatus}
+                    >
+                        <WordTranslation
+                            id=''
+                            translation=''
+                            handleUpdate={handleUpdate}
+                            handleDelete={handleDelete}
+                        />
+                    </FetchStateDisplay>
+                </fieldset>
             }
             {/*{isActive && <button onClick={() => { setIsActive(false) }}> Отмена</button>}*/}
         </div>

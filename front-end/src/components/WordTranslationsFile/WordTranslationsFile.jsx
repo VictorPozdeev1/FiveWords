@@ -48,7 +48,7 @@ const WordTranslationsFile = ({ dictionaryName, addValuesToContent }) => {
     }
 
     return (
-        <div className={styles.loadFiles}>
+        <div className={styles.default}>
             <button
                 onClick={uploadFile}
                 className={styles.addFromFileButton}
