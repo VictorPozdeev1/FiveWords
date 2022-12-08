@@ -2,21 +2,46 @@
 import classnames from 'classnames';
 import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
 
-const FetchStateDisplay = ({ fetchStatus, handleClearFetchStatus, children }) => {
+const FetchStateDisplay = ({ fetchState, handleClearFetchState, children }) => {
+    const status = fetchState?.status;
+    let message = fetchState?.message;
+
+    //Возможно, это в итоге будет не нужно, т.к. никакие состояние, кроме состояния ошибки, не будут отображать сообщение.
+    if (!message) {
+        if (status === FETCH_STATUSES.PENDING)
+            message = "Ожидание ответа сервера...";
+        if (status === FETCH_STATUSES.OK)
+            message = "Сохранено."
+    }
+
+    const statusValueClassName = classnames(
+        styles.anyStatusValue,
+        {
+            [styles.okStatusValue]: status === FETCH_STATUSES.OK,
+            [styles.errorStatusValue]: status === FETCH_STATUSES.ERROR,
+            [styles.pendingStatusValue]: status === FETCH_STATUSES.PENDING,
+        }
+    );
+
     return (
-        <span className={classnames({ [styles.pending]: fetchStatus === FETCH_STATUSES.PENDING })}>
+        <div className={classnames({ [styles.pending]: status === FETCH_STATUSES.PENDING })}>
             {children}
-            {fetchStatus &&
-                <div>
-                    <span className={styles.statusValue}>
-                        {fetchStatus}
-                    </span>
-                    <span onClick={handleClearFetchStatus} className={styles.clearStatusButton}>
-                        (X)
-                    </span>
+            {message &&
+                /*<div className={styles.statusDiv}>
+                    <div>
+                        <div onClick={handleClearFetchState} className={styles.clearStatusButton}>
+                            X
+                        </div>
+                    </div>
+                    <div className={statusValueClassName}>
+                        {message}
+                    </div>
+                </div >*/
+                <div className={statusValueClassName}>
+                    {message}
                 </div>
             }
-        </span>
+        </div >
     )
 }
 

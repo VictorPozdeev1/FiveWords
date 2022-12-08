@@ -4,7 +4,7 @@ import FetchStateDisplay from '../FetchStateDisplay/FetchStateDisplay';
 import { FETCH_STATUSES } from '../../hooks/useFetchStoreUpdater';
 import styles from './WordTranslationCreator.module';
 
-const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElementCreatorIsActive, createdElementFetchStatus, setCreatedElementFetchStatus }) => {
+const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElementCreatorIsActive, createdElementFetchState, setCreatedElementFetchState }) => {
     const handleUpdate = React.useCallback((newValue) => {
         if (newValue.id && newValue.translation) {
             fetchCreate(newValue);
@@ -12,15 +12,15 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
     }, []);
 
     const handleDelete = React.useCallback(() => {
-        setCreatedElementFetchStatus(null);
+        setCreatedElementFetchState(null);
         setElementCreatorIsActive(false)
     }, []);
 
 
-    const handleClearFetchStatus = React.useCallback(() => {
-        if (createdElementFetchStatus === FETCH_STATUSES.ERROR)
+    const handleClearFetchState = React.useCallback(() => {
+        if (createdElementFetchState.status !== FETCH_STATUSES.OK)
             alert('Вот тут, наверное, надо скрыть этот компонент?!');
-        setCreatedElementFetchStatus(null);
+        setCreatedElementFetchState(null);
     }, []);
 
     return (
@@ -37,8 +37,8 @@ const WordTranslationCreator = ({ fetchCreate, elementCreatorIsActive, setElemen
                 <fieldset>
                     <legend>Добавление нового слова</legend>
                     <FetchStateDisplay
-                        fetchStatus={createdElementFetchStatus}
-                        handleClearFetchStatus={handleClearFetchStatus}
+                        fetchState={createdElementFetchState}
+                        handleClearFetchState={handleClearFetchState}
                     >
                         <WordTranslation
                             id=''

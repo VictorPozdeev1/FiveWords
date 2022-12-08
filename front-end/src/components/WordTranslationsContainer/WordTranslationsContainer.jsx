@@ -11,20 +11,20 @@ import classnames from 'classnames';
 
 const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const forceUpdate = useForceUpdate();
-    const { currentContent, setCurrentContent, elementsFetchStatuses, fetchUpdate, fetchDelete, ...elementCreatorProps }
+    const { currentContent, setCurrentContent, elementFetchStates, fetchUpdate, fetchDelete, ...elementCreatorProps }
         = useFetchStoreUpdater({ initialContent: content, urlPathBase: `/DictionaryContentElements/${dictionaryName}` })
 
-    const handleClearFetchStatus = (id) => {
-        if (elementsFetchStatuses.current.get(id) === FETCH_STATUSES.ERROR)
+    const handleClearFetchState = (id) => {
+        if (elementFetchStates.current.get(id).status !== FETCH_STATUSES.OK)
             alert('Вот тут, наверное, надо добавить сброс на initialState!');
-        elementsFetchStatuses.current.delete(id);
+        elementFetchStates.current.delete(id);
         forceUpdate();
     }
 
     const handleUpdate = React.useCallback((id, newValue) => {
         const currentElementState = currentContent.find(element => element.id === id);
         if (newValue.id === currentElementState.id && newValue.translation === currentElementState.translation) {
-            elementsFetchStatuses.current.delete(id);
+            elementFetchStates.current.delete(id);
             forceUpdate();
         }
         else
@@ -34,7 +34,7 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
     const handleDelete = React.useCallback((id) => fetchDelete(id));
 
     return (
-        <div className={classnames(styles.default, 'container')} >
+        <div className={classnames(styles.default)} >
             {currentContent.length > 0 ?
                 <React.StrictMode>
                     <fieldset>
@@ -42,8 +42,8 @@ const WordTranslationsContainer = ({ content, dictionaryName }) => {
                         {currentContent.map(wordTranslation =>
                             <div className={styles.item} key={wordTranslation.id}>
                                 <FetchStateDisplay
-                                    fetchStatus={elementsFetchStatuses.current.get(wordTranslation.id)}
-                                    handleClearFetchStatus={() => handleClearFetchStatus(wordTranslation.id)}
+                                    fetchState={elementFetchStates.current.get(wordTranslation.id)}
+                                    handleClearFetchState={() => handleClearFetchState(wordTranslation.id)}
                                 >
                                     <WordTranslation
                                         {...wordTranslation}

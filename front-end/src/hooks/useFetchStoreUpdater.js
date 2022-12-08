@@ -8,15 +8,18 @@ export const FETCH_STATUSES = {
     PENDING: 'pending...'
 }
 
+const FETCH_FAILED_DEFAULT_MESSAGE = "Не удалось отправить данные на сервер.";
+const REQUEST_FAILED_DEFAULT_MESSAGE = "Произошла неизвестная ошибка при обработке запроса.";
+
 const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
     const [currentContent, setCurrentContent] = React.useState(initialContent.slice(0));
-    const elementsFetchStatuses = React.useRef(new Map()); //Так, или всё же стейтом сделать , чтоб не форсапдейтить?
-    const [createdElementFetchStatus, setCreatedElementFetchStatus] = React.useState(null);
+    const elementFetchStates = React.useRef(new Map()); //Так, или всё же стейтом сделать , чтоб не форсапдейтить?
+    const [createdElementFetchState, setCreatedElementFetchState] = React.useState(null);
     const [elementCreatorIsActive, setElementCreatorIsActive] = React.useState(false);
     const forceUpdate = useForceUpdate();
 
     const fetchCreate = (newValue) => {
-        setCreatedElementFetchStatus(FETCH_STATUSES.PENDING);
+        setCreatedElementFetchState({ status: FETCH_STATUSES.PENDING });
         const url = encodeURI(urlPathBase);
         const options = {
             method: 'POST',
@@ -28,25 +31,25 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
             .then((response) => {
                 if (response.ok) {
                     setCurrentContent(currentContent => [...currentContent, newValue]);
-                    elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
-                    setCreatedElementFetchStatus(null);
+                    elementFetchStates.current.set(newValue.id, { status: FETCH_STATUSES.OK });
+                    setCreatedElementFetchState(null);
                     setElementCreatorIsActive(false);
                 }
                 else {
                     response.json().then(json => {
-                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
-                        setCreatedElementFetchStatus(errorMessage);
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? REQUEST_FAILED_DEFAULT_MESSAGE;
+                        setCreatedElementFetchState({ status: FETCH_STATUSES.ERROR, message: errorMessage });
                         forceUpdate();
                     })
                 }
             })
             .catch(() => {
-                setCreatedElementFetchStatus(FETCH_STATUSES.ERROR);
+                setCreatedElementFetchState({ status: FETCH_STATUSES.ERROR, message: FETCH_FAILED_DEFAULT_MESSAGE });
             });
     };
 
     const fetchUpdate = (id, newValue) => {
-        elementsFetchStatuses.current.set(id, FETCH_STATUSES.PENDING);
+        elementFetchStates.current.set(id, { status: FETCH_STATUSES.PENDING });
         forceUpdate();
 
         const url = encodeURI(`${urlPathBase}/${id}`);
@@ -62,25 +65,25 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
                     setCurrentContent(currentContent => currentContent.map(element =>
                         element.id === id ? newValue : element));
                     if (newValue.id !== id)
-                        elementsFetchStatuses.current.delete(id);
-                    elementsFetchStatuses.current.set(newValue.id, FETCH_STATUSES.OK);
+                        elementFetchStates.current.delete(id);
+                    elementFetchStates.current.set(newValue.id, { status: FETCH_STATUSES.OK });
                 }
                 else {
                     response.json().then(json => {
-                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
-                        elementsFetchStatuses.current.set(id, errorMessage);
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? REQUEST_FAILED_DEFAULT_MESSAGE;
+                        elementFetchStates.current.set(id, { status: FETCH_STATUSES.ERROR, message: errorMessage });
                         forceUpdate();
-                    })
+                    });
                 }
             })
             .catch(() => {
-                elementsFetchStatuses.current.set(id, FETCH_STATUSES.ERROR)
+                elementFetchStates.current.set(id, { status: FETCH_STATUSES.ERROR, message: FETCH_FAILED_DEFAULT_MESSAGE })
                 forceUpdate();
             });
     };
 
     const fetchDelete = (id) => {
-        elementsFetchStatuses.current.set(id, FETCH_STATUSES.PENDING);
+        elementFetchStates.current.set(id, { status: FETCH_STATUSES.PENDING });
         forceUpdate();
 
         const url = encodeURI(`${urlPathBase}/${id}`);
@@ -94,18 +97,18 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
             .then((response) => {
                 if (response.ok) {
                     setCurrentContent(currentContent => currentContent.filter(element => element.id !== id));
-                    elementsFetchStatuses.current.delete(id);
+                    elementFetchStates.current.delete(id);
                 }
                 else {
                     response.json().then(json => {
-                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? FETCH_STATUSES.ERROR;
-                        elementsFetchStatuses.current.set(id, errorMessage)
+                        const errorMessage = json.error?.message ?? json.errors[Object.keys(json.errors)[0]] ?? REQUEST_FAILED_DEFAULT_MESSAGE;
+                        elementFetchStates.current.set(id, { status: FETCH_STATUSES.ERROR, message: errorMessage });
                         forceUpdate();
                     })
                 }
             })
             .catch(() => {
-                elementsFetchStatuses.current.set(id, FETCH_STATUSES.ERROR)
+                elementFetchStates.current.set(id, { status: FETCH_STATUSES.ERROR, message: FETCH_FAILED_DEFAULT_MESSAGE });
                 forceUpdate();
             });
     };
@@ -113,8 +116,8 @@ const useFetchStoreUpdater = ({ initialContent, urlPathBase }) => {
     return {
         fetchCreate, fetchUpdate, fetchDelete,
         currentContent, setCurrentContent,
-        elementsFetchStatuses,
-        createdElementFetchStatus, setCreatedElementFetchStatus,
+        elementFetchStates,
+        createdElementFetchState, setCreatedElementFetchState,
         elementCreatorIsActive, setElementCreatorIsActive
     };
 }
