@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace FiveWords.Utils;
+﻿namespace FiveWords._v1.Utils;
 
 public static class ServiceInfo
 {
@@ -24,6 +22,5 @@ public static class ServiceInfo
         }
         sb.Append("</table>");
         return Results.Text(sb.ToString(), "text/html;charset=utf-8");
-
     }
 }

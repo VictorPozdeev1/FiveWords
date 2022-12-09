@@ -1,6 +1,7 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords._v1.DataObjects;
+using FiveWords.Repository.Interfaces;
 
-namespace FiveWords.Repository.Interfaces;
+namespace FiveWords._v1.Repository;
 
 public interface IWordsRepository : ISimpleEntityRepository<Word, int>
 {

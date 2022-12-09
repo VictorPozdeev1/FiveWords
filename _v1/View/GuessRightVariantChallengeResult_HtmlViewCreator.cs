@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace FiveWords.View;
+namespace FiveWords._v1.View;
 
 public class GuessRightVariantChallengeResult_HtmlViewCreator : ChallengeResult_HtmlViewCreator<string>
 {

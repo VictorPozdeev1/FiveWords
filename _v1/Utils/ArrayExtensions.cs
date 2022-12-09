@@ -1,4 +1,4 @@
-﻿namespace FiveWords.Utils;
+﻿namespace FiveWords._v1.Utils;
 
 public static class ArrayExtensions
 {

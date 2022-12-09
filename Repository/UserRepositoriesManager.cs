@@ -1,4 +1,5 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords._v1.Repository;
+using FiveWords.DataObjects;
 using FiveWords.Repository.CsvRepository;
 using FiveWords.Repository.Interfaces;
 
@@ -38,20 +39,6 @@ public abstract class UserRepositoriesManager<TRepository>
     }
 
     protected abstract TRepository InstantiateRepository(string repoDirectoryPath);
-}
-
-public class EnglishWordsUserRepositoriesManager : UserRepositoriesManager<IWordsRepository>
-{
-    protected override string RepoSubfolderName => @"words-repository";
-
-    protected override IWordsRepository InstantiateRepository(string homeDirectoryPath) => new WordsCsvRepository(homeDirectoryPath, "english-words.scv");
-}
-
-public class RussianWordsUserRepositoriesManager : UserRepositoriesManager<IWordsWithEnglishTranslationRepository>
-{
-    protected override string RepoSubfolderName => @"words-repository";
-
-    protected override IWordsWithEnglishTranslationRepository InstantiateRepository(string repoDirectoryPath) => new WordsWithEnglishTranslationId_CsvRepository(repoDirectoryPath, "russian-words.scv");
 }
 
 public class UserPasswordRepositoriesManager: UserRepositoriesManager<IOnePasswordRepository>

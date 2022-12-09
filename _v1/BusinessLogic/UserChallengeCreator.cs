@@ -1,10 +1,11 @@
 ﻿using FiveWords.DataObjects;
+using FiveWords._v1.DataObjects;
+using FiveWords._v1.Repository;
+using FiveWords._v1.Utils;
 using FiveWords.Repository;
-using FiveWords.Repository.Interfaces;
-using FiveWords.Utils;
 using System.Security.Cryptography;
 
-namespace FiveWords.Model
+namespace FiveWords._v1.BusinessLogic
 {
     internal class TranslationUserChallengeCreator
     {
@@ -20,8 +21,8 @@ namespace FiveWords.Model
 
         public UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>> CreateGuessTranslateChallenge(User currentUser, byte unitsCount, byte answerVariantsCount)
         {
-            var result = new UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>>() 
-                { Units = new GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>[unitsCount] };
+            var result = new UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>>()
+            { Units = new GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>[unitsCount] };
 
             var englishWordsRepo = translationsRepoManagers.First().GetRepository(currentUser);
 

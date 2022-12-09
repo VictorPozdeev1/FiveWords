@@ -1,5 +1,4 @@
 ﻿using FiveWords.DataObjects;
-using System.Collections;
 
 namespace FiveWords.Repository.Interfaces;
 

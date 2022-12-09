@@ -4,15 +4,16 @@ using Microsoft.IdentityModel.Tokens;
 
 using FiveWords.Repository;
 using FiveWords.Repository.Interfaces;
-using FiveWords.Model;
-using FiveWords.View;
 using FiveWords.Repository.CsvRepository;
-using FiveWords.Utils;
 using FiveWords.Api;
-using FiveWords.Api.v1;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Rewrite;
 using FiveWords.Api.ModelBinding;
+using FiveWords._v1.View;
+using FiveWords._v1.Utils;
+using FiveWords._v1.Endpoints;
+using FiveWords._v1.BusinessLogic;
+using FiveWords._v1.Repository;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -33,7 +34,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<FiveWords.Utils.HttpFileSender>();
+builder.Services.AddScoped<HttpFileSender>();
 
 builder.Services.AddSingleton<IUsersRepository, UsersCsvRepository>((services) => new UsersCsvRepository("users-list", "users-list.csv"));
 builder.Services.AddSingleton<UserPasswordRepositoriesManager>();

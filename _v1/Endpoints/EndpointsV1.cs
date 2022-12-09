@@ -1,11 +1,11 @@
-﻿using FiveWords.Model;
-using FiveWords.View;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System.Text.Json;
-using FiveWords.Utils;
 using FiveWords.DataObjects;
+using FiveWords._v1.DataObjects;
+using FiveWords._v1.View;
+using FiveWords._v1.BusinessLogic;
 
-namespace FiveWords.Api.v1;
+namespace FiveWords._v1.Endpoints;
 
 static class EndpointsV1
 {

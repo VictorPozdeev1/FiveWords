@@ -1,6 +1,6 @@
 ﻿using FiveWords.DataObjects;
 
-namespace FiveWords.Model;
+namespace FiveWords._v1.BusinessLogic;
 
 public class GuessRightVariant_UserAnswerAssessor
 {

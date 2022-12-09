@@ -1,20 +1,15 @@
-﻿using FiveWords.Model;
-using FiveWords.View;
-using FiveWords.Repository;
+﻿using FiveWords.Repository;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using FiveWords.Repository.Interfaces;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
-using FiveWords.Utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using FiveWords.DataObjects;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
+using FiveWords._v1.Utils;
 
 namespace FiveWords.Api;
 

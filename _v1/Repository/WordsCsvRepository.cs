@@ -1,8 +1,8 @@
 ﻿using CsvHelper.Configuration;
-using FiveWords.DataObjects;
-using FiveWords.Repository.Interfaces;
+using FiveWords._v1.DataObjects;
+using FiveWords.Repository.CsvRepository;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords._v1.Repository;
 
 internal class WordsCsvRepository : OneFileCsvRepository<Word, int>, IWordsRepository
 {
@@ -32,7 +32,7 @@ internal class WordsWithEnglishTranslationId_CsvRepository : OneFileCsvRepositor
     {
         return GetAll().Where(kvp => kvp.Value.DefaultEnglishTranslationId != null).Select(kvp => kvp.Value);
     }
-    
+
     private class WordWithEnglishTranslationMapping : ClassMap<WordWithEnglishTranslationId>
     {
         public WordWithEnglishTranslationMapping()
