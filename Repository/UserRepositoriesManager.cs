@@ -1,5 +1,4 @@
-﻿using FiveWords._v1.Repository;
-using FiveWords.DataObjects;
+﻿using FiveWords.DataObjects;
 using FiveWords.Repository.CsvRepository;
 using FiveWords.Repository.Interfaces;
 
@@ -32,7 +31,7 @@ public abstract class UserRepositoriesManager<TRepository>
         return InstantiateRepository(repoDirectoryPath);
     }
 
-    protected string GetRepoDirectoryPath(User owner)
+    protected virtual string GetRepoDirectoryPath(User owner)
     {
         var ownerSubfolderName = owner == User.Default ? "_default" : owner.Guid.ToString();
         return Path.Combine(STORAGE_PATH, ownerSubfolderName, RepoSubfolderName);

@@ -29,11 +29,11 @@ static class EndpointsV1
         routeBuilder.MapPost("/challenge-result/guess-right-variant", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializingOptions, GuessRightVariant_UserAnswerAssessor userAnswerAssessor, GuessRightVariantChallengeResult_HtmlViewCreator htmlViewCreator) =>
         {
             //todo Если по этому эндпойнту могут проверяться и челленджи другого типа, то, мб, сохранять в Session название сохранённого типа, и потом Type.GetType(typeName)?
-            UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>>? userChallengeSaved = null;
+            UserChallenge<ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>>? userChallengeSaved = null;
             try
             {
                 string? userChallengeSavedJson = httpContext.Session.GetString("CurrentUserChallenge");
-                userChallengeSaved = JsonSerializer.Deserialize<UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>>>(userChallengeSavedJson!, serializingOptions.Get("Internal"));
+                userChallengeSaved = JsonSerializer.Deserialize<UserChallenge<ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>>>(userChallengeSavedJson!, serializingOptions.Get("Internal"));
             }
             catch { }
             if (userChallengeSaved is null)

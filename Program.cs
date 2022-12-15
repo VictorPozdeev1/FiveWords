@@ -30,30 +30,32 @@ builder.Services.AddOptions<JsonSerializerOptions>("Web")
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));
 builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddScoped<HttpFileSender>();
 
 builder.Services.AddSingleton<IUsersRepository, UsersCsvRepository>((services) => new UsersCsvRepository("users-list", "users-list.csv"));
 builder.Services.AddSingleton<UserPasswordRepositoriesManager>();
 builder.Services.AddSingleton<UserDictionariesUserRepositoriesManager>();
 
-//todo Здесь, видимо, к одному интерфейсу привязать и потом получать все через IEnumerable, и потом искать .First(repo => repo.Language = Language.English/Russian) ?
-//builder.Services.AddSingleton<UserRepositoriesManager<IWordsRepository>, EnglishWordsUserRepositoriesManager>();
+#region v1_Services, РјРѕР¶РЅРѕ РІС‹РЅРµСЃС‚Рё РёС… РїРѕРґРєР»СЋС‡РµРЅРёРµ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ С‡Р°СЃС‚СЊ РїСЂРѕРµРєС‚Р°
+builder.Services.AddScoped<HttpFileSender>();
+
+//Р—РґРµСЃСЊ, РІРёРґРёРјРѕ, Рє РѕРґРЅРѕРјСѓ РёРЅС‚РµСЂС„РµР№СЃСѓ РїСЂРёРІСЏР·Р°С‚СЊ Рё РїРѕС‚РѕРј РїРѕР»СѓС‡Р°С‚СЊ РІСЃРµ С‡РµСЂРµР· IEnumerable, Рё РїРѕС‚РѕРј РёСЃРєР°С‚СЊ .First(repo => repo.Language = Language.English/Russian) ?
 builder.Services.AddSingleton<UserRepositoriesManager<IWordsRepository>, EnglishWordsUserRepositoriesManager>();
 builder.Services.AddSingleton<RussianWordsUserRepositoriesManager>();
 builder.Services.AddSingleton<TranslationUserChallengeCreator>();
 builder.Services.AddSingleton<GuessRightVariantChallengeResult_HtmlViewCreator>();
 builder.Services.AddSingleton<GuessRightVariant_UserAnswerAssessor>();
+#endregion
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        //todo вынести строки в конфигурацию (а лучше даже в Options?),
-        //а секретный ключ вообще можно вынести в двоичный файл, и потом File.ReadAllBytes(FilePath)
+        //todo РІС‹РЅРµСЃС‚Рё СЃС‚СЂРѕРєРё РІ РєРѕРЅС„РёРіСѓСЂР°С†РёСЋ (Р° Р»СѓС‡С€Рµ РґР°Р¶Рµ РІ Options?),
+        //Р° СЃРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡ РІРѕРѕР±С‰Рµ РјРѕР¶РЅРѕ РІС‹РЅРµСЃС‚Рё РІ РґРІРѕРёС‡РЅС‹Р№ С„Р°Р№Р», Рё РїРѕС‚РѕРј File.ReadAllBytes(FilePath)
         ValidIssuer = "FiveWords",
         ValidAudience = "FiveWords",
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("uig284hnj&*#^%\\\"34.h567&y"))
@@ -212,9 +214,9 @@ app.Run();
 //                            htmlDocument.Load(fileStream);
 //                        }
 //                        var mainLabel = htmlDocument.GetElementbyId("result-text");//htmlDocument.DocumentNode.SelectSingleNode("//*[@id='result-text']");
-//                        mainLabel.InnerHtml = $"Правильных ответов: {rightAnswersCounter}.";
+//                        mainLabel.InnerHtml = $"РџСЂР°РІРёР»СЊРЅС‹С… РѕС‚РІРµС‚РѕРІ: {rightAnswersCounter}.";
 //                        var whatsMoreLabel = htmlDocument.GetElementbyId("whats-more");
-//                        whatsMoreLabel.InnerHtml = "(Тут когда-нибудь будет возможность зарегистрироваться, чтобы создавать собственные словари и программы тренировок, вести статистику, и т. д.)";
+//                        whatsMoreLabel.InnerHtml = "(РўСѓС‚ РєРѕРіРґР°-РЅРёР±СѓРґСЊ Р±СѓРґРµС‚ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ, С‡С‚РѕР±С‹ СЃРѕР·РґР°РІР°С‚СЊ СЃРѕР±СЃС‚РІРµРЅРЅС‹Рµ СЃР»РѕРІР°СЂРё Рё РїСЂРѕРіСЂР°РјРјС‹ С‚СЂРµРЅРёСЂРѕРІРѕРє, РІРµСЃС‚Рё СЃС‚Р°С‚РёСЃС‚РёРєСѓ, Рё С‚. Рґ.)";
 //                        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 //                        using (StringWriter writer = new StringWriter(stringBuilder))
 //                        {

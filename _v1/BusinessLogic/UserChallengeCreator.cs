@@ -1,9 +1,9 @@
 ﻿using FiveWords.DataObjects;
 using FiveWords._v1.DataObjects;
 using FiveWords._v1.Repository;
-using FiveWords._v1.Utils;
 using FiveWords.Repository;
 using System.Security.Cryptography;
+using FiveWords.Utils;
 
 namespace FiveWords._v1.BusinessLogic
 {
@@ -19,10 +19,10 @@ namespace FiveWords._v1.BusinessLogic
             this.russianWordsRepoManager = russianWordsRepoManager;
         }
 
-        public UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>> CreateGuessTranslateChallenge(User currentUser, byte unitsCount, byte answerVariantsCount)
+        public UserChallenge<ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>> CreateGuessTranslateChallenge(User currentUser, byte unitsCount, byte answerVariantsCount)
         {
-            var result = new UserChallenge<GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>>()
-            { Units = new GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>[unitsCount] };
+            var result = new UserChallenge<ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>>()
+            { Units = new ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>[unitsCount] };
 
             var englishWordsRepo = translationsRepoManagers.First().GetRepository(currentUser);
 
@@ -43,7 +43,7 @@ namespace FiveWords._v1.BusinessLogic
                 var rightAnswerIndex = RandomNumberGenerator.GetInt32(answerVariantsCount);
                 answerVariants[rightAnswerIndex] = rightAnswer;
 
-                result.Units[i] = new GuessRightVariant_UserChallengeUnit<WordWithEnglishTranslationId, Word>(question, answerVariants, rightAnswerIndex);
+                result.Units[i] = new ChoosingRightOption_UserChallengeUnit_v1<WordWithEnglishTranslationId, Word>(question, answerVariants, rightAnswerIndex);
             }
             return result;
         }
