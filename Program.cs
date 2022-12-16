@@ -115,9 +115,10 @@ app.Map(v1PathBase, false, app =>
     app.UseEndpoints(routeBuilder => EndpointsV1.MapEndpointsV1(routeBuilder, v1PathBase));
 });
 
-app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions()
+app.UseRewriter(new RewriteOptions()
     .AddRewrite("^home$", "home.html", true)
-    .AddRewrite(@"^dictionary-page/(.+)$", "html/dictionary.html", true));
+    .AddRewrite(@"^dictionary-page/(.+)$", "html/dictionary.html", true)
+    .AddRewrite(@"^challenge-page/(.+)$", "html/challenge.html", true));
 
 app.Use((context, next) =>
 {

@@ -9,7 +9,8 @@ console.log(`mode: ${mode} (NOW NOT EXPORTING, uncomment that if needed.)`);
 module.exports = {
     //mode: mode,
     entry: {
-        dictionary: path.resolve(__dirname, './src/dictionary-index.js')
+        dictionary: path.resolve(__dirname, './src/dictionary-index.js'),
+        challenge: path.resolve(__dirname, './src/challenge-index.js')
     },
     output: {
         path: path.resolve(__dirname, './dist'),
@@ -41,7 +42,13 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, './src/dictionary.html'),
-            filename: 'html/dictionary.html'
+            filename: 'html/dictionary.html',
+            chunks: ['dictionary']
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['challenge'],
+            template: path.resolve(__dirname, './src/challenge.html'),
+            filename: 'html/challenge.html'
         })
     ]
 }

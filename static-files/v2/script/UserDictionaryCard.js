@@ -76,6 +76,9 @@ export class UserDictionaryCard extends HTMLElement {
         this.shadowRoot.querySelector('#editContent').addEventListener('click', () => {
             location.assign(`dictionary-page/${this.data.id}`);
         });
+
+        this.shadowRoot.querySelector('#startChallenge').addEventListener('click', () =>
+            location.assign(`challenge-page/${this.data.id}`));
     }
 }
 customElements.define("user-dictionary", UserDictionaryCard);
