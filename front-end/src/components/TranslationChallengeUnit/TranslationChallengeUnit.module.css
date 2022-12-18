@@ -1,0 +1,56 @@
+﻿.body {
+}
+
+
+.questionNumber {
+    text-align: center;
+}
+
+.questionText {
+    text-align: center;
+    font-size: 1.8em;
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.answerOptionButton {
+    /*    background-color: #728ef5;
+    color: #FFFFFF;
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    align-content: center;
+    flex-wrap: wrap;*/
+
+    background-color: #6081F8;
+    color: #ffffff;
+    transition: 0.5s all;
+    /*display: flex;*/
+    width: 130px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+    transition: 0.3s all;
+}
+
+    .answerOptionButton:hover {
+        background: #728ef5;
+    }
