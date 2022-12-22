@@ -13,7 +13,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
     useEffect(() => {
         async function fetchChallenge() {
             const unitsCount = 5;
-            const answerOptionsCount = 5;
+            const answerOptionsCount = 4;
 
             const url = isAuthenticated() ?
                 new URL(`WordTranslationsChallenge/${unitsCount}:${answerOptionsCount}/${dictionaryName}`, location.origin) :
@@ -23,17 +23,14 @@ const TranslationChallenge = ({ dictionaryName }) => {
 
             const response = await (isAuthenticated() ? fetchWithAuth : fetch)(url);
             if (response.ok) {
-                debugger;
                 const responseJson = await response.json();
                 setChallenge(responseJson);
                 setCurrentUnitNumber(0);
             }
             else {
-                debugger;
                 alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");
             }
         };
-        debugger;
         if (!challenge) {
             fetchChallenge();
         }
