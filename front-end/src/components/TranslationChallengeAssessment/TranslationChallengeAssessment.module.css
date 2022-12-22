@@ -2,6 +2,14 @@
 }
 
 .assessmentText {
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bolder;
+}
+
+.whatsNextButtonsContainer {
+    display: flex;
+    justify-content: center;
 }
 
 .oneMoreTimeButton {

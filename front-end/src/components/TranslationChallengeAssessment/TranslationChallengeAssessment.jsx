@@ -5,12 +5,14 @@ const TranslationChallengeAssessment = ({ assessment, handleOneMoreTimeButtonCli
     return (
         <div className={styles.body}>
             <p className={styles.assessmentText}>{assessment}</p>
+            <div className={styles.whatsNextButtonsContainer }>
             <button
-                className={classnames(styles.oneMoreTimeButton, 'button__blue')}
+                className={classnames(styles.oneMoreTimeButton, 'button__blue', 'main-block__button')}
                 onClick={handleOneMoreTimeButtonClick}
             >
                 Ещё разок?
-            </button>
+                </button>
+            </div>
         </div>
     )
 };

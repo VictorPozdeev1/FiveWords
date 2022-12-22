@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useRef } from 'react';
+﻿import { useEffect, useState, useRef, useCallback } from 'react';
 import { fetchWithAuth, removeToken, isAuthenticated } from "../../modules/Auth";
 
 import TranslationChallengeUnit from '../TranslationChallengeUnit/TranslationChallengeUnit';
@@ -9,6 +9,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
     const [currentUnitNumber, setCurrentUnitNumber] = useState(null);
     const [assessment, setAssessment] = useState(null);
     const [challenge, setChallenge] = useState(null);
+    const selectedAnswerOptionIndices = useRef([]);
 
     useEffect(() => {
         async function fetchChallenge() {
@@ -36,27 +37,27 @@ const TranslationChallenge = ({ dictionaryName }) => {
         }
     }, [challenge, setChallenge]);
 
-    function handleAnswerOptionSelect(answerOptionIndex) {
-        setAnswer(answerOptionIndex);
+    function handleAnswerOptionSelect(selectedAnswerOptionIndex) {
+        selectedAnswerOptionIndices.current.push(selectedAnswerOptionIndex);
         if (currentUnitNumber < challenge.units.length - 1) {
-            setCurrentUnitNumber(questionNumber => questionNumber + 1);
+            setCurrentUnitNumber(currentUnitNumber => currentUnitNumber + 1);
         }
         else {
-            setAssessment(getAssessment(challenge));
+            setAssessment(getAssessment(challenge, selectedAnswerOptionIndices.current));
         }
     }
 
     function handleOneMoreTimeButtonClick() {
         setChallenge(null);
+        selectedAnswerOptionIndices.current = [];
         setAssessment(null);
     }
 
-    function getAssessment(challenge) {
-        const rightAnswers = 'N';
+    function getAssessment(challenge, selectedAnswerOptionIndices) {
+        const rightAnswers = challenge.units.reduce(
+            (aggregate, current, index) => aggregate + (current.rightOptionIndex === selectedAnswerOptionIndices[index] ? 1 : 0), 0
+        );
         return `Правильных ответов: ${rightAnswers} из ${challenge.units.length}.`;
-    }
-
-    function setAnswer() {
     }
 
     function getComponentBody() { }
