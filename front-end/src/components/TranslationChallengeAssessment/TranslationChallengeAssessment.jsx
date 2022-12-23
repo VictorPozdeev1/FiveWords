@@ -1,16 +1,16 @@
 ﻿import styles from './TranslationChallengeAssessment.module';
 import classnames from 'classnames';
 
-const TranslationChallengeAssessment = ({ assessment, handleOneMoreTimeButtonClick }) => {
+const TranslationChallengeAssessment = ({ assessmentText, handleOneMoreTimeButtonClick }) => {
     return (
         <div className={styles.body}>
-            <p className={styles.assessmentText}>{assessment}</p>
-            <div className={styles.whatsNextButtonsContainer }>
-            <button
-                className={classnames(styles.oneMoreTimeButton, 'button__blue', 'main-block__button')}
-                onClick={handleOneMoreTimeButtonClick}
-            >
-                Ещё разок?
+            <p className={styles.assessmentText}>{assessmentText}</p>
+            <div className={styles.whatsNextButtonsContainer}>
+                <button
+                    className={classnames(styles.oneMoreTimeButton, 'button__blue', 'main-block__button')}
+                    onClick={handleOneMoreTimeButtonClick}
+                >
+                    Ещё разок?
                 </button>
             </div>
         </div>

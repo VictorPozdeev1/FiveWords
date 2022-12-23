@@ -1,3 +1,25 @@
 ﻿.body {
     color: #ffffff;
+    text-align: center;
 }
+
+.registerSection {
+    margin-top: 40px;
+}
+
+.registerButton {
+    margin: 0 auto;
+    display: block;
+    width: 300px;
+    height: 40px;
+    border-radius: 10px;
+    justify-content: center;
+    border: none;
+    margin-top: 5px;
+    cursor: pointer;
+    transition: 0.3s all;
+}
+
+    .registerButton:hover {
+        transform: translateY(-2px);
+    }

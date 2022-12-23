@@ -27,6 +27,9 @@ openSigninForm_Button.addEventListener('click', openSigninForm);
 signupFormClose_Button.addEventListener('click', closeSignupForm);
 signinFormClose_Button.addEventListener('click', closeSigninForm);
 
+document.querySelector('#startChallenge').addEventListener('click', () =>
+    location.assign('guest-challenge-page'));
+
 setupInputValidationBehavior(signupFormLogin_Input, '4-20 латинских букв, цифр, пробелов или подчёркиваний');
 setupInputValidationBehavior(signupFormPassword_Input, '4-20 любых символов');
 setupInputValidationBehavior(signupFormPasswordRepeat_Input, '~~~(This message will never be shown probably. Let\'s check it..)');
@@ -195,3 +198,5 @@ function refreshBlurState() {
             ? 'blur(5px)'
             : '';
 }
+
+if (location.search.match(/register=true/)) openSignupForm();

@@ -118,6 +118,7 @@ app.Map(v1PathBase, false, app =>
 app.UseRewriter(new RewriteOptions()
     .AddRewrite("^home$", "home.html", true)
     .AddRewrite(@"^dictionary-page/(.+)$", "html/dictionary.html", true)
+    .AddRewrite(@"^guest-challenge-page$", "html/challenge.html", true)
     .AddRewrite(@"^challenge-page/(.+)$", "html/challenge.html", true));
 
 app.Use((context, next) =>

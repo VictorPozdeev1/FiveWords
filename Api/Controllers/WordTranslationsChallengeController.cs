@@ -21,7 +21,7 @@ public class WordTranslationsChallengeController : ControllerBase
         var currentUserName = User.Identity!.Name;
 
         ICollection<WordTranslation> wordTranslationSet;
-        if (currentUserName is null)
+        if (currentUserName is null || dictionaryNameEscaped is null)
         {
             wordTranslationSet = Repository.CsvRepository.DefaultChallengeDictionary.GetWordTranslationSet();
         }

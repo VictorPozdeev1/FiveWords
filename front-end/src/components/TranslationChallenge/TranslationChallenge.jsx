@@ -1,13 +1,15 @@
 ﻿import { useEffect, useState, useRef, useCallback } from 'react';
 import { fetchWithAuth, removeToken, isAuthenticated } from "../../modules/Auth";
+import classnames from 'classnames';
 
 import TranslationChallengeUnit from '../TranslationChallengeUnit/TranslationChallengeUnit';
 import TranslationChallengeAssessment from '../TranslationChallengeAssessment/TranslationChallengeAssessment';
 import styles from './TranslationChallenge.module';
+import * as React from 'react';
 
 const TranslationChallenge = ({ dictionaryName }) => {
     const [currentUnitNumber, setCurrentUnitNumber] = useState(null);
-    const [assessment, setAssessment] = useState(null);
+    const [assessmentText, setAssessmentText] = useState(null);
     const [challenge, setChallenge] = useState(null);
     const selectedAnswerOptionIndices = useRef([]);
 
@@ -16,7 +18,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
             const unitsCount = 5;
             const answerOptionsCount = 4;
 
-            const url = isAuthenticated() ?
+            const url = dictionaryName ?
                 new URL(`WordTranslationsChallenge/${unitsCount}:${answerOptionsCount}/${dictionaryName}`, location.origin) :
                 new URL(`WordTranslationsChallenge/${unitsCount}:${answerOptionsCount}`, location.origin);
 
@@ -29,7 +31,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
                 setCurrentUnitNumber(0);
             }
             else {
-                alert("Не удалось загрузить ваши словари. Вы будете перенаправлены на гостевую страницу.");
+                alert("Что-то пошло не так.. если бы мы знали что это такое, мы не знаем что это такое!");
             }
         };
         if (!challenge) {
@@ -43,41 +45,61 @@ const TranslationChallenge = ({ dictionaryName }) => {
             setCurrentUnitNumber(currentUnitNumber => currentUnitNumber + 1);
         }
         else {
-            setAssessment(getAssessment(challenge, selectedAnswerOptionIndices.current));
+            setAssessmentText(createAssessmentText(challenge, selectedAnswerOptionIndices.current));
         }
     }
 
     function handleOneMoreTimeButtonClick() {
         setChallenge(null);
         selectedAnswerOptionIndices.current = [];
-        setAssessment(null);
+        setAssessmentText(null);
     }
 
-    function getAssessment(challenge, selectedAnswerOptionIndices) {
+    function createAssessmentText(challenge, selectedAnswerOptionIndices) {
         const rightAnswers = challenge.units.reduce(
             (aggregate, current, index) => aggregate + (current.rightOptionIndex === selectedAnswerOptionIndices[index] ? 1 : 0), 0
         );
         return `Правильных ответов: ${rightAnswers} из ${challenge.units.length}.`;
     }
 
-    function getComponentBody() { }
+    const goRegister = useCallback(() => { location.assign(new URL('?register=true', location.origin)) }, []);
+
+    const getComponentBody = useCallback(() => {
+        if (!challenge) return 'Загрузка...';
+        if (!assessmentText) return (
+            <TranslationChallengeUnit
+                challengeUnit={challenge.units[currentUnitNumber]}
+                unitNumber={currentUnitNumber + 1}
+                unitsCount={challenge.units.length}
+                handleAnswerOptionSelect={handleAnswerOptionSelect}
+            />
+        );
+        return (
+            <React.Fragment>
+                <TranslationChallengeAssessment
+                    assessmentText={assessmentText}
+                    handleOneMoreTimeButtonClick={handleOneMoreTimeButtonClick}
+                />
+                {!isAuthenticated() &&
+                    <div className={styles.registerSection}>
+                        <div>А ещё можно...</div>
+                        <button
+                            className={classnames(styles.registerButton, 'button__green')}
+                            onClick={goRegister}
+                        >
+                            Зарегистрироваться!
+                        </button>
+                        <div>(Это даст возможность создавать собственные словари для тренировок. А может быть, и что-то ещё...)</div>
+                    </div>
+                }
+            </React.Fragment>
+        );
+
+    }, [challenge, assessmentText, currentUnitNumber]);
 
     return (
         <div className={styles.body}>
-            {challenge ?
-                (
-                    assessment ?
-                        <TranslationChallengeAssessment assessment={assessment} handleOneMoreTimeButtonClick={handleOneMoreTimeButtonClick} /> :
-                        //<p>{challenge.units.map(u => u.question).join(', ')}</p>
-                        <TranslationChallengeUnit
-                            challengeUnit={challenge.units[currentUnitNumber]}
-                            unitNumber={currentUnitNumber + 1}
-                            unitsCount={challenge.units.length}
-                            handleAnswerOptionSelect={handleAnswerOptionSelect}
-                        />
-                ) :
-                'Загрузка...'
-            }
+            {getComponentBody()}
         </div >)
 }
 

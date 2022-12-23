@@ -1,11 +1,11 @@
 import { createRoot } from 'react-dom/client';
-import TranslationChallenge from "./components/TranslationChallenge/TranslationChallenge";
+import TranslationChallengePage from "./components/TranslationChallengePage/TranslationChallengePage";
 
 addEventListener('load', () => {
-    const sections = location.pathname.split('/').filter(x => x.length > 0);
-    const dictionaryName = sections.pop();
-
-    document.querySelector('#dictionaryName').innerHTML = dictionaryName;
+    let dictionaryName;
+    const regexResult = location.pathname.match(/challenge-page\/(.+)/);
+    if (regexResult && regexResult[1])
+        dictionaryName = regexResult[1];
     createRoot(document.querySelector("#reactRoot"))
-        .render(<TranslationChallenge dictionaryName={dictionaryName} />);
+        .render(<TranslationChallengePage dictionaryName={dictionaryName} />);
 });
