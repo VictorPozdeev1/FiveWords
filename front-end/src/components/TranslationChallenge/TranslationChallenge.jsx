@@ -9,7 +9,7 @@ import * as React from 'react';
 
 const TranslationChallenge = ({ dictionaryName }) => {
     const [currentUnitNumber, setCurrentUnitNumber] = useState(null);
-    const [assessmentText, setAssessmentText] = useState(null);
+    const [needsAssessment, setNeedsAssessment] = useState(false);
     const [challenge, setChallenge] = useState(null);
     const selectedAnswerOptionIndices = useRef([]);
 
@@ -21,8 +21,6 @@ const TranslationChallenge = ({ dictionaryName }) => {
             const url = dictionaryName ?
                 new URL(`WordTranslationsChallenge/${unitsCount}:${answerOptionsCount}/${dictionaryName}`, location.origin) :
                 new URL(`WordTranslationsChallenge/${unitsCount}:${answerOptionsCount}`, location.origin);
-
-            console.log('url:', url);
 
             const response = await (isAuthenticated() ? fetchWithAuth : fetch)(url);
             if (response.ok) {
@@ -45,28 +43,23 @@ const TranslationChallenge = ({ dictionaryName }) => {
             setCurrentUnitNumber(currentUnitNumber => currentUnitNumber + 1);
         }
         else {
-            setAssessmentText(createAssessmentText(challenge, selectedAnswerOptionIndices.current));
+            setNeedsAssessment(true);
         }
     }
 
     function handleOneMoreTimeButtonClick() {
         setChallenge(null);
         selectedAnswerOptionIndices.current = [];
-        setAssessmentText(null);
+        setNeedsAssessment(false);
     }
 
-    function createAssessmentText(challenge, selectedAnswerOptionIndices) {
-        const rightAnswers = challenge.units.reduce(
-            (aggregate, current, index) => aggregate + (current.rightOptionIndex === selectedAnswerOptionIndices[index] ? 1 : 0), 0
-        );
-        return `Правильных ответов: ${rightAnswers} из ${challenge.units.length}.`;
-    }
+
 
     const goRegister = useCallback(() => { location.assign(new URL('?register=true', location.origin)) }, []);
 
     const getComponentBody = useCallback(() => {
         if (!challenge) return 'Загрузка...';
-        if (!assessmentText) return (
+        if (!needsAssessment) return (
             <TranslationChallengeUnit
                 challengeUnit={challenge.units[currentUnitNumber]}
                 unitNumber={currentUnitNumber + 1}
@@ -77,7 +70,8 @@ const TranslationChallenge = ({ dictionaryName }) => {
         return (
             <React.Fragment>
                 <TranslationChallengeAssessment
-                    assessmentText={assessmentText}
+                    challenge={challenge}
+                    selectedAnswerOptionIndices={selectedAnswerOptionIndices.current}
                     handleOneMoreTimeButtonClick={handleOneMoreTimeButtonClick}
                 />
                 {!isAuthenticated() &&
@@ -95,7 +89,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
             </React.Fragment>
         );
 
-    }, [challenge, assessmentText, currentUnitNumber]);
+    }, [challenge, needsAssessment, currentUnitNumber]);
 
     return (
         <div className={styles.body}>
