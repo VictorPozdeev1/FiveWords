@@ -63,7 +63,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers(options => { options.ModelBinderProviders.Insert(0, new WordTranslationsFromFile_ModelBinderProvider()); });
+builder.Services.AddControllers(options => { /*options.ModelBinderProviders.Insert(0, new WordTranslationsFromFile_ModelBinderProvider());*/ });
 
 var services = builder.Services;
 var app = builder.Build();

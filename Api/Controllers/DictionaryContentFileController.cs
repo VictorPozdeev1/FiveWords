@@ -3,6 +3,7 @@ using FiveWords.Repository.Interfaces;
 using FiveWords.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FiveWords.Api.ModelBinding;
 
 namespace FiveWords.Api.Controllers
 {
@@ -12,9 +13,8 @@ namespace FiveWords.Api.Controllers
     {
         [HttpPost]
         [Authorize]
-        public IActionResult AddWordsFromFile(string dictionaryNameEscaped, ICollection<WordTranslation> wordsToAdd, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
+        public IActionResult AddWordsFromFile(string dictionaryNameEscaped, [ModelBinder(typeof(WordTranslationsFromFile_ModelBinder))] ICollection<WordTranslation> wordsToAdd, [FromServices] IUsersRepository usersRepository, [FromServices] UserDictionariesUserRepositoriesManager userDictionariesRepoManager)
         {
-            // можно ещё попробовать просто через атрибут сделать, без встраивания BinderProvider: https://learn.microsoft.com/ru-ru/aspnet/core/mvc/advanced/custom-model-binding?view=aspnetcore-7.0#implementing-a-modelbinderprovider
             var currentUser = usersRepository.Get(User.Identity!.Name!);
             var userDictionariesRepo = userDictionariesRepoManager.GetRepository(currentUser!);
             var dictionaryName = Uri.UnescapeDataString(dictionaryNameEscaped);

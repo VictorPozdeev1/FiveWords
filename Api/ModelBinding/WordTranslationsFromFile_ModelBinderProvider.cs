@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FiveWords.Api.ModelBinding
 {
+    /// <summary>
+    /// Похоже, можно удалить.
+    /// </summary>
     public class WordTranslationsFromFile_ModelBinderProvider : IModelBinderProvider
     {
         public IModelBinder? GetBinder(ModelBinderProviderContext context)
