@@ -7,7 +7,7 @@ namespace FiveWords.Api.ModelBinding
     {
         public IModelBinder? GetBinder(ModelBinderProviderContext context)
         {
-            if (context.Metadata.ModelType == typeof(IEnumerable<WordTranslation>))
+            if (context.Metadata.ModelType == typeof(ICollection<WordTranslation>))
                 return new WordTranslationsFromFile_ModelBinder();
             return null;
         }
