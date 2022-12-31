@@ -6,16 +6,23 @@ namespace FiveWords.BusinessLogic;
 
 public class ChoosingTranslationChallengeCreator
 {
-    public ChoosingTranslationUserChallenge CreateChoosingTranslationChallenge(IEnumerable<WordTranslation> wordTranslationsSource, byte unitsCount, byte answerVariantsCount, out ActionError? actionError)
+    public ChoosingTranslationUserChallenge? CreateChoosingTranslationChallenge(IEnumerable<WordTranslation> wordTranslationsSource, byte unitsCount, byte answerVariantsCount, out ActionError? actionError)
     {
         actionError = null;
+        var insufficientWordTranslationsAmount = unitsCount + answerVariantsCount - wordTranslationsSource.DistinctBy(wt => wt.Translation).Count();
+        if (insufficientWordTranslationsAmount > 0)
+        {
+            actionError = new ActionError($"Недостаточно слов в словаре. Необходимо ещё хотя бы {insufficientWordTranslationsAmount} различных переводов.", insufficientWordTranslationsAmount);
+            return null;
+        }
+
+        WordTranslation[] wordTranslations = wordTranslationsSource.ToArray();
         ChoosingTranslationUserChallenge result = new()
         {
             Id = Guid.NewGuid(),
             Units = new ChoosingRightOption_UserChallengeUnit<string, string>[unitsCount],
         };
 
-        WordTranslation[] wordTranslations = wordTranslationsSource.ToArray();
         // можно же тоже через ShuffleAndTake() переписать?
         List<int> questionWordIndices = Utils.Utils.GetDifferentRandomIndices(unitsCount, wordTranslations.Length);
         for (int i = 0; i < unitsCount; i++)

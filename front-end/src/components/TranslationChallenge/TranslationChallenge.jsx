@@ -11,6 +11,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
     const [currentUnitNumber, setCurrentUnitNumber] = useState(null);
     const [needsAssessment, setNeedsAssessment] = useState(false);
     const [challenge, setChallenge] = useState(null);
+    const [challengeFetchError, setChallengeFetchError] = useState(null);
     const selectedAnswerOptionIndices = useRef([]);
 
     useEffect(() => {
@@ -25,11 +26,19 @@ const TranslationChallenge = ({ dictionaryName }) => {
             const response = await (isAuthenticated() ? fetchWithAuth : fetch)(url);
             if (response.ok) {
                 const responseJson = await response.json();
+                setChallengeFetchError(null);
                 setChallenge(responseJson);
                 setCurrentUnitNumber(0);
             }
             else {
-                alert("Что-то пошло не так.. если бы мы знали что это такое, мы не знаем что это такое!");
+                try {
+                    setChallenge(null);
+                    const responseJson = await response.json();
+                    setChallengeFetchError(responseJson.error.message);
+                }
+                catch {
+                    alert("Что-то пошло не так.. если бы мы знали что это такое, мы не знаем что это такое!");
+                }
             }
         };
         if (!challenge) {
@@ -58,7 +67,11 @@ const TranslationChallenge = ({ dictionaryName }) => {
     const goRegister = useCallback(() => { location.assign(new URL('?register=true', location.origin)) }, []);
 
     const getComponentBody = useCallback(() => {
-        if (!challenge) return 'Загрузка...';
+        if (!challenge) return (
+            <div style={{ 'color': 'orange' }}>
+                {challengeFetchError ?? 'Загрузка...'}
+            </div>
+        );
         if (!needsAssessment) return (
             <TranslationChallengeUnit
                 challengeUnit={challenge.units[currentUnitNumber]}
@@ -89,7 +102,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
             </React.Fragment>
         );
 
-    }, [challenge, needsAssessment, currentUnitNumber]);
+    }, [challenge, needsAssessment, currentUnitNumber, challengeFetchError]);
 
     return (
         <div className={styles.body}>
