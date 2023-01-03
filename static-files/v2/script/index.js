@@ -109,8 +109,9 @@ signinForm.addEventListener('submit', async event => {
     else {
         response.json().then(json => {
             const errorMessage = json.error.message;
-            signinFormLogin_Input.setCustomValidity(errorMessage);
-            signinFormLogin_Input.reportValidity(errorMessage);
+           /* signinFormLogin_Input.setCustomValidity(errorMessage);
+            signinFormLogin_Input.reportValidity(errorMessage);*/
+            alert(errorMessage);
         });
     }
 });
