@@ -14,8 +14,13 @@ using FiveWords._v1.Utils;
 using FiveWords._v1.Endpoints;
 using FiveWords._v1.BusinessLogic;
 using FiveWords._v1.Repository;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder();
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(Path.Combine("log", "default-log.txt"))
+    .CreateLogger();
 
 builder.Configuration.AddJsonFile("appsettings_my.json");
 builder.Services.Configure<JsonSerializerOptions>("Internal", builder.Configuration.GetSection("JsonSerializerOptions:Internal"));
@@ -88,6 +93,33 @@ if (app.Environment.IsDevelopment())
 //    app.UseExceptionHandler();
 
 app.UseSession();
+
+// Сделать по-хорошему, как здесь? https://github.com/serilog/serilog-aspnetcore/blob/dev/samples/Sample/Program.cs
+DateTime currentLogFileDate = DateTime.MinValue;
+Serilog.Core.Logger? plainRequestLogger = null;
+app.Use(async (context, next) =>
+{
+    try
+    {
+        var currentDate = DateTime.UtcNow.Date;
+        if (currentLogFileDate != currentDate)
+        {
+            if (plainRequestLogger != null)
+                plainRequestLogger.DisposeAsync();
+            plainRequestLogger = new LoggerConfiguration()
+            .WriteTo.File(Path.Combine("log", "plain-request-log", $"{currentDate:yyyy-MM-dd}.txt"))
+            .CreateLogger();
+            currentLogFileDate = currentDate;
+        }
+        plainRequestLogger!.Information("Processing request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} auth by {Token}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.Request.Headers["Authorization"]);
+        await next(context);
+        plainRequestLogger!.Information("Processed request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} authed as {UserName}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.User.Identity!.Name);
+    }
+    catch (Exception exc)
+    {
+        Log.Logger.Error(exc, "Error occured during logging a request.");
+    }
+});
 
 app.Use((context, next) =>
 {
