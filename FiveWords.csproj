@@ -19,4 +19,13 @@
     <Folder Include="users-list\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="front-end\package-lock.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="front-end\package.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
