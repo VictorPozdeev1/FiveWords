@@ -119,7 +119,7 @@ app.Use(async (context, next) =>
         }
         plainRequestLogger!.Information("Processing request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} auth by {Token}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.Request.Headers["Authorization"]);
         await next(context);
-        plainRequestLogger!.Information("Processed request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} authed as {UserName}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.User.Identity!.Name);
+        plainRequestLogger!.Information("Processed request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} authed as {UserName} responded {HttpResponseCode}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.User.Identity!.Name, context.Response.StatusCode);
     }
     catch (Exception exc)
     {
