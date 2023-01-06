@@ -15,12 +15,16 @@ using FiveWords._v1.Endpoints;
 using FiveWords._v1.BusinessLogic;
 using FiveWords._v1.Repository;
 using Serilog;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File(Path.Combine("log", "default-log.txt"))
     .CreateLogger();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
 builder.Configuration.AddJsonFile("appsettings_my.json");
 builder.Services.Configure<JsonSerializerOptions>("Internal", builder.Configuration.GetSection("JsonSerializerOptions:Internal"));
@@ -72,6 +76,8 @@ builder.Services.AddControllers(options => { /*options.ModelBinderProviders.Inse
 
 var services = builder.Services;
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 if (app.Environment.IsDevelopment())
 {
