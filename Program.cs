@@ -16,6 +16,8 @@ using FiveWords._v1.BusinessLogic;
 using FiveWords._v1.Repository;
 using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
+using FiveWords.Infrastructure.TelegramAlerting;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -23,10 +25,14 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File(Path.Combine("log", "default-log.txt"))
     .CreateLogger();
 
+builder.Configuration.AddJsonFile("appsettings_my.json");
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
-builder.Configuration.AddJsonFile("appsettings_my.json");
+builder.Services.Configure<TelegramNotifierOptions>(builder.Configuration.GetSection("TelegramAlerts"));
+builder.Services.AddScoped<TelegramNotifierProvider>();
+
 builder.Services.Configure<JsonSerializerOptions>("Internal", builder.Configuration.GetSection("JsonSerializerOptions:Internal"));
 builder.Services.AddOptions<JsonSerializerOptions>("Web")
     .Bind(builder.Configuration.GetSection("JsonSerializerOptions:Web"))
@@ -111,15 +117,41 @@ app.Use(async (context, next) =>
         if (currentLogFileDate != currentDate)
         {
             if (plainRequestLogger != null)
-                plainRequestLogger.DisposeAsync();
+                _ = plainRequestLogger.DisposeAsync();
             plainRequestLogger = new LoggerConfiguration()
             .WriteTo.File(Path.Combine("log", "plain-request-log", $"{currentDate:yyyy-MM-dd}.txt"))
             .CreateLogger();
             currentLogFileDate = currentDate;
         }
-        plainRequestLogger!.Information("Processing request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} auth by {Token}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.Request.Headers["Authorization"]);
-        await next(context);
-        plainRequestLogger!.Information("Processed request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} authed as {UserName} responded {HttpResponseCode}", context.TraceIdentifier, context.Request.Method, context.Request.Path, context.Connection.RemoteIpAddress, context.User.Identity!.Name, context.Response.StatusCode);
+        plainRequestLogger!.Information
+        (
+            "Processing request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} auth by {Token}",
+            context.TraceIdentifier,
+            context.Request.Method,
+            context.Request.Path,
+            context.Connection.RemoteIpAddress,
+            context.Request.Headers["Authorization"]
+        );
+    }
+    catch (Exception exc)
+    {
+        Log.Logger.Error(exc, "Error occured during logging a request.");
+    }
+
+    await next(context);
+
+    try
+    {
+        plainRequestLogger!.Information
+        (
+            "Processed request {RequestId} {HttpVerb} {RequestPath} from {RemoteIP} authed as {UserName} responded {HttpResponseCode}",
+            context.TraceIdentifier,
+            context.Request.Method,
+            context.Request.Path,
+            context.Connection.RemoteIpAddress,
+            context.User.Identity!.Name,
+            context.Response.StatusCode
+        );
     }
     catch (Exception exc)
     {

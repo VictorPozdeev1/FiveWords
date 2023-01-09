@@ -11,6 +11,7 @@ using FiveWords.DataObjects;
 using Microsoft.AspNetCore.Mvc;
 using FiveWords._v1.Utils;
 using Serilog;
+using FiveWords.Infrastructure.TelegramAlerting;
 
 namespace FiveWords.Api;
 
@@ -22,7 +23,7 @@ static class Endpoints
 
         routeBuilder.MapGet("/routes", ServiceInfo.PrintRoutes).WithTags("INFO");
 
-        routeBuilder.MapPost("/registration", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializeOptions, IUsersRepository usersRepository, UserPasswordRepositoriesManager passwordRepositoriesManager) =>
+        routeBuilder.MapPost("/registration", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializeOptions, [FromServices] TelegramNotifierProvider telegramNotifierProvider, IUsersRepository usersRepository, UserPasswordRepositoriesManager passwordRepositoriesManager) =>
         {
             UserPasswordPair? userPasswordPair = null;
 
@@ -42,11 +43,8 @@ static class Endpoints
 
             passwordRepositoriesManager.GetRepository(registeringUser).SavePasswordHash(passwordHash!);
 
-            //todo вынести параметры в конфигурацию и, возможно, использовать DI также. Хотя этот логгер, пока что, больше нигде не планируется использовать.
-            using (var logger = new LoggerConfiguration()
-            .WriteTo.Telegram("5879307747:AAG1v8EO6g-cgwkqCTXXYiNzCJbdMx1Le1A", "264931818")
-            .CreateLogger())
-                logger.Information("User {UserName} registered.", registeringUser.Login);
+            using (var logger = telegramNotifierProvider.TryCreateNotifier())
+                (logger ?? Log.Logger).Information("User {UserLogin} registered from {IP}.", registeringUser.Login, httpContext.Connection.RemoteIpAddress);
 
             //return Results.RedirectToRoute()
             return Results.NoContent();
