@@ -1,17 +1,16 @@
-﻿using FiveWords.Repository;
-using Microsoft.Extensions.Options;
-using System.Text.Json;
+﻿using FiveWords._v1.Utils;
+using FiveWords.DataObjects;
+using FiveWords.Infrastructure.Authentication;
+using FiveWords.Infrastructure.TelegramAlerting;
+using FiveWords.Repository;
 using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using FiveWords.DataObjects;
 using Microsoft.AspNetCore.Mvc;
-using FiveWords._v1.Utils;
+using Microsoft.Extensions.Options;
 using Serilog;
-using FiveWords.Infrastructure.TelegramAlerting;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 
 namespace FiveWords.Api;
 
@@ -50,7 +49,7 @@ static class Endpoints
             return Results.NoContent();
         });
 
-        routeBuilder.MapPost("/login", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializingOptions, IUsersRepository usersRepository, UserPasswordRepositoriesManager passwordRepositoriesManager) =>
+        routeBuilder.MapPost("/login", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializingOptions, IUsersRepository usersRepository, UserPasswordRepositoriesManager passwordRepositoriesManager, JwtCreator jwtCreator) =>
         {
             //Dictionary<string, string[]> validationProblems = new();
             UserPasswordPair? userPasswordPair = null;
@@ -65,13 +64,7 @@ static class Endpoints
             if (user is null || !passwordHash!.SequenceEqual(passwordRepositoriesManager.GetRepository(user).GetPasswordHash()))
                 return Results.Conflict(new { Error = new ActionError("Неверный логин и/или пароль.", userPasswordPair) });
 
-            //todo Ключ надо бы вынести, например, в файл или в конфигурацию. А ещё можно в utils вынести SigningCredentials, а также issuer (или вообще генерацию токена).
-
-            var jwtHeader = new JwtHeader(new SigningCredentials(new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("uig284hnj&*#^%\\\"34.h567&y")), SecurityAlgorithms.HmacSha256));
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.Login) };
-            var jwtPayload = new JwtPayload("FiveWords", "FiveWords", claims, null, expires: DateTime.UtcNow.AddHours(24));
-            var jwt = new JwtSecurityToken(jwtHeader, jwtPayload);
-            var jwtEncoded = new JwtSecurityTokenHandler().WriteToken(jwt);
+            string jwtEncoded = jwtCreator.CreateToken(user);
             return Results.Text(jwtEncoded);
 
             //context.SignInAsync() - проверить,как работает.. а точнее, Results.Signin

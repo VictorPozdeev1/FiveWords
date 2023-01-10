@@ -18,6 +18,7 @@ using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
 using FiveWords.Infrastructure.TelegramAlerting;
 using Microsoft.Extensions.Options;
+using FiveWords.Infrastructure.Authentication;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -65,18 +66,11 @@ builder.Services.AddSingleton<GuessRightVariant_UserAnswerAssessor>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        //todo вынести строки в конфигурацию (а лучше даже в Options?),
-        //а секретный ключ вообще можно вынести в двоичный файл, и потом File.ReadAllBytes(FilePath)
-        ValidIssuer = "FiveWords",
-        ValidAudience = "FiveWords",
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("uig284hnj&*#^%\\\"34.h567&y"))
-    };
-});
+builder.Services.AddJwtAuthentication(builder.Configuration.GetSection("JwtAuthentication:TokenValidationParameters"));
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped(serviceProvider =>
+    new JwtCreator(serviceProvider.GetRequiredService<IConfiguration>().GetSection("JwtAuthentication:TokenIssuingParameters")));
 
 builder.Services.AddControllers(options => { /*options.ModelBinderProviders.Insert(0, new WordTranslationsFromFile_ModelBinderProvider());*/ });
 
