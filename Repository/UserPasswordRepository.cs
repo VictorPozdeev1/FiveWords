@@ -6,7 +6,7 @@ internal class OneUserPasswordInFileRepository : UsingFileSystemRepository, IOne
 {
     protected internal OneUserPasswordInFileRepository(string homeDirectoryPath, string fileName) : base(homeDirectoryPath)
         => this.fileName = fileName;
-    
+
 
     private protected string fileName;
     protected string FilePath => Path.Combine(repoDirectoryPath, fileName);

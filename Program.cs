@@ -1,24 +1,18 @@
-using System.Text.Json;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-
-using FiveWords.Repository;
-using FiveWords.Repository.Interfaces;
-using FiveWords.Repository.CsvRepository;
-using FiveWords.Api;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Rewrite;
-using FiveWords.Api.ModelBinding;
-using FiveWords._v1.View;
-using FiveWords._v1.Utils;
-using FiveWords._v1.Endpoints;
 using FiveWords._v1.BusinessLogic;
+using FiveWords._v1.Endpoints;
 using FiveWords._v1.Repository;
-using Serilog;
-using Microsoft.AspNetCore.HttpOverrides;
-using FiveWords.Infrastructure.TelegramAlerting;
-using Microsoft.Extensions.Options;
+using FiveWords._v1.Utils;
+using FiveWords._v1.View;
+using FiveWords.Api;
 using FiveWords.Infrastructure.Authentication;
+using FiveWords.Infrastructure.TelegramAlerting;
+using FiveWords.Repository;
+using FiveWords.Repository.CsvRepository;
+using FiveWords.Repository.Interfaces;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Rewrite;
+using Serilog;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -212,96 +206,3 @@ app.MapGet("/services", (HttpContext context) => ServiceInfo.PrintDIServices(ser
 app.UseEndpoints(_ => { }); //(routeBuilder => FiveWords.EndpointMapper.MapEndpoints(routeBuilder));
 
 app.Run();
-
-//async Task DefaultRequestHandler(HttpContext context)
-//{
-//    var path = context.Request.Path;
-//    switch (path)
-//    {
-//        case "/":
-//            context.Response.Redirect("welcome");
-//            break;
-//        case "/welcome":
-//            context.Response.ContentType = "text/html; charset=utf-8";
-//            await context.Response.SendFileAsync("html/welcome.html");
-//            break;
-//        case "/default-challenge-page":
-//            context.Response.ContentType = "text/html; charset=utf-8";
-//            await context.Response.SendFileAsync("html/five-words-challenge.html");
-//            break;
-//        case "/challenge/guess-translate":
-//            var query = context.Request.Query;
-//            if (byte.TryParse(query["UnitsCount"], out byte unitsCount))
-//                if (byte.TryParse(query["AnswerVariantsCount"], out byte answerVariantsCount))
-//                {
-//                    var currentUser = User.Default;
-//                    var userChallenge = UserChallengeCreator.CreateGuessTranslateChallenge(currentUser, unitsCount, answerVariantsCount);
-//                    //using (var tempFile = new FileStream("temp.json", FileMode.OpenOrCreate))
-//                    //{
-//                    //    var options = new JsonSerializerOptions();
-//                    //    options.WriteIndented = true;
-//                    //    await JsonSerializer.SerializeAsync(tempFile, userChallenge, userChallenge.GetType(), options);
-//                    //}
-//                    string userChallengeJson = JsonSerializer.Serialize(userChallenge);
-//                    //GuessTranslate_UserChallenge? userChallengeSaved =
-//                    //    JsonSerializer.Deserialize<GuessTranslate_UserChallenge>(userChallengeJson);
-//                    //JsonElement? test = JsonSerializer.Deserialize<JsonElement>(userChallengeJson);
-//                    context.Session.SetString("CurrentUserChallenge", userChallengeJson);
-//                    await context.Response.WriteAsJsonAsync(userChallenge);
-//                }
-//            break;
-//        case "/challenge-result/guess-translate":
-//            switch (context.Request.Method)
-//            {
-//                case "POST":
-//                    string? userChallengeSavedJson = context.Session.GetString("CurrentUserChallenge");
-//                    GuessTranslate_UserChallenge? userChallengeSaved = JsonSerializer.Deserialize<GuessTranslate_UserChallenge>(userChallengeSavedJson);
-//                    byte rightAnswersCounter = 0;
-//                    try
-//                    {
-//                        int[] userAnswers = await context.Request.ReadFromJsonAsync<int[]>();
-//                        for (byte i = 0; i < userAnswers.Length; i++)
-//                            if (userAnswers[i] == userChallengeSaved.Units[i].RightAnswerIndex)
-//                                rightAnswersCounter++;
-//                    }
-//                    catch (Exception ex)
-//                    {
-//                        throw;
-//                    }
-
-//                    context.Response.ContentType = "text/html; charset=utf-8";
-//                    //await context.Response.SendFileAsync("html\\challenge-result.html");
-
-//                    HtmlAgilityPack.HtmlDocument htmlDocument = new HtmlAgilityPack.HtmlDocument();
-//                    try
-//                    {
-//                        using (var fileStream = File.Open("html/challenge-result.html", FileMode.Open))
-//                        {
-//                            htmlDocument.Load(fileStream);
-//                        }
-//                        var mainLabel = htmlDocument.GetElementbyId("result-text");//htmlDocument.DocumentNode.SelectSingleNode("//*[@id='result-text']");
-//                        mainLabel.InnerHtml = $"Правильных ответов: {rightAnswersCounter}.";
-//                        var whatsMoreLabel = htmlDocument.GetElementbyId("whats-more");
-//                        whatsMoreLabel.InnerHtml = "(Тут когда-нибудь будет возможность зарегистрироваться, чтобы создавать собственные словари и программы тренировок, вести статистику, и т. д.)";
-//                        System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-//                        using (StringWriter writer = new StringWriter(stringBuilder))
-//                        {
-//                            htmlDocument.Save(writer);
-//                            writer.Flush();
-//                        }
-//                        await context.Response.WriteAsync(stringBuilder.ToString());
-//                    }
-//                    catch (Exception ex) { }
-//                    //await context.Response.()
-
-//                    break;
-//            }
-//            break;
-//        default:
-//            if (File.Exists(path.Value?.TrimStart('/')))
-//                await context.Response.SendFileAsync(path.Value.TrimStart('/'));
-//            else
-//                context.Response.StatusCode = 404;
-//            break;
-//    }
-//}

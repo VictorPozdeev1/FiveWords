@@ -1,10 +1,8 @@
 ﻿using FiveWords.DataObjects;
-using FiveWords.Repository.Interfaces;
 using FiveWords.Repository;
+using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FiveWords.Api.Controllers;
 

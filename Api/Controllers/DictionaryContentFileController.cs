@@ -1,9 +1,9 @@
-﻿using FiveWords.DataObjects;
-using FiveWords.Repository.Interfaces;
+﻿using FiveWords.Api.ModelBinding;
+using FiveWords.DataObjects;
 using FiveWords.Repository;
+using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using FiveWords.Api.ModelBinding;
 
 namespace FiveWords.Api.Controllers
 {

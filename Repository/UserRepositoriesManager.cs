@@ -40,7 +40,7 @@ public abstract class UserRepositoriesManager<TRepository>
     protected abstract TRepository InstantiateRepository(string repoDirectoryPath);
 }
 
-public class UserPasswordRepositoriesManager: UserRepositoriesManager<IOnePasswordRepository>
+public class UserPasswordRepositoriesManager : UserRepositoriesManager<IOnePasswordRepository>
 {
     protected override string RepoSubfolderName => "password-hash";
     protected override IOnePasswordRepository InstantiateRepository(string repoDirectoryPath) => new OneUserPasswordInFileRepository(repoDirectoryPath, "password-hash");

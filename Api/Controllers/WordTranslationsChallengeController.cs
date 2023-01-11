@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FiveWords.BusinessLogic;
 using FiveWords.DataObjects;
-using FiveWords.Repository.Interfaces;
 using FiveWords.Repository;
-using FiveWords.BusinessLogic;
+using FiveWords.Repository.Interfaces;
+using FiveWords.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using FiveWords.Utils;
 
 namespace FiveWords.Api.Controllers;
 
