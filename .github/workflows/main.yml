@@ -1,0 +1,11 @@
+name: my-first-ga
+
+on:
+  push:
+    branches: "github-actions-test"
+jobs:
+  my-first-job:    
+    runs-on: debian-11
+    steps:
+    - name: Print HW
+      run:  echo "hello world"
