@@ -5,7 +5,7 @@ on:
     branches: "github-actions-test"
 jobs:
   my-first-job:    
-    runs-on: debian-11
+    runs-on: ubuntu-latest
     steps:
     - name: Print HW
       run:  echo "hello world"
