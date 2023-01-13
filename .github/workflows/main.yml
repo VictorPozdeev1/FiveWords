@@ -20,5 +20,5 @@ jobs:
       run: |
         echo "hello world"
         echo ".NET ver:" && dotnet --version
-        ls -R
+        ls -R ./bin/Debug/net6.0
         echo "goodbye world"
