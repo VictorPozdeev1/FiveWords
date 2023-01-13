@@ -4,8 +4,16 @@ on:
   push:
     branches: "github-actions-test"
 jobs:
-  my-first-job:    
+  my-first-job:
     runs-on: ubuntu-latest
     steps:
-    - name: Print HW
-      run:  echo "hello world"
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Prints
+      run: |
+        echo "hello world"
+        dotnet --version
+        ls
+        echo "goodbye world"
