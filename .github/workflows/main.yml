@@ -20,20 +20,20 @@ jobs:
       run: |
         echo "hello world"
         pwd
-        ls ~
-        echo "Test_repo_var:"       
-        echo ${{ vars.TEST_REPO_VAR }}                    
-        echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
-        echo "in file:"
-        cat ~/test1.txt
-        
+        ls -l ~        
         echo "Test_secret:"       
         echo ${{ secrets.TEST_SECRET1 }}                    
         echo ${{ vars.TEST_SECRET1 }} > ~/test1.txt
+        ls -l ~
         echo "in file:"
-        cat ~/test1.txt
-        
+        cat ~/test1.txt        
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
 #     - name: Add a file
+
+#         echo "Test_repo_var:"       
+#         echo ${{ vars.TEST_REPO_VAR }}                    
+#         echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
+#         echo "in file:"
+#         cat ~/test1.txt
