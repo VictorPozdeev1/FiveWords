@@ -30,9 +30,8 @@ jobs:
         apt list --installed | grep ssh
         
         echo "test2" > ~/test2.txt
-        ls -l ~        
+        ls -l ~
         
-        sshpass -p '${{ secrets.N_P }}' scp ~/test2.txt nonroot@195.43.142.14:~/temp
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
@@ -43,3 +42,23 @@ jobs:
 #         echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
 #         echo "in file:"
 #         cat ~/test1.txt
+
+# sshpass -p '${{ secrets.N_P }}' scp ~/test2.txt nonroot@195.43.142.14:~/temp
+    - name: TRYING ssh-scp-ssh-pipelines ----------------------------
+      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      env:
+        WELCOME: "ssh scp ssh pipelines"
+        LASTSSH: "Doing something after copying"
+      with:
+        host: ${{ secrets.HOST_IP }}
+        user: ${{ secrets.N_L }}
+        pass: ${{ secrets.N_P }}
+        connect_timeout: 10s
+        first_ssh: |
+          ls -la  \necho $WELCOME 
+          mkdir -p /home/github/test &&
+        scp: |
+          ~/test2.txt => /home/github/test/
+        last_ssh: |
+          echo $LASTSSH && 
+          ls -la
