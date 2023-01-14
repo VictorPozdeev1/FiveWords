@@ -21,6 +21,16 @@ jobs:
         echo "hello world"
         pwd
         ls ~
+        echo "Test_repo_var:"
+        echo ${{ env.TEST_REPO_VAR }}
+        echo ${{ env.First.TEST_REPO_VAR }}
+        echo ${{ vars.TEST_REPO_VAR }}
+        echo ${{ vars.First.TEST_REPO_VAR }}
+        echo "Test_repo_var simply:"
+        echo $env.TEST_REPO_VAR
+        echo $env.First.TEST_REPO_VAR
+        echo $vars.TEST_REPO_VAR
+        echo $vars.First.TEST_REPO_VAR
         echo "Test_var:"
         echo ${{ env.TEST_VAR }}
         echo ${{ env.First.TEST_VAR }}
