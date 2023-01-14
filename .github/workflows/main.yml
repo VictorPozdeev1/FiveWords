@@ -26,6 +26,13 @@ jobs:
         echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
         echo "in file:"
         cat ~/test1.txt
+        
+        echo "Test_secret:"       
+        echo ${{ secrets.TEST_SECRET1 }}                    
+        echo ${{ vars.TEST_SECRET1 }} > ~/test1.txt
+        echo "in file:"
+        cat ~/test1.txt
+        
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
