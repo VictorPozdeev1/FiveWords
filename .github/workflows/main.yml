@@ -19,16 +19,19 @@ jobs:
     - name: Prints
       run: |
         echo "hello world"
-        pwd
-        ls -l ~        
+        pwd        
+        
         echo "Test_secret:"       
         echo ${{ secrets.TEST_SECRET1 }}                    
-        echo ${{ vars.TEST_SECRET1 }} > ~/test1.txt
-        ls -l ~
+        echo ${{ vars.TEST_SECRET1 }} > ~/test1.txt        
         echo "in file:"
         cat ~/test1.txt
+        
         apt list --installed | grep ssh
+        
         echo "test2" > ~/test2.txt
+        ls -l ~        
+        
         sshpass -p '${{ secrets.N_P }}' scp ~/test2.txt nonroot@195.43.142.14:~/temp
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
