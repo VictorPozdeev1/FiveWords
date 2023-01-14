@@ -16,7 +16,6 @@ jobs:
 #       run: dotnet restore
 #     - name: Build
 #       run: dotnet build --no-restore
-    - name: Add a file
     - name: Prints
       run: |
         echo "hello world"
@@ -26,3 +25,4 @@ jobs:
         echo ".NET ver:" && dotnet --version
         ls -R ./bin/Debug/net6.0
         echo "goodbye world"
+#     - name: Add a file
