@@ -21,8 +21,10 @@ jobs:
         echo "hello world"
         pwd
         echo "Test_var:"
-        echo ${{env.TEST_VAR}}
-        echo ".NET ver:" && dotnet --version
-        ls -R ./bin/Debug/net6.0
+        echo ${{ env.TEST_VAR }}
+        echo "Test_var simply:"
+        echo $env.TEST_VAR
+        echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
+#       ls -R ./bin/Debug/net6.0
 #     - name: Add a file
