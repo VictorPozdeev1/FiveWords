@@ -55,10 +55,12 @@ jobs:
         pass: ${{ secrets.N_P }}
         connect_timeout: 10s
         first_ssh: |
-          ls -la  \necho $WELCOME 
-          mkdir -p /home/github/test &&
+          pwd &&
+          ls -la &&
+          mkdir -p ~/test &&
+          ls -la &&
         scp: |
-          ~/test2.txt => /home/github/test/
+          ~/test2.txt => ~/test/
         last_ssh: |
-          echo $LASTSSH && 
+          pwd
           ls -la
