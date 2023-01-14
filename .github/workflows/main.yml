@@ -21,26 +21,11 @@ jobs:
         echo "hello world"
         pwd
         ls ~
-        echo "Test_repo_var:"
-        echo ${{ env.TEST_REPO_VAR }}
-        echo ${{ env.First.TEST_REPO_VAR }}
-        echo ${{ vars.TEST_REPO_VAR }}
-        echo ${{ vars.First.TEST_REPO_VAR }}
-        echo "Test_repo_var simply:"
-        echo $env.TEST_REPO_VAR
-        echo $env.First.TEST_REPO_VAR
-        echo $vars.TEST_REPO_VAR
-        echo $vars.First.TEST_REPO_VAR
-        echo "Test_var:"
-        echo ${{ env.TEST_VAR }}
-        echo ${{ env.First.TEST_VAR }}
-        echo ${{ vars.TEST_VAR }}
-        echo ${{ vars.First.TEST_VAR }}
-        echo "Test_var simply:"
-        echo $env.TEST_VAR
-        echo $env.First.TEST_VAR
-        echo $vars.TEST_VAR
-        echo $vars.First.TEST_VAR
+        echo "Test_repo_var:"       
+        echo ${{ vars.TEST_REPO_VAR }}        
+        echo "Test_repo_var simply:"       
+        echo $vars.TEST_REPO_VAR        
+        echo $TEST_REPO_VAR              
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
