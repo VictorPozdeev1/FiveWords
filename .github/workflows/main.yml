@@ -22,10 +22,9 @@ jobs:
         pwd
         ls ~
         echo "Test_repo_var:"       
-        echo ${{ vars.TEST_REPO_VAR }}        
-        echo "Test_repo_var simply:"       
-        echo $vars.TEST_REPO_VAR        
-        echo $TEST_REPO_VAR              
+        echo ${{ vars.TEST_REPO_VAR }}                    
+        echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
+        cat ~/test1.txt
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
