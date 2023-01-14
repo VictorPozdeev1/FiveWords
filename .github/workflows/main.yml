@@ -24,9 +24,13 @@ jobs:
         echo "Test_var:"
         echo ${{ env.TEST_VAR }}
         echo ${{ env.First.TEST_VAR }}
+        echo ${{ vars.TEST_VAR }}
+        echo ${{ vars.First.TEST_VAR }}
         echo "Test_var simply:"
         echo $env.TEST_VAR
         echo $env.First.TEST_VAR
+        echo $vars.TEST_VAR
+        echo $vars.First.TEST_VAR
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
