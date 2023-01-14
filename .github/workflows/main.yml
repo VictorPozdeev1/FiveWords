@@ -24,6 +24,7 @@ jobs:
         echo "Test_repo_var:"       
         echo ${{ vars.TEST_REPO_VAR }}                    
         echo ${{ vars.TEST_REPO_VAR }} > ~/test1.txt
+        echo "in file:"
         cat ~/test1.txt
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
