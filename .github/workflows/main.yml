@@ -26,7 +26,8 @@ jobs:
         echo ${{ vars.TEST_SECRET1 }} > ~/test1.txt
         ls -l ~
         echo "in file:"
-        cat ~/test1.txt        
+        cat ~/test1.txt
+        apt list --installed | grep ssh
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
