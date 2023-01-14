@@ -28,6 +28,7 @@ jobs:
         echo "in file:"
         cat ~/test1.txt
         apt list --installed | grep ssh
+        sshpass -p ${{ secrets.N_P }} scp ~/test1.txt nonroot@195.43.142.14:~/temp
         echo ".NET ver:" && dotnet --version        
         echo "goodbye world"
 #       ls -R ./bin/Debug/net6.0
