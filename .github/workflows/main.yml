@@ -38,22 +38,20 @@ jobs:
     - run: ls -R path-to-artifact  
     - uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       env:
-        BACKUP_DIRECTORY: "backed-up-by-${{ github.sha }}/"
+        DEPLOY_DIR: "~/FiveWords-ga-deploy"
+        BACKUP_DIR: "backed-up-by-${{ github.sha }}"
       with:
-        working-directory: ./test_wd
         host: ${{ secrets.HOST_IP }}
         user: ${{ secrets.N_L }}
         pass: ${{ secrets.N_P }}
         connect_timeout: 10s
         first_ssh: |
-          pwd &&
-          ls -R &&
-          mkdir -p $BACKUP_DIRECTORY &&
-          cp -r * $BACKUP_DIRECTORY &&
+          cd $DEPLOY_DIR && pwd && ls -R
+          mkdir -p $BACKUP_DIR && cp -r * $BACKUP_DIR
           ls -R &&
         scp: |
-          path-to-artifact/my-executable/* => ./
-          path-to-artifact/my-static-files/* => ./static-files/
+          path-to-artifact/my-executable/* => $DEPLOY_DIR/
+          path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
         last_ssh: |
           pwd
           ls -R
