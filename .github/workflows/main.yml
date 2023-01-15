@@ -11,7 +11,7 @@ jobs:
     - run: |
         cd front-end
         npm ci
-        npm run prod
+        npm run prod_linux
         ls --hide=node* -R
         pwd
     - run : pwd
