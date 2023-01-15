@@ -39,7 +39,7 @@ jobs:
     - uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       env:
         DEPLOY_DIR: "~/FiveWords-ga-deploy"
-        BACKUP_DIR: "backed-up-by-${{ github.sha }}"
+        BACKUP_DIR: "~/FiveWords-backups/backed-up-by-${{ github.sha }}"
       with:
         host: ${{ secrets.HOST_IP }}
         user: ${{ secrets.N_L }}
@@ -48,7 +48,7 @@ jobs:
         first_ssh: |
           cd $DEPLOY_DIR && pwd && ls -R
           mkdir -p $BACKUP_DIR && cp -r * $BACKUP_DIR
-          ls -R &&
+          ls -R $BACKUP_DIR
         scp: |
           path-to-artifact/my-executable/* => $DEPLOY_DIR/
           path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
