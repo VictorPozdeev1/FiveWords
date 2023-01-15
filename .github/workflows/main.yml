@@ -36,6 +36,27 @@ jobs:
 #           name: my-artifact
         path: path-to-artifact
     - run: ls -R path-to-artifact  
+    - uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      env:
+        BACKUP_DIRECTORY: "backed-up-by-${{ github.sha }}/"
+      with:
+        working-directory: ./test_wd
+        host: ${{ secrets.HOST_IP }}
+        user: ${{ secrets.N_L }}
+        pass: ${{ secrets.N_P }}
+        connect_timeout: 10s
+        first_ssh: |
+          pwd &&
+          ls -R &&
+          mkdir -p $BACKUP_DIRECTORY &&
+          cp -r * $BACKUP_DIRECTORY &&
+          ls -R &&
+        scp: |
+          path-to-artifact/my-executable/* => ./
+          path-to-artifact/my-static-files/* => ./static-files/
+        last_ssh: |
+          pwd
+          ls -R
 
 
 #     - name: Prints
