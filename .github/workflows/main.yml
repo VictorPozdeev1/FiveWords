@@ -52,6 +52,7 @@ jobs:
           path-to-artifact/my-executable/* => $DEPLOY_DIR/
           path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
         last_ssh: |
+          systemctl restart FiveWords.service
           pwd
           ls -R
 
