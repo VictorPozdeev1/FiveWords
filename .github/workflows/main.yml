@@ -4,7 +4,7 @@ on:
   push:
     branches: "github-actions-test"
 jobs:
-  my-first-job:
+  build-all:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -19,6 +19,23 @@ jobs:
     - run: dotnet restore
     - run: dotnet build --no-restore
     - run: ls --hide=node* -R
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-executable
+        path: ./bin/Debug/net6.0        
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-static-files
+        path: ./static-files
+  deploy:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/download-artifact@v3
+#         with:
+#           name: my-artifact
+#           path: path-to-artifact
+
+
 #     - name: Prints
 #       run: |
 #         echo "hello world"
