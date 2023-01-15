@@ -28,9 +28,10 @@ jobs:
         name: my-static-files
         path: ./static-files
   deploy:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: actions/download-artifact@v3
+    needs: build-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
 #         with:
 #           name: my-artifact
 #           path: path-to-artifact
