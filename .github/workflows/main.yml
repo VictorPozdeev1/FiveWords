@@ -8,10 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - run: cd front-end
-    - run: npm ci
-    - run: npm run prod
-    - run: ls -R
+    - run: |
+        cd front-end
+        ls
+        npm ci
+        ls -R
+        npm run prod
+        ls -R
+        pwd
+    - run : pwd
 #     - name: Setup .NET
 #       uses: actions/setup-dotnet@v3
 #       with:
