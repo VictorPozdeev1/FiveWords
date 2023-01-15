@@ -1,0 +1,55 @@
+name: my-first-ga
+on:
+  push:
+    branches: "main"
+jobs:
+  build-all:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - run: |
+        cd front-end
+        npm ci
+        npm run prod_linux
+        ls --hide=node* -R
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - run: dotnet restore
+    - run: dotnet build --no-restore
+    - run: ls --hide=node* -R
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-executable
+        path: ./bin/Debug/net6.0        
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-static-files
+        path: ./static-files
+  deploy:
+    needs: build-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        path: path-to-artifact
+    - run: ls -R path-to-artifact  
+    - uses: cross-the-world/ssh-scp-ssh-pipelines@latest
+      env:
+        DEPLOY_DIR: "~/FiveWords-ga-deploy"
+        BACKUP_DIR: "~/FiveWords-backups/backed-up-by-${{ github.sha }}"
+      with:
+        host: ${{ secrets.HOST_IP }}
+        user: ${{ secrets.N_L }}
+        pass: ${{ secrets.N_P }}
+        connect_timeout: 10s
+        first_ssh: |
+          cd $DEPLOY_DIR && pwd && ls -R
+          if [ `ls . | wc -l` -ne 0 ] ; then mkdir -p $BACKUP_DIR && cp -r * $BACKUP_DIR; fi
+        scp: |
+          path-to-artifact/my-executable/* => $DEPLOY_DIR/
+          path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
+        last_ssh: |
+          pwd
+          ls -R
+#         try to add service restart using sudo later

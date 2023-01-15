@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
     "prod": "webpack --node-env=production && xcopy dist \"../static-files/v2/\" /e /i /y",
+    "prod_linux": "webpack --node-env=production && cp -r dist/* ../static-files/v2/",
     "dev": "webpack --node-env=development --no-devtool && xcopy dist \"../static-files/v2/\" /e /i /y",
     "watch": "webpack --node-env=development --no-devtool --watch",
     "help": "webpack help"
