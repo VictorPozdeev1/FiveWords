@@ -47,8 +47,7 @@ jobs:
         connect_timeout: 10s
         first_ssh: |
           cd $DEPLOY_DIR && pwd && ls -R
-          mkdir -p $BACKUP_DIR && cp -r * $BACKUP_DIR
-          ls -R $BACKUP_DIR
+          if [ `ls . | wc -l` -ne 0 ] ; then mkdir -p $BACKUP_DIR && cp -r * $BACKUP_DIR; fi
         scp: |
           path-to-artifact/my-executable/* => $DEPLOY_DIR/
           path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
