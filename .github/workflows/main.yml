@@ -50,6 +50,6 @@ jobs:
           path-to-artifact/my-executable/* => $DEPLOY_DIR/
           path-to-artifact/my-static-files/* => $DEPLOY_DIR/static-files/
         last_ssh: |
+          sudo systemctl restart FiveWords.service
           pwd
           ls -R
-#         try to add service restart using sudo later
