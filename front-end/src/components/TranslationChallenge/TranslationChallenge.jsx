@@ -46,7 +46,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
         }
     }, [challenge, setChallenge]);
 
-    function handleAnswerOptionSelect(selectedAnswerOptionIndex) {
+    const handleAnswerOptionSelect = useCallback(selectedAnswerOptionIndex => {
         selectedAnswerOptionIndices.current.push(selectedAnswerOptionIndex);
         if (currentUnitNumber < challenge.units.length - 1) {
             setCurrentUnitNumber(currentUnitNumber => currentUnitNumber + 1);
@@ -54,15 +54,13 @@ const TranslationChallenge = ({ dictionaryName }) => {
         else {
             setNeedsAssessment(true);
         }
-    }
+    }, [selectedAnswerOptionIndices.current, currentUnitNumber, challenge]);
 
-    function handleOneMoreTimeButtonClick() {
+    const handleOneMoreTimeButtonClick = useCallback(() => {
         setChallenge(null);
         selectedAnswerOptionIndices.current = [];
         setNeedsAssessment(false);
-    }
-
-
+    }, []);
 
     const goRegister = useCallback(() => { location.assign(new URL('?register=true', location.origin)) }, []);
 
