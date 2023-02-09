@@ -2,6 +2,9 @@ name: my-first-ga
 on:
   push:
     branches: "main"
+    paths-ignore: 
+      - 'readme.md'
+      - '.github/workflows/*.yml'
 jobs:
   build-all:
     runs-on: ubuntu-latest
