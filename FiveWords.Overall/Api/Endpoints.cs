@@ -1,5 +1,4 @@
-﻿using FiveWords._v1.Utils;
-using FiveWords.DataObjects;
+﻿using FiveWords.DataObjects;
 using FiveWords.Infrastructure.Authentication;
 using FiveWords.Infrastructure.TelegramAlerting;
 using FiveWords.Repository;
@@ -20,7 +19,7 @@ static class Endpoints
     {
         routeBuilder.MapGet("/exception", void () => throw new Exception("This is a test exception")).WithTags("INFO");
 
-        routeBuilder.MapGet("/routes", ServiceInfo.PrintRoutes).WithTags("INFO");
+        //routeBuilder.MapGet("/routes", ServiceInfo.PrintRoutes).WithTags("INFO");
 
         routeBuilder.MapPost("/registration", async (HttpContext httpContext, IOptionsSnapshot<JsonSerializerOptions> serializeOptions, [FromServices] TelegramNotifierProvider telegramNotifierProvider, IUsersRepository usersRepository, UserPasswordRepositoriesManager passwordRepositoriesManager) =>
         {
