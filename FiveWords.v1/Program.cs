@@ -4,10 +4,27 @@ using FiveWords._v1.Repository;
 using FiveWords._v1.Utils;
 using FiveWords._v1.View;
 using Microsoft.AspNetCore.Rewrite;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Configuration.AddJsonFile("appsettings_my.json");
+builder.Services.Configure<JsonSerializerOptions>("Internal", builder.Configuration.GetSection("JsonSerializerOptions:Internal"));
+builder.Services.AddOptions<JsonSerializerOptions>("Web")
+    .Bind(builder.Configuration.GetSection("JsonSerializerOptions:Web"))
+    .Configure(options =>
+    {
+        if (bool.TryParse(builder.Configuration["JsonSerializerOptions:Web:UseCamelCaseForPropertyNaming"], out bool useCamelCase))
+            if (useCamelCase)
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<HttpFileSender>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));
 
 //Здесь, видимо, к одному интерфейсу привязать и потом получать все через IEnumerable, и потом искать .First(repo => repo.Language = Language.English/Russian) ?
 builder.Services.AddSingleton<UserRepositoriesManager<IWordsRepository>, EnglishWordsUserRepositoriesManager>();

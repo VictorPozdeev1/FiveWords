@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 
 public abstract class HtmlViewCreator<TData>
 {
-    protected virtual string HtmlTemplatePath => Path.Combine("_v1", "html-templates", HtmlTemplateFilename);
+    protected virtual string HtmlTemplatePath => Path.Combine(/*"_v1", */"html-templates", HtmlTemplateFilename);
     protected abstract string HtmlTemplateFilename { get; }
 
     public virtual HtmlDocument CreateView(TData data)

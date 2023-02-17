@@ -1,7 +1,7 @@
 ﻿using FiveWords._v1.BusinessLogic;
 using FiveWords._v1.DataObjects;
 using FiveWords._v1.View;
-using FiveWords.DataObjects;
+using FiveWords._v1.DataObjects;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 

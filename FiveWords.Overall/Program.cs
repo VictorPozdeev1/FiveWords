@@ -35,7 +35,7 @@ builder.Services.AddOptions<JsonSerializerOptions>("Web")
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddHttpContextAccessor();
+//builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<IUsersRepository, UsersCsvRepository>((services) => new UsersCsvRepository("users-list", "users-list.csv"));
 builder.Services.AddSingleton<UserPasswordRepositoriesManager>();

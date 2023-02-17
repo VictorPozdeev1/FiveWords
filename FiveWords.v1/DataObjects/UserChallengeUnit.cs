@@ -1,6 +1,7 @@
 ﻿namespace FiveWords._v1.DataObjects;
 
-public abstract record UserChallengeUnit_v1<TQuestion>(TQuestion? Question) : FiveWords.DataObjects.UserChallengeUnit;
+public abstract record UserChallengeUnit;
+public abstract record UserChallengeUnit_v1<TQuestion>(TQuestion? Question) : UserChallengeUnit;
 
 public abstract record HavingRightAnswer_UserChallengeUnit_v1<TQuestion, TAnswer>(TQuestion? Question, TAnswer? RightAnswer)
     : UserChallengeUnit_v1<TQuestion>(Question);

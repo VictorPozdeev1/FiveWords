@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords._v1.DataObjects;
 
 namespace FiveWords._v1.DataObjects;
 

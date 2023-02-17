@@ -1,5 +1,5 @@
 ﻿using FiveWords._v1.DataObjects;
-using FiveWords.Repository.Interfaces;
+using FiveWords._v1.Repository.Interfaces;
 
 namespace FiveWords._v1.Repository;
 

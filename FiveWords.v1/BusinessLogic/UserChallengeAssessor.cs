@@ -1,5 +1,4 @@
 ﻿using FiveWords._v1.DataObjects;
-using FiveWords.DataObjects;
 
 namespace FiveWords._v1.BusinessLogic;
 
