@@ -15,16 +15,3 @@ public interface ISimpleEntityRepository<TEntity, TEntityId> : IBaseRepository
     void UpdateAndImmediatelySave(TEntityId id, TEntity entity);
     void DeleteAndImmediatelySave(TEntityId id);
 }
-
-public interface IOnePasswordRepository : IBaseRepository
-{
-    byte[] GetPasswordHash();
-    void SavePasswordHash(byte[] data);
-}
-
-
-public interface IUsersRepository : ISimpleEntityRepository<User, string>
-{
-    public ActionError? FindError_UserWithSuchLoginAlreadyExists(string login)
-        => Exists(login) ? new ActionError($"Пользователь с логином \"{login}\" уже существует.", login) : null;
-}
