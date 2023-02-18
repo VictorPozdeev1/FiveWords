@@ -1,7 +1,9 @@
 name: my-first-ga
 on:
   push:
-    branches: "main"
+    branches:
+#       - "main"
+      - 'releases/2.**'
     paths-ignore: 
       - 'README.md'
       - '.github/workflows/*.yml'
