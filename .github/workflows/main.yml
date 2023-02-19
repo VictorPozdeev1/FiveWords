@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: |
-        cd front-end
+        cd FiveWords.Overall/front-end
         npm ci
         npm run prod_linux
         ls --hide=node* -R
