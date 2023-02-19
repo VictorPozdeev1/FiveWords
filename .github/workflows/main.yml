@@ -1,14 +1,6 @@
 name: my-second-ga
 on:
   workflow_dispatch:
-  push:
-    branches:
-#       - "main"
-      - 'releases/2.**'
-      - 'temp/ga-test-new'
-    paths-ignore: 
-      - 'README.md'
-      - '.github/workflows/*.yml'
 jobs:
   build-all:
     runs-on: ubuntu-latest
