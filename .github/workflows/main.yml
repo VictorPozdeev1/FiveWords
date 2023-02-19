@@ -28,11 +28,11 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: my-executable
-        path: ./bin/Debug/net6.0        
+        path: ./FiveWords.Overall/bin/Debug/net6.0        
     - uses: actions/upload-artifact@v3
       with:
         name: my-static-files
-        path: ./static-files
+        path: ./FiveWords.Overall/static-files
   deploy:
     needs: build-all
     runs-on: ubuntu-latest
