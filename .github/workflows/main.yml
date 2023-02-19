@@ -1,4 +1,4 @@
-name: my-first-ga
+name: my-second-ga
 on:
   workflow_dispatch:
   push:
