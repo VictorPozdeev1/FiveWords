@@ -1,5 +1,6 @@
 name: my-first-ga
 on:
+  workflow_dispatch:
   push:
     branches:
 #       - "main"
