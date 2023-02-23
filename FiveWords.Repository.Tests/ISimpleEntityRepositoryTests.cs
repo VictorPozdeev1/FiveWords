@@ -65,6 +65,26 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.False);
     }
 
+    [TestCase]
+    public void GetAll_IfNoEntitiesExist_ThenReturnsEmptyEnumerable()
+    {
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(Enumerable.Empty<TEntity>());
+        IReadOnlyDictionary<TId, TEntity> actual = systemUnderTests.GetAll();
+
+        Assert.That(actual, Is.Empty);
+    }
+
+    //[TestCaseSource(nameof(TestCasesOfType))]
+    public void GetAll_IfdfoEntitiesExist_ThenReturnsEmptyEnumerable(TEntity exampleEntity)
+    {
+        /*systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
+        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
+        bool actual = systemUnderTests.Exists(idToFind);
+
+        Assert.That(actual, Is.False);*/
+        //Assert.Fail();
+    }
+
     public static IEnumerable<TestCaseData> TestCasesOfType => TestCasesByTypes[typeof(TEntity).FullName!];
 
     private static Dictionary<string, IEnumerable<TestCaseData>> TestCasesByTypes = new()
