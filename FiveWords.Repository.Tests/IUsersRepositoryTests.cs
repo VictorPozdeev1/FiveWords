@@ -22,18 +22,12 @@ internal class IUsersRepository_Get_Tests<TRepositoryHelper>
     public void Clean() => repositoryHelper.Clean();
 
     [Test]
-    [TestCase("Vasya Petrov", "6F9619FF-8B86-D011-B42D-00CF4FC964FF")]
-    [TestCase("Misha Hrenov", "6F9619FF-8B86-D011-B42D-00CF4FC964FF")]
-    public void IfSingleSuchUserExists_ThenReturnsIt(string id, string guidString)
+    [TestCaseSource(nameof(TestCasesOfType), new object[] { typeof(User) })]
+    public void IfSingleSuchUserExists_ThenReturnsIt(User singleUser)
     {
-        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(id, guidString);
-        User expected = new User()
-        {
-            Id = id,
-            Guid = Guid.Parse(guidString)
-        };
-
-        User? actual = systemUnderTests.Get(id);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(singleUser.Id, singleUser.Guid.ToString());
+        User expected = singleUser;
+        User? actual = systemUnderTests.Get(singleUser.Id);
 
         Assert.That(actual, Is.EqualTo(expected));
     }
@@ -48,9 +42,22 @@ internal class IUsersRepository_Get_Tests<TRepositoryHelper>
     //{
     //    Assert.Fail();
     //}
+
+    public static IEnumerable<TestCaseData> TestCasesOfType(Type type) => TestCasesByTypes[type.FullName];
+    private static Dictionary<string, IEnumerable<TestCaseData>> TestCasesByTypes = new()
+    {
+        {
+            typeof(User).FullName,  new TestCaseData[]
+            {
+                new TestCaseData(new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF"))),
+                new TestCaseData(new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2"))),
+                new TestCaseData(new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))),
+            }
+        }
+    };
 }
 
-public class IUsersRepository_GetAll_Tests
+public class IUsersRepository_Get_TestsData
 {
 
 }
