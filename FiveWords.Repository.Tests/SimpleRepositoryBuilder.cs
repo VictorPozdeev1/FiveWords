@@ -1,13 +1,16 @@
 ﻿using FiveWords.DataObjects;
 using FiveWords.Repository.CsvRepository;
 using FiveWords.Repository.Interfaces;
+using System.Security.Cryptography;
 
 namespace FiveWords.Repository.Tests;
 
-internal interface ISimpleRepositoryHelper
+internal interface ISimpleRepositoryHelper<TEntity, TId>
+    where TEntity : BaseEntity<TId>
+    where TId : IEquatable<TId>
 {
-    UsersCsvRepository CreateRepository();
-    UsersCsvRepository CreateRepositoryWithOneEntity(string id, string guidString);
+    //UsersCsvRepository CreateRepository();
+    ISimpleEntityRepository<TEntity, TId> CreateRepositoryWithOneEntity(TEntity singleEntity);
     void DeleteRepository();
     void Clean();
 }
@@ -20,7 +23,7 @@ internal enum RepositoryHelperState
     Cleaned
 }
 
-internal sealed class SimpleRepositoryHelper : ISimpleRepositoryHelper
+internal sealed class SimpleRepositoryHelper : ISimpleRepositoryHelper<User, string>
 {
     public SimpleRepositoryHelper()
     {
@@ -33,20 +36,20 @@ internal sealed class SimpleRepositoryHelper : ISimpleRepositoryHelper
 
     string filesId;
 
-    public UsersCsvRepository CreateRepository()
-    {
-        if (state != RepositoryHelperState.RepositoryNotCreated)
-            throw new InvalidOperationException();
-        var result = new UsersCsvRepository(filesId, $"{filesId}.csv");
-        state = RepositoryHelperState.RepositoryCreated;
-        return result;
-    }
+    /* public UsersCsvRepository CreateRepository()
+     {
+         if (state != RepositoryHelperState.RepositoryNotCreated)
+             throw new InvalidOperationException();
+         var result = new UsersCsvRepository(filesId, $"{filesId}.csv");
+         state = RepositoryHelperState.RepositoryCreated;
+         return result;
+     }*/
 
-    public UsersCsvRepository CreateRepositoryWithOneEntity(string id, string guidString)
+    public ISimpleEntityRepository<User, string> CreateRepositoryWithOneEntity(User singleUser)
     {
         if (state != RepositoryHelperState.RepositoryNotCreated)
             throw new InvalidOperationException();
-        File.WriteAllText(Path.Combine(filesId, $"{filesId}.csv"), $"Id,Guid\r\n{id},{guidString}\r\n");
+        File.WriteAllText(Path.Combine(filesId, $"{filesId}.csv"), $"Id,Guid\r\n{singleUser.Id},{singleUser.Guid.ToString()}\r\n");
         var result = new UsersCsvRepository(filesId, $"{filesId}.csv");
         state = RepositoryHelperState.RepositoryCreated;
         return result;
