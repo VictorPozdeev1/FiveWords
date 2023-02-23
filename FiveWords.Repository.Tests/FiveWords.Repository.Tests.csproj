@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Csv\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FiveWords.Overall\FiveWords.Overall.csproj" />
   </ItemGroup>
 

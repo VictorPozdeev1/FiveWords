@@ -1,10 +1,13 @@
-﻿using FiveWords.Repository.Interfaces;
-using FiveWords.DataObjects;
-using FiveWords.Repository.Tests;
+﻿using FiveWords.DataObjects;
+using FiveWords.Repository.Interfaces;
+using FiveWords.Repository.Tests.Helpers;
+using FiveWords.Repository.Tests.Helpers.Csv;
 
-[TestFixture(typeof(SimpleRepositoryHelper), typeof(User), typeof(string))]
-internal class IUsersRepository_Get_Tests<TRepositoryHelper, TEntity, TId>
-    where TRepositoryHelper : ISimpleRepositoryHelper<TEntity, TId>, new()
+namespace FiveWords.Repository.Tests;
+
+[TestFixture(typeof(UsersRepositoryHelper), typeof(User), typeof(string))]
+internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
+    where TRepositoryHelper : ISimpleEntityRepositoryHelper<TEntity, TId>, new()
     where TEntity : BaseEntity<TId>
     where TId : IEquatable<TId>
 {
@@ -25,25 +28,25 @@ internal class IUsersRepository_Get_Tests<TRepositoryHelper, TEntity, TId>
 
     [Test]
     [TestCaseSource(nameof(TestCasesOfType))]
-    public void IfSingleSuchUserExists_ThenReturnsIt(TEntity singleEntity)
+    public void IfSuchEntityExists_ThenReturnsIt(TEntity exampleEntity)
     {
-        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(singleEntity);
-        TEntity expected = singleEntity;
-        TEntity? actual = systemUnderTests.Get(singleEntity.Id);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
+        TEntity expected = exampleEntity;
+        TEntity? actual = systemUnderTests.Get(exampleEntity.Id);
 
         Assert.That(actual, Is.EqualTo(expected));
     }
 
-    public void IfNoSuchUserExists_ThenReturnsNull()
+    [TestCaseSource(nameof(TestCasesOfType))]
+    public void IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
     {
-        Assert.Pass();
-    }
+        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
+        Assume.That(exampleEntity.Id, Is.InstanceOf(typeof(string))); //?
+        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
+        TEntity? actual = systemUnderTests.Get(idToFind);
 
-    // Такая ситуация в принципе не должна быть допущена любой реализацией интерфейса
-    //public void IfMultipleSuchUsersExist_ThenWhatToDo()
-    //{
-    //    Assert.Fail();
-    //}
+        Assert.That(actual, Is.Null);
+    }
 
     public static IEnumerable<TestCaseData> TestCasesOfType => TestCasesByTypes[typeof(TEntity).FullName!];
 
@@ -58,9 +61,4 @@ internal class IUsersRepository_Get_Tests<TRepositoryHelper, TEntity, TId>
             }
         }
     };
-}
-
-public class IUsersRepository_Get_TestsData
-{
-
 }
