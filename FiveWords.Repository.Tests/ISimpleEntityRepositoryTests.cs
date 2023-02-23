@@ -26,9 +26,8 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     [OneTimeTearDown]
     public void Clean() => repositoryHelper.Clean();
 
-    [Test]
     [TestCaseSource(nameof(TestCasesOfType))]
-    public void IfSuchEntityExists_ThenReturnsIt(TEntity exampleEntity)
+    public void Get_IfSuchEntityExists_ThenReturnsIt(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
         TEntity expected = exampleEntity;
@@ -38,14 +37,32 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     }
 
     [TestCaseSource(nameof(TestCasesOfType))]
-    public void IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
+    public void Get_IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
-        Assume.That(exampleEntity.Id, Is.InstanceOf(typeof(string))); //?
         TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
         TEntity? actual = systemUnderTests.Get(idToFind);
 
         Assert.That(actual, Is.Null);
+    }
+
+    [TestCaseSource(nameof(TestCasesOfType))]
+    public void Exists_IfSuchEntityExists_ThenReturnsTrue(TEntity exampleEntity)
+    {
+        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
+        bool actual = systemUnderTests.Exists(exampleEntity.Id);
+
+        Assert.That(actual, Is.True);
+    }
+
+    [TestCaseSource(nameof(TestCasesOfType))]
+    public void Exists_IfNoSuchEntityExists_ThenReturnsFalse(TEntity exampleEntity)
+    {
+        systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
+        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
+        bool actual = systemUnderTests.Exists(idToFind);
+
+        Assert.That(actual, Is.False);
     }
 
     public static IEnumerable<TestCaseData> TestCasesOfType => TestCasesByTypes[typeof(TEntity).FullName!];
