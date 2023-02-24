@@ -26,7 +26,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     [OneTimeTearDown]
     public void Clean() => repositoryHelper.Clean();
 
-    [TestCaseSource(nameof(TestCasesOfType))]
+    [TestCaseSource(nameof(SingleEntities))]
     public void Get_IfSuchEntityExists_ThenReturnsIt(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -36,7 +36,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EqualTo(expected));
     }
 
-    [TestCaseSource(nameof(TestCasesOfType))]
+    [TestCaseSource(nameof(SingleEntities))]
     public void Get_IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -46,7 +46,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.Null);
     }
 
-    [TestCaseSource(nameof(TestCasesOfType))]
+    [TestCaseSource(nameof(SingleEntities))]
     public void Exists_IfSuchEntityExists_ThenReturnsTrue(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -55,7 +55,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.True);
     }
 
-    [TestCaseSource(nameof(TestCasesOfType))]
+    [TestCaseSource(nameof(SingleEntities))]
     public void Exists_IfNoSuchEntityExists_ThenReturnsFalse(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -74,27 +74,42 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.Empty);
     }
 
-    //[TestCaseSource(nameof(TestCasesOfType))]
-    public void GetAll_IfdfoEntitiesExist_ThenReturnsEmptyEnumerable(TEntity exampleEntity)
+    [TestCaseSource(nameof(EntityEnumerables))]
+    public void GetAll_IfSomeEntitiesExist_ThenReturnsThem(TEntity[] exampleEntities)
     {
-        /*systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
-        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
-        bool actual = systemUnderTests.Exists(idToFind);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(exampleEntities);
+        var expected = exampleEntities.ToDictionary(it => it.Id);
+        IReadOnlyDictionary<TId, TEntity> actual = systemUnderTests.GetAll();
 
-        Assert.That(actual, Is.False);*/
-        //Assert.Fail();
+        Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    public static IEnumerable<TestCaseData> TestCasesOfType => TestCasesByTypes[typeof(TEntity).FullName!];
-
-    private static Dictionary<string, IEnumerable<TestCaseData>> TestCasesByTypes = new()
+    private static IEnumerable<TestCaseData> SingleEntities => singleEntitiesByTypes[typeof(TEntity).FullName!];
+    private static readonly Dictionary<string, IEnumerable<TestCaseData>> singleEntitiesByTypes = new()
     {
         {
             typeof(User).FullName!,  new TestCaseData[]
             {
                 new TestCaseData(new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF"))),
                 new TestCaseData(new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2"))),
-                new TestCaseData(new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))),
+                new TestCaseData(new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b")))
+            }
+        }
+    };
+
+
+    private static IEnumerable<TestCaseData> EntityEnumerables => entityEnumerablesByTypes[typeof(TEntity).FullName!];
+    private static readonly Dictionary<string, IEnumerable<TestCaseData>> entityEnumerablesByTypes = new()
+    {
+        {
+            typeof(User).FullName!,  new TestCaseData[]
+            {
+                new TestCaseData(new [] {new User[]
+                {
+                    new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF")),
+                    new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2")),
+                    new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))
+                } })
             }
         }
     };
