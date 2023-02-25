@@ -84,7 +84,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    [TestCaseSource(nameof(EntityEnumerable))]
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
     public void AddAndImmediatelySave_IfNoConflicts_ThenAddsSuccesfully(TEntity[] exampleEntities)
     {
         // arrange
@@ -101,7 +101,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    [TestCaseSource(nameof(EntityEnumerable))]
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
     public void AddAndImmediatelySave_IfKeyAlreadyExistsConflict_ThenThrowsArgumentException(TEntity[] exampleEntities)
     {
         // arrange
@@ -128,6 +128,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
 
 
     private static IEnumerable<TestCaseData> EntityEnumerable => entityEnumerablesByTypes[typeof(TEntity).FullName!];
+    private static IEnumerable<TestCaseData> NotEmptyEntityEnumerable => EntityEnumerable.Where(it => ((TEntity[])it.OriginalArguments[0]!).Length > 0);
     private static readonly Dictionary<string, IEnumerable<TestCaseData>> entityEnumerablesByTypes = new()
     {
         {
@@ -138,7 +139,8 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
                     new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF")),
                     new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2")),
                     new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))
-                } })
+                } }),
+                new TestCaseData(new [] { new User[] { } }),
             }
         }
     };
