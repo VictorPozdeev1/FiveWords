@@ -84,8 +84,22 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
+    [TestCaseSource(nameof(SingleEntity))]
+    public void AddAndImmediatelySave_IfNoEntitiesExist_ThenAddsSuccesfully(TEntity entityToAdd)
+    {
+        // arrange
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(Enumerable.Empty<TEntity>());
+        // act
+        systemUnderTests.AddAndImmediatelySave(entityToAdd);
+        // assert
+        var expected = new TEntity[] { entityToAdd };
+        var actual = repositoryHelper.GetAllEntitiesFromRepository();
+
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
     [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
-    public void AddAndImmediatelySave_IfNoConflicts_ThenAddsSuccesfully(TEntity[] exampleEntities)
+    public void AddAndImmediatelySave_IfSomeEntitiesExistButNoConflicts_ThenAddsSuccesfully(TEntity[] exampleEntities)
     {
         // arrange
         Assume.That(exampleEntities.Count() > 0);
