@@ -9,6 +9,7 @@ internal interface ISimpleEntityRepositoryHelper<TEntity, TId>
 {
     ISimpleEntityRepository<TEntity, TId> CreateRepositoryWithOneEntity(TEntity singleEntity);
     ISimpleEntityRepository<TEntity, TId> CreateRepositoryWithSomeEntities(IEnumerable<TEntity> entitiesToAdd);
+    IEnumerable<TEntity> GetAllEntitiesFromRepository();
     void DeleteRepository();
     void Clean();
     TId GetSomeSimilarId(TId exampleId);

@@ -42,6 +42,12 @@ internal sealed class UsersRepositoryHelper : ISimpleEntityRepositoryHelper<User
         return result;
     }
 
+    public IEnumerable<User> GetAllEntitiesFromRepository()
+    {
+        // Тут хорошо бы не использовать методы самого репозитория, а самому получить данные из файла. Но пока что сделаю так..
+        return new UsersCsvRepository(filesId, $"{filesId}.csv").GetAll().Select(it => it.Value);
+    }
+
     public void DeleteRepository()
     {
         if (state != RepositoryHelperState.RepositoryIsUp)

@@ -26,7 +26,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     [OneTimeTearDown]
     public void Clean() => repositoryHelper.Clean();
 
-    [TestCaseSource(nameof(SingleEntities))]
+    [TestCaseSource(nameof(SingleEntity))]
     public void Get_IfSuchEntityExists_ThenReturnsIt(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -36,7 +36,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EqualTo(expected));
     }
 
-    [TestCaseSource(nameof(SingleEntities))]
+    [TestCaseSource(nameof(SingleEntity))]
     public void Get_IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -46,7 +46,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.Null);
     }
 
-    [TestCaseSource(nameof(SingleEntities))]
+    [TestCaseSource(nameof(SingleEntity))]
     public void Exists_IfSuchEntityExists_ThenReturnsTrue(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -55,7 +55,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.True);
     }
 
-    [TestCaseSource(nameof(SingleEntities))]
+    [TestCaseSource(nameof(SingleEntity))]
     public void Exists_IfNoSuchEntityExists_ThenReturnsFalse(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
@@ -74,7 +74,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.Empty);
     }
 
-    [TestCaseSource(nameof(EntityEnumerables))]
+    [TestCaseSource(nameof(EntityEnumerable))]
     public void GetAll_IfSomeEntitiesExist_ThenReturnsThem(TEntity[] exampleEntities)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(exampleEntities);
@@ -84,7 +84,36 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
-    private static IEnumerable<TestCaseData> SingleEntities => singleEntitiesByTypes[typeof(TEntity).FullName!];
+    [TestCaseSource(nameof(EntityEnumerable))]
+    public void AddAndImmediatelySave_IfNoConflicts_ThenAddsSuccesfully(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() > 0);
+        TEntity entityToAdd = exampleEntities.First();
+        IEnumerable<TEntity> alreadyExistingEntities = exampleEntities.Skip(1);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(alreadyExistingEntities);
+        // act
+        systemUnderTests.AddAndImmediatelySave(entityToAdd);
+        // assert
+        var expected = alreadyExistingEntities.Append(entityToAdd);
+        var actual = repositoryHelper.GetAllEntitiesFromRepository();
+
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
+    [TestCaseSource(nameof(EntityEnumerable))]
+    public void AddAndImmediatelySave_IfKeyAlreadyExistsConflict_ThenThrowsArgumentException(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() > 0);
+        TEntity entityToAdd = exampleEntities.First();
+        IEnumerable<TEntity> alreadyExistingEntities = exampleEntities;
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(alreadyExistingEntities);
+        // act, assert
+        Assert.Throws<ArgumentException>(() => systemUnderTests.AddAndImmediatelySave(entityToAdd));
+    }
+
+    private static IEnumerable<TestCaseData> SingleEntity => singleEntitiesByTypes[typeof(TEntity).FullName!];
     private static readonly Dictionary<string, IEnumerable<TestCaseData>> singleEntitiesByTypes = new()
     {
         {
@@ -98,13 +127,13 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     };
 
 
-    private static IEnumerable<TestCaseData> EntityEnumerables => entityEnumerablesByTypes[typeof(TEntity).FullName!];
+    private static IEnumerable<TestCaseData> EntityEnumerable => entityEnumerablesByTypes[typeof(TEntity).FullName!];
     private static readonly Dictionary<string, IEnumerable<TestCaseData>> entityEnumerablesByTypes = new()
     {
         {
             typeof(User).FullName!,  new TestCaseData[]
             {
-                new TestCaseData(new [] {new User[]
+                new TestCaseData(new [] { new []
                 {
                     new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF")),
                     new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2")),
