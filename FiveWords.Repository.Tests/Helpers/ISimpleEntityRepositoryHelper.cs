@@ -12,5 +12,5 @@ internal interface ISimpleEntityRepositoryHelper<TEntity, TId>
     IEnumerable<TEntity> GetAllEntitiesFromRepository();
     void DeleteRepository();
     void Clean();
-    TId GetSomeSimilarId(TId exampleId);
+    TId GetSimilarButNotExistingId(TId exampleId);
 }

@@ -62,5 +62,7 @@ internal sealed class UsersRepositoryHelper : ISimpleEntityRepositoryHelper<User
         state = RepositoryHelperState.Cleaned;
     }
 
-    public string GetSomeSimilarId(string exampleId) => exampleId + ' ';
+    // Для простоты предполагается, что наборы тестовых данных составлены так, что требование "not existing" выполняется при простом добавлении пробела.
+    // Если в какой-то момент это станет не так, то придётся дописать проверку и другую генерацию.
+    public string GetSimilarButNotExistingId(string exampleId) => exampleId + ' ';
 }

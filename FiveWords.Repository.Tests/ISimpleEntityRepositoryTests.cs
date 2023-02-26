@@ -40,7 +40,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     public void Get_IfNoSuchEntityExists_ThenReturnsNull(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
-        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
+        TId idToFind = repositoryHelper.GetSimilarButNotExistingId(exampleEntity.Id);
         TEntity? actual = systemUnderTests.Get(idToFind);
 
         Assert.That(actual, Is.Null);
@@ -59,7 +59,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     public void Exists_IfNoSuchEntityExists_ThenReturnsFalse(TEntity exampleEntity)
     {
         systemUnderTests = repositoryHelper.CreateRepositoryWithOneEntity(exampleEntity);
-        TId idToFind = repositoryHelper.GetSomeSimilarId(exampleEntity.Id);
+        TId idToFind = repositoryHelper.GetSimilarButNotExistingId(exampleEntity.Id);
         bool actual = systemUnderTests.Exists(idToFind);
 
         Assert.That(actual, Is.False);
@@ -126,6 +126,36 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         // act, assert
         Assert.Throws<ArgumentException>(() => systemUnderTests.AddAndImmediatelySave(entityToAdd));
     }
+
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
+    public void DeleteAndImmediatelySave_IfExists_ThenDeletesSuccessfully(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() > 0);
+        IEnumerable<TEntity> existingEntities = exampleEntities;
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(existingEntities);
+        // act
+        TEntity entityToDelete = exampleEntities.First();
+        systemUnderTests.DeleteAndImmediatelySave(entityToDelete.Id);
+        // assert
+        var expected = existingEntities.Skip(1);
+        var actual = repositoryHelper.GetAllEntitiesFromRepository();
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
+
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
+    public void DeleteAndImmediatelySave_IfNotExists_ThenThrowsArgumentException(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() > 0);
+        IEnumerable<TEntity> existingEntities = exampleEntities;
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(existingEntities);
+        // act, assert
+        TId notExistingId = repositoryHelper.GetSimilarButNotExistingId(exampleEntities.First().Id);
+        Assert.Throws<ArgumentException>(() => systemUnderTests.DeleteAndImmediatelySave(notExistingId));
+    }
+
+    //void UpdateAndImmediatelySave(TEntityId id, TEntity entity);
 
     private static IEnumerable<TestCaseData> SingleEntity => singleEntitiesByTypes[typeof(TEntity).FullName!];
     private static readonly Dictionary<string, IEnumerable<TestCaseData>> singleEntitiesByTypes = new()
