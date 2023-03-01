@@ -104,25 +104,25 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         // arrange
         Assume.That(exampleEntities.Count() > 0);
         TEntity entityToAdd = exampleEntities.First();
-        IEnumerable<TEntity> alreadyExistingEntities = exampleEntities.Skip(1);
-        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(alreadyExistingEntities);
+        IEnumerable<TEntity> entitiesToBeInRepository = exampleEntities.Skip(1);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(entitiesToBeInRepository);
         // act
         systemUnderTests.AddAndImmediatelySave(entityToAdd);
         // assert
-        var expected = alreadyExistingEntities.Append(entityToAdd);
+        var expected = entitiesToBeInRepository.Append(entityToAdd);
         var actual = repositoryHelper.GetAllEntitiesFromRepository();
 
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
     [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
-    public void AddAndImmediatelySave_IfKeyAlreadyExistsConflict_ThenThrowsArgumentException(TEntity[] exampleEntities)
+    public void AddAndImmediatelySave_IfKeyAlreadyExists_ThenThrowsArgumentException(TEntity[] exampleEntities)
     {
         // arrange
         Assume.That(exampleEntities.Count() > 0);
         TEntity entityToAdd = exampleEntities.First();
-        IEnumerable<TEntity> alreadyExistingEntities = exampleEntities;
-        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(alreadyExistingEntities);
+        IEnumerable<TEntity> entitiesToBeInRepository = exampleEntities;
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(entitiesToBeInRepository);
         // act, assert
         Assert.Throws<ArgumentException>(() => systemUnderTests.AddAndImmediatelySave(entityToAdd));
     }
@@ -155,7 +155,50 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
         Assert.Throws<ArgumentException>(() => systemUnderTests.DeleteAndImmediatelySave(notExistingId));
     }
 
-    //void UpdateAndImmediatelySave(TEntityId id, TEntity entity);
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
+    public void UpdateAndImmediatelySave_IfKeyNotExists_ThenThrowsArgumentException(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() > 0);
+        IEnumerable<TEntity> entitiesToBeInRepository = exampleEntities.Skip(1);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(entitiesToBeInRepository);
+        // act, assert
+        TEntity entityToProvideUpdatedValue = exampleEntities.First();
+        var entityToUpdate_Id = repositoryHelper.GetSimilarButNotExistingId(entityToProvideUpdatedValue.Id);
+        Assert.Throws<ArgumentException>(() => systemUnderTests.UpdateAndImmediatelySave(entityToUpdate_Id, entityToProvideUpdatedValue));
+    }
+
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
+    public void UpdateAndImmediatelySave_IfNewValueKeyAlreadyExists_ThenThrowsArgumentException(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() >= 2);
+        IEnumerable<TEntity> entitiesToBeInRepository = exampleEntities;
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(entitiesToBeInRepository);
+        // act, assert
+        TEntity entityToProvideUpdatedValue = entitiesToBeInRepository.First();
+        var entityToUpdate_Id = entitiesToBeInRepository.Skip(1).First().Id;
+        Assert.Throws<ArgumentException>(() => systemUnderTests.UpdateAndImmediatelySave(entityToUpdate_Id, entityToProvideUpdatedValue));
+    }
+
+    [TestCaseSource(nameof(NotEmptyEntityEnumerable))]
+    public void UpdateAndImmediatelySave_IfKeyExistsAndNewValueMakesNoConflicts_ThenUpdatesSuccessfully(TEntity[] exampleEntities)
+    {
+        // arrange
+        Assume.That(exampleEntities.Count() >= 2);
+        IEnumerable<TEntity> entitiesToBeInRepository = exampleEntities.Skip(1);
+        systemUnderTests = repositoryHelper.CreateRepositoryWithSomeEntities(entitiesToBeInRepository);
+        // act
+        TEntity entityToProvideUpdatedValue = exampleEntities.First();
+        var entityToUpdate_Id = entitiesToBeInRepository.First().Id;
+        systemUnderTests.UpdateAndImmediatelySave(entityToUpdate_Id, entityToProvideUpdatedValue);
+        // assert
+        var expected = entitiesToBeInRepository
+            .Where(it => !it.Id.Equals(entityToUpdate_Id))
+            .Append(entityToProvideUpdatedValue);
+        var actual = repositoryHelper.GetAllEntitiesFromRepository();
+        Assert.That(actual, Is.EquivalentTo(expected));
+    }
 
     private static IEnumerable<TestCaseData> SingleEntity => singleEntitiesByTypes[typeof(TEntity).FullName!];
     private static readonly Dictionary<string, IEnumerable<TestCaseData>> singleEntitiesByTypes = new()
@@ -169,7 +212,6 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
             }
         }
     };
-
 
     private static IEnumerable<TestCaseData> EntityEnumerable => entityEnumerablesByTypes[typeof(TEntity).FullName!];
     private static IEnumerable<TestCaseData> NotEmptyEntityEnumerable => EntityEnumerable.Where(it => ((TEntity[])it.OriginalArguments[0]!).Length > 0);
