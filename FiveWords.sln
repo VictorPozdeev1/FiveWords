@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveWords.Overall", "FiveWords.Overall\FiveWords.Overall.csproj", "{383D68B6-30ED-4D46-9882-A2D8B9819996}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveWords.Repository.Tests", "FiveWords.Repository.Tests\FiveWords.Repository.Tests.csproj", "{13DC88D6-11D6-43A2-8116-87A30B04DEC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveWords.Repository.Tests", "FiveWords.Repository.Tests\FiveWords.Repository.Tests.csproj", "{13DC88D6-11D6-43A2-8116-87A30B04DEC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveWords.Repository.EF", "FiveWords.Repository.EF\FiveWords.Repository.EF.csproj", "{59226491-8EE9-45A8-9C28-F8C52F8ABFCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{13DC88D6-11D6-43A2-8116-87A30B04DEC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13DC88D6-11D6-43A2-8116-87A30B04DEC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13DC88D6-11D6-43A2-8116-87A30B04DEC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59226491-8EE9-45A8-9C28-F8C52F8ABFCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59226491-8EE9-45A8-9C28-F8C52F8ABFCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59226491-8EE9-45A8-9C28-F8C52F8ABFCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59226491-8EE9-45A8-9C28-F8C52F8ABFCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
