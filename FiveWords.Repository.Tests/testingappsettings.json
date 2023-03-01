@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "Testing_PgSqlCommon": "Host=localhost;Port=5432;Database=testing_fivewords;Username=postgres"
+  }
+}

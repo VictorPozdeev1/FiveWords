@@ -1,11 +1,11 @@
 ﻿using FiveWords.DataObjects;
 using FiveWords.Repository.Interfaces;
 using FiveWords.Repository.Tests.Helpers;
-using FiveWords.Repository.Tests.Helpers.Csv;
 
 namespace FiveWords.Repository.Tests;
 
-[TestFixture(typeof(UsersRepositoryHelper), typeof(User), typeof(string))]
+[TestFixture(typeof(Helpers.Csv.UsersRepositoryHelper), typeof(User), typeof(string))]
+[TestFixture(typeof(Helpers.EF.UsersRepositoryHelper), typeof(User), typeof(string))]
 internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
     where TRepositoryHelper : ISimpleEntityRepositoryHelper<TEntity, TId>, new()
     where TEntity : BaseEntity<TId>
