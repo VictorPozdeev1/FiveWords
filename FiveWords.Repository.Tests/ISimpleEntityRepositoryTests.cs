@@ -208,7 +208,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
             {
                 new TestCaseData(new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF"))),
                 new TestCaseData(new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2"))),
-                new TestCaseData(new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b")))
+                new TestCaseData(new User("Sveta Buleva", Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b")))
             }
         }
     };
@@ -224,7 +224,7 @@ internal class ISimpleEntityRepository_Tests<TRepositoryHelper, TEntity, TId>
                 {
                     new User("Vasya Petrov", Guid.Parse("6F9619FF-8B86-D011-B42D-00CF4FC964FF")),
                     new User("Misha Hrenov", Guid.Parse("12400a97-10b9-42f8-86d3-a00568f8e0c2")),
-                    new User("Sveta Buleva",  Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))
+                    new User("Sveta Buleva", Guid.Parse("5733abe5-f3ae-40db-a787-1f311b5a188b"))
                 } }),
                 new TestCaseData(new [] { new User[] { } }),
             }
