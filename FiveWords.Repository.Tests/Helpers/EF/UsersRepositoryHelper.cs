@@ -24,6 +24,8 @@ internal sealed class UsersRepositoryHelper : ISimpleEntityRepositoryHelper<User
 
         dbContext = new CommonDbContext(optionsBuilder.Options);
         dbContext.Database.EnsureCreated();
+
+        state = RepositoryHelperState.RepositoryIsDown;
     }
 
     RepositoryHelperState state;
