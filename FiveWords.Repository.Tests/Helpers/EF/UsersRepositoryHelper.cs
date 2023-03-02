@@ -17,14 +17,17 @@ internal sealed class UsersRepositoryHelper : ISimpleEntityRepositoryHelper<User
 
         var optionsBuilder = new DbContextOptionsBuilder<CommonDbContext>();
         var connectionStringBuilder = new NpgsqlConnectionStringBuilder(configuration.GetConnectionString("Testing_PgSqlCommon"));
+        //connectionStringBuilder.Database = Guid.NewGuid().ToString();
         connectionStringBuilder.Password = configuration["DbPasswords:Testing_PgSqlCommon"];
-        optionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString);
+        connectionString = connectionStringBuilder.ConnectionString; // will be used for other local dbContexts also
+        optionsBuilder.UseNpgsql(connectionString);
 
         dbContext = new CommonDbContext(optionsBuilder.Options);
         dbContext.Database.EnsureCreated();
     }
 
     RepositoryHelperState state;
+    string connectionString;
     CommonDbContext dbContext;
 
     public ISimpleEntityRepository<User, string> CreateRepositoryWithOneEntity(User singleEntity)
@@ -65,11 +68,22 @@ internal sealed class UsersRepositoryHelper : ISimpleEntityRepositoryHelper<User
 
     public IEnumerable<User> GetAllEntitiesFromRepository()
     {
-        throw new NotImplementedException();
+        List<User> result = new();
+        DbContextOptionsBuilder<OneTableDbContext<User>> optionsBuilder = new DbContextOptionsBuilder<OneTableDbContext<User>>();
+        optionsBuilder.UseNpgsql(connectionString);
+        using (OneTableDbContext<User> tempDbContext = new OneTableDbContext<User>(optionsBuilder.Options))
+        {
+            tempDbContext.Entities.FromSqlRaw("Select * from \"Users\"");
+            result = tempDbContext.Entities.ToList();
+        }
+        return result;
     }
 
     public string GetSimilarButNotExistingId(string exampleId)
     {
-        throw new NotImplementedException();
+        // 1. Possibly, later there will be surrogate Id from PgSql instead of string Id
+        // 2. Для простоты предполагается, что наборы тестовых данных составлены так, что требование "not existing" выполняется при простом добавлении пробела.
+        // Если в какой-то момент это станет не так, то придётся дописать проверку и другую генерацию.
+        return exampleId + ' ';
     }
 }
