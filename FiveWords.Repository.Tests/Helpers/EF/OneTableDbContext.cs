@@ -11,4 +11,10 @@ internal class OneTableDbContext<TEntity> : DbContext
         => Database.EnsureCreated();
 
     public DbSet<TEntity> Entities => Set<TEntity>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // hmmmm...
+        modelBuilder.Entity<TEntity>().ToTable(typeof(TEntity).Name + 's');
+    }
 }
