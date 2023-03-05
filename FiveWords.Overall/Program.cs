@@ -6,8 +6,6 @@ using FiveWords.Repository.CsvRepository;
 using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Serilog;
 using System.Text.Json;
 
