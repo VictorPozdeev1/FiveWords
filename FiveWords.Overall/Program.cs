@@ -1,14 +1,11 @@
 using FiveWords.Api;
 using FiveWords.Infrastructure.Authentication;
 using FiveWords.Infrastructure.TelegramAlerting;
-using FiveWords.Overall.Repository.EFRepository;
 using FiveWords.Repository;
 using FiveWords.Repository.CsvRepository;
 using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using Serilog;
 using System.Text.Json;
 
@@ -43,16 +40,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IUsersRepository, UsersCsvRepository>((services) => new UsersCsvRepository("users-list", "users-list.csv"));
 builder.Services.AddSingleton<UserPasswordRepositoriesManager>();
 builder.Services.AddSingleton<UserDictionariesUserRepositoriesManager>();
-
-builder.Services.AddDbContext<CommonDbContext>(optionsBuilder =>
-{
-    var connectionStringBuilder = new NpgsqlConnectionStringBuilder(
-        builder.Configuration.GetConnectionString("PgSqlCommon"));
-    connectionStringBuilder.Password = builder.Configuration["DbPasswords:PgSqlCommon"];
-    optionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString);
-});
-
-builder.Services.AddScoped<IBaseRepository, UsersRepository>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromSeconds(3600));

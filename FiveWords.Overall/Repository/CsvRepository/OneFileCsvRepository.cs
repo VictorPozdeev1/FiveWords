@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace FiveWords.Repository.CsvRepository;
 
-public class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, ISimpleEntityRepository<TEntity, TEntityId>
+internal class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, ISimpleEntityRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>
     where TEntityId : IEquatable<TEntityId>
 {
