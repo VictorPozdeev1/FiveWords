@@ -11,61 +11,61 @@ public class GenericSimpleEntityRepository<TEntity, TId> : ISimpleEntityReposito
     public GenericSimpleEntityRepository(CommonDbContext dbContext)
         => this.dbContext = dbContext;
     private readonly CommonDbContext dbContext;
+    private DbSet<TEntity> Entities => dbContext.Set<TEntity>();
 
-    public bool Exists(TId id)
+    public async Task<bool> ExistsAsync(TId id)
     {
-        return dbContext.Set<TEntity>().Any(it => it.Id.Equals(id));
+        return await Entities.AnyAsync(it => it.Id.Equals(id)); // or this?: return await Entities.FindAsync(id) is not null;
     }
 
-    public TEntity? Get(TId id)
+    public bool Exists(TId id) => ExistsAsync(id).GetAwaiter().GetResult();
+
+    public async Task<TEntity?> GetAsync(TId id)
     {
-        return dbContext.Set<TEntity>().FirstOrDefault(it => it.Id.Equals(id));
+        return await Entities.FindAsync(id);
     }
 
-    public IReadOnlyDictionary<TId, TEntity> GetAll()
+    public TEntity? Get(TId id) => GetAsync(id).GetAwaiter().GetResult();
+
+    public async Task<IReadOnlyDictionary<TId, TEntity>> GetAllAsync()
     {
-        return dbContext.Set<TEntity>().ToDictionary(it => it.Id);
+        return await Entities.ToDictionaryAsync(it => it.Id);
     }
 
-    public void AddAndImmediatelySave(TEntity entity)
+    public IReadOnlyDictionary<TId, TEntity> GetAll() => GetAllAsync().GetAwaiter().GetResult();
+
+    public async Task AddAndImmediatelySaveAsync(TEntity entity)
     {
-        if (Exists(entity.Id))
+        if (await ExistsAsync(entity.Id))
             throw new ArgumentException($"Entity with key {entity.Id} already exists.");
-        dbContext.Set<TEntity>().Add(entity);
-        dbContext.SaveChanges();
+        Entities.Add(entity);
+        await dbContext.SaveChangesAsync();
     }
 
-    public void UpdateAndImmediatelySave(TId id, TEntity entity)
+    public void AddAndImmediatelySave(TEntity entity) => AddAndImmediatelySaveAsync(entity).GetAwaiter().GetResult();
+
+    public async Task UpdateAndImmediatelySaveAsync(TId id, TEntity entity)
     {
-        var foundEntity = dbContext.Find<User>(id);
+        var foundEntity = await dbContext.FindAsync<User>(id);
         if (foundEntity is null)
             throw new ArgumentException($"Entity with key {id} not found.");
-        if (Exists(entity.Id))
+        if (await ExistsAsync(entity.Id))
             throw new ArgumentException($"Entity with key {entity.Id} already exists.");
         dbContext.Entry(foundEntity).State = EntityState.Deleted;
         dbContext.Entry(entity).State = EntityState.Added;
-        dbContext.SaveChanges();
-
-        /*  if (dbContext.Set<User>().Single(it => it.Id.Equals(id)) is User foundUser)
-          {
-              //var t = await db.Teachers.FindAsync(id);
-              //teacher.Id = t.Id; // you might need to return to original value
-              //db.Entry(t).CurrentValues.SetValues(teacher);
-
-              dbContext.Entry(foundUser).State = EntityState.Detached;
-              //DbContext.Set<User>().Attach(entity); // not needed?
-              dbContext.Entry(entity).State = EntityState.Modified;
-              dbContext.SaveChanges();
-          }*/
+        await dbContext.SaveChangesAsync();
     }
 
-    public void DeleteAndImmediatelySave(TId id)
+    public void UpdateAndImmediatelySave(TId id, TEntity entity) => UpdateAndImmediatelySaveAsync(id, entity).GetAwaiter().GetResult();
+
+    public async Task DeleteAndImmediatelySaveAsync(TId id)
     {
-        var entityToDelete = dbContext.Find<TEntity>(id);
+        var entityToDelete = await dbContext.FindAsync<TEntity>(id);
         if (entityToDelete is null)
             throw new ArgumentException($"Entity with key {id} not found.");
         dbContext.Entry(entityToDelete).State = EntityState.Deleted;
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
-}
 
+    public void DeleteAndImmediatelySave(TId id) => DeleteAndImmediatelySaveAsync(id).GetAwaiter().GetResult();
+}
