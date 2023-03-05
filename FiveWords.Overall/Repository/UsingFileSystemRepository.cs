@@ -2,7 +2,7 @@
 
 namespace FiveWords.Repository;
 
-internal abstract class UsingFileSystemRepository : IBaseRepository
+public abstract class UsingFileSystemRepository : IBaseRepository
 {
     protected UsingFileSystemRepository(string repoDirectoryPath) => this.repoDirectoryPath = repoDirectoryPath;
     protected string repoDirectoryPath;
