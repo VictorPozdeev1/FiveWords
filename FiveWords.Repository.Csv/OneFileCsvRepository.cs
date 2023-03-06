@@ -3,7 +3,7 @@ using FiveWords.CommonModels;
 using FiveWords.Repository.Interfaces;
 using System.Collections.ObjectModel;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords.Repository.Csv;
 
 public class OneFileCsvRepository<TEntity, TEntityId> : UsingFileSystemRepository, ISimpleEntityRepository<TEntity, TEntityId>
     where TEntity : BaseEntity<TEntityId>

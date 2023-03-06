@@ -2,7 +2,7 @@
 using FiveWords.CommonModels;
 using FiveWords.Repository.Interfaces;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords.Repository.Csv;
 
 public class UsersCsvRepository : OneFileCsvRepository<User, string>, IUsersRepository
 {

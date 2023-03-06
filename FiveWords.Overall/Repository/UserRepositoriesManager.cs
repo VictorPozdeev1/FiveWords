@@ -1,5 +1,5 @@
 ﻿using FiveWords.CommonModels;
-using FiveWords.Repository.CsvRepository;
+using FiveWords.Repository.Csv;
 using FiveWords.Repository.Interfaces;
 
 namespace FiveWords.Repository;

@@ -2,13 +2,13 @@
 using FiveWords.CommonModels;
 using FiveWords.Repository.Interfaces;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords.Repository.Csv;
 
-internal class UserDictionariesCsvRepository
+public class UserDictionariesCsvRepository
     : SavingContentLength_HeadersWithContentCsvRepository<UserDictionary, UserDictionaryHeader, UserDictionaryHeaderWithWordsQuantity, string, WordTranslation, string>
     , IUserDictionariesRepository
 {
-    protected internal UserDictionariesCsvRepository(string repoDirectoryPath, string fileName)
+    public UserDictionariesCsvRepository(string repoDirectoryPath, string fileName)
         : base(repoDirectoryPath, fileName, new UserDictionaryHeadersWithWordsQuantityMapping(), new UserDictionariesContentMapping())
     { }
 

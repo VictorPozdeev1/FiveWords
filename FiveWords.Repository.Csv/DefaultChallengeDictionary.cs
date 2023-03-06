@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
 using FiveWords.CommonModels;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords.Repository.Csv;
 
 public static class DefaultChallengeDictionary
 {

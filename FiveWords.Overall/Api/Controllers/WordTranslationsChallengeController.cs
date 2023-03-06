@@ -23,7 +23,7 @@ public class WordTranslationsChallengeController : ControllerBase
         ICollection<WordTranslation> wordTranslationSet;
         if (currentUserName is null || dictionaryNameEscaped is null)
         {
-            wordTranslationSet = Repository.CsvRepository.DefaultChallengeDictionary.GetWordTranslationSet();
+            wordTranslationSet = Repository.Csv.DefaultChallengeDictionary.GetWordTranslationSet();
         }
         else
         {
