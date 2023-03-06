@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 
 namespace FiveWords.Repository.Interfaces;
 

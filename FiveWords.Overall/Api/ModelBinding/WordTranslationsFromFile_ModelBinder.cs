@@ -1,6 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using FiveWords.DataObjects;
+using FiveWords.CommonModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Globalization;
 

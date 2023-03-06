@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace FiveWords.DataObjects;
+namespace FiveWords.CommonModels;
 
 public record UserDictionaryHeader(string Id) : BaseEntity<string>(Id), IHeaderAttachingContentLength<UserDictionaryHeaderWithWordsQuantity>
 {

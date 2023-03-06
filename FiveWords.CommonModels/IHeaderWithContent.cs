@@ -1,4 +1,4 @@
-﻿namespace FiveWords.DataObjects;
+﻿namespace FiveWords.CommonModels;
 
 public interface IHeaderWithContent<THeader, THeaderId, TContentElement>
     //where THeader : BaseEntity<THeaderId>
@@ -8,18 +8,18 @@ public interface IHeaderWithContent<THeader, THeaderId, TContentElement>
     ICollection<TContentElement> Content { get; init; }
 }
 
-internal interface IHeaderDetachingContentLength<THeaderWithoutContentLength>
+public interface IHeaderDetachingContentLength<THeaderWithoutContentLength>
 {
     THeaderWithoutContentLength GetHeaderWithoutContentLength();
     int ContentLength { get; }
 }
 
-internal interface IHeaderAttachingContentLength<THeaderWithContentLength>
+public interface IHeaderAttachingContentLength<THeaderWithContentLength>
 {
     THeaderWithContentLength GetHeaderWithContentLength(int contentLength);
 }
 
-internal interface IHeaderAttachingContent<THeaderWithContent, TContentElement>
+public interface IHeaderAttachingContent<THeaderWithContent, TContentElement>
 {
     THeaderWithContent GetHeaderWithContent(ICollection<TContentElement> content);
 }

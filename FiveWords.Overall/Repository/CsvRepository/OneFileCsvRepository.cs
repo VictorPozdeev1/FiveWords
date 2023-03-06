@@ -1,5 +1,5 @@
 ﻿using CsvHelper.Configuration;
-using FiveWords.DataObjects;
+using FiveWords.CommonModels;
 using FiveWords.Repository.Interfaces;
 using System.Collections.ObjectModel;
 

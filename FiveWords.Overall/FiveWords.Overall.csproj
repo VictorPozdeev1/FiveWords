@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FiveWords.Repository.EF\FiveWords.Repository.EF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="front-end\package-lock.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>

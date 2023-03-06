@@ -1,6 +1,6 @@
-﻿namespace FiveWords.DataObjects;
+﻿namespace FiveWords.CommonModels;
 
-record UserPasswordPair(string Login, ushort[] PasswordHash)
+public record UserPasswordPair(string Login, ushort[] PasswordHash)
 {
     public string PasswordHashAsString => checked(BitConverter.ToString(PasswordHash.Select(us => (byte)us).ToArray()));
 

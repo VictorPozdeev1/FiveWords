@@ -1,9 +1,7 @@
 ﻿using CsvHelper.Configuration;
-using FiveWords.DataObjects;
+using FiveWords.CommonModels;
 
 namespace FiveWords.Repository.CsvRepository;
-
-
 
 internal abstract class SavingContentLength_HeadersWithContentCsvRepository<THeaderWithContent, THeader, THeaderWithContentLength, THeaderId, TContentElement, TContentElementId>
     where THeaderWithContent : IHeaderWithContent<THeader, THeaderId, TContentElement>

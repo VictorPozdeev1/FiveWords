@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
