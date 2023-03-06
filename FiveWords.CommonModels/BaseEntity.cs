@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FiveWords.DataObjects;
+namespace FiveWords.CommonModels;
 
 public abstract record BaseEntity<TId>([property: Required] TId Id)
 //where TId : struct

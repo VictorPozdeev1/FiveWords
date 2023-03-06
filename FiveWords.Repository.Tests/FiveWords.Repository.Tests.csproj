@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FiveWords.Overall\FiveWords.Overall.csproj" />
+    <ProjectReference Include="..\FiveWords.Repository.Csv\FiveWords.Repository.Csv.csproj" />
     <ProjectReference Include="..\FiveWords.Repository.EF\FiveWords.Repository.EF.csproj" />
   </ItemGroup>
 

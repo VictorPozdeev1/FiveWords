@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace FiveWords.DataObjects;
+namespace FiveWords.CommonModels;
 
 [WordValidation]
 public record WordTranslation(string Id, [property: RegularExpression(@"^[\wА-Яа-яЁё\-\.\?!\)\(,:' ]{1,30}$", ErrorMessage = "Разрешённый формат для перевода: 1-30 букв (плюс некоторые знаки препинания).")] string Translation) : BaseEntity<string>(Id)

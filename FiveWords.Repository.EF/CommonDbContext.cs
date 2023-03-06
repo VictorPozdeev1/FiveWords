@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FiveWords.Repository.EF;

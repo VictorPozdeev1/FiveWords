@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FiveWords.Api.ModelBinding

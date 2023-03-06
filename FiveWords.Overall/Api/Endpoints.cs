@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using FiveWords.Infrastructure.Authentication;
 using FiveWords.Infrastructure.TelegramAlerting;
 using FiveWords.Repository;

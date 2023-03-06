@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 
 namespace FiveWords.Repository.Interfaces;
 
@@ -29,8 +29,8 @@ public interface IHeaderWithContentRepository<THeaderWithContent, THeader, THead
     //IReadOnlyDictionary<TId, THeaderWithContent> GetAllHeadersWithContent();
     //void AddAndImmediatelySaveHeaderOnly(THeader header);
 
-    void TryUpdateContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, TContentElement newValue, out ActionError error);
-    void TryDeleteContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, out ActionError error);
-    void TryAddContentElementAndImmediatelySave(THeaderId headerId, TContentElement valueToAdd, out ActionError error);
-    void TryAddContentElementsAndImmediatelySave(THeaderId headerId, IEnumerable<TContentElement> valuesToAdd, out ActionError error);
+    void TryUpdateContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, TContentElement newValue, out ActionError? error);
+    void TryDeleteContentElementAndImmediatelySave(THeaderId headerId, TContentElementId contentElementId, out ActionError? error);
+    void TryAddContentElementAndImmediatelySave(THeaderId headerId, TContentElement valueToAdd, out ActionError? error);
+    void TryAddContentElementsAndImmediatelySave(THeaderId headerId, IEnumerable<TContentElement> valuesToAdd, out ActionError? error);
 }

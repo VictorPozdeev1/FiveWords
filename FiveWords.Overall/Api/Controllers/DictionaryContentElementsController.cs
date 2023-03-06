@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using FiveWords.Repository;
 using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;

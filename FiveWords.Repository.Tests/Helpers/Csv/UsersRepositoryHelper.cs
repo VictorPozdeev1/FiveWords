@@ -1,5 +1,5 @@
-﻿using FiveWords.DataObjects;
-using FiveWords.Repository.CsvRepository;
+﻿using FiveWords.CommonModels;
+using FiveWords.Repository.Csv;
 using FiveWords.Repository.Interfaces;
 using System.Text;
 

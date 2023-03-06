@@ -2,7 +2,7 @@
 using CsvHelper.Configuration;
 using System.Globalization;
 
-namespace FiveWords.Repository.CsvRepository;
+namespace FiveWords.Repository.Csv;
 
 internal static class Utils
 {

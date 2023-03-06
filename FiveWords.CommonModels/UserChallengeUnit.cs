@@ -1,4 +1,4 @@
-﻿namespace FiveWords.DataObjects;
+﻿namespace FiveWords.CommonModels;
 
 public abstract record UserChallengeUnit;
 public abstract record UserChallengeUnit<TQuestion>(TQuestion? Question) : UserChallengeUnit;

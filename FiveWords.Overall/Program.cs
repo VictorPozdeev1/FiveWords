@@ -2,7 +2,7 @@ using FiveWords.Api;
 using FiveWords.Infrastructure.Authentication;
 using FiveWords.Infrastructure.TelegramAlerting;
 using FiveWords.Repository;
-using FiveWords.Repository.CsvRepository;
+using FiveWords.Repository.Csv;
 using FiveWords.Repository.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;

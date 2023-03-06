@@ -1,6 +1,6 @@
 ﻿using FiveWords.Repository.Interfaces;
 
-namespace FiveWords.Repository;
+namespace FiveWords.Repository.Csv;
 
 public abstract class UsingFileSystemRepository : IBaseRepository
 {

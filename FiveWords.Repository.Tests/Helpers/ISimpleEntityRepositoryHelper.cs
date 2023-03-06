@@ -1,4 +1,4 @@
-﻿using FiveWords.DataObjects;
+﻿using FiveWords.CommonModels;
 using FiveWords.Repository.Interfaces;
 
 namespace FiveWords.Repository.Tests.Helpers;

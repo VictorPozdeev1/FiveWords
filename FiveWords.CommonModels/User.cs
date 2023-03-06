@@ -1,4 +1,4 @@
-﻿namespace FiveWords.DataObjects;
+﻿namespace FiveWords.CommonModels;
 
 public record User(string Id, Guid Guid) : BaseEntity<string>(Id)
 {

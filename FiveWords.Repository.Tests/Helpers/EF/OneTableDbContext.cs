@@ -1,5 +1,4 @@
-﻿using FiveWords.DataObjects;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace FiveWords.Repository.Tests.Helpers.EF;
 
