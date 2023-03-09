@@ -2,7 +2,7 @@
 import classnames from 'classnames';
 import { useCallback } from 'react';
 
-const TranslationChallengeAssessment = ({ challenge, selectedAnswerOptionIndices, handleOneMoreTimeButtonClick }) => {
+const TranslationChallengeAssessment = ({ challenge, userAnswers, handleOneMoreTimeButtonClick }) => {
 
     //Тут мемо можно
     const createAssessment = useCallback(() => {
@@ -10,16 +10,16 @@ const TranslationChallengeAssessment = ({ challenge, selectedAnswerOptionIndices
         let rightAnswers = 0;
         challenge.units.forEach(
             (element, index) => {
-                if (element.rightOptionIndex === selectedAnswerOptionIndices[index]) rightAnswers++; else {
+                if (element.rightOptionIndex === userAnswers[index].selectedAnswerOptionIndex) rightAnswers++; else {
                     mistakes.push({
                         question: element.question,
-                        wrongAnswer: element.answerOptions[selectedAnswerOptionIndices[index]],
+                        wrongAnswer: element.answerOptions[userAnswers[index].selectedAnswerOptionIndex],
                         rightAnswer: element.answerOptions[element.rightOptionIndex]
                     });
                 }
             });
         return { text: `Правильных ответов: ${rightAnswers} из ${challenge.units.length}.`, mistakes };
-    }, [challenge, selectedAnswerOptionIndices]);
+    }, [challenge, userAnswers]);
 
     const assessment = createAssessment();
 

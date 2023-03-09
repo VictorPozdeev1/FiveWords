@@ -1,6 +1,12 @@
-﻿import styles from './TranslationChallengeUnit.module';
+﻿import { useEffect, useState } from 'react';
+import styles from './TranslationChallengeUnit.module';
 
 const TranslationChallengeUnit = ({ challengeUnit, unitNumber, unitsCount, handleAnswerOptionSelect }) => {
+    const [componentWasShownTime, setComponentWasShownTime] = useState();
+    useEffect(() => {
+        setComponentWasShownTime(new Date());
+    }, [unitNumber]);
+
     return (
         <div className={styles.body}>
             <fieldset>
@@ -11,7 +17,7 @@ const TranslationChallengeUnit = ({ challengeUnit, unitNumber, unitsCount, handl
                         <button
                             key={index + answerOption}
                             className={styles.answerOptionButton}
-                            onClick={() => { handleAnswerOptionSelect(index) }}
+                            onClick={() => { handleAnswerOptionSelect(index, new Date() - componentWasShownTime) }}
                         >
                             {answerOption}
                         </button>
