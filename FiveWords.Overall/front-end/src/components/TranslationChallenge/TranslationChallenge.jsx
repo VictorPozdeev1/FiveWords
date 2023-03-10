@@ -53,6 +53,16 @@ const TranslationChallenge = ({ dictionaryName }) => {
         }
         else {
             setNeedsAssessment(true);
+            if (isAuthenticated()) {
+                const url = new URL(`WordTranslationsChallengeResults`, location.origin);
+                // Можно не ждать ответа, т.к. его результаты в данном случае не важны.
+                // const response = await fetchWithAuth(...);
+                fetchWithAuth(url, {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ challenge, userAnswers: userAnswers.current })
+                });
+            }
         }
     }, [userAnswers.current, currentUnitNumber, challenge]);
 
