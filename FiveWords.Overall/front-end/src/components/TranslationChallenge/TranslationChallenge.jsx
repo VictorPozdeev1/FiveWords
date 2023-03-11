@@ -60,7 +60,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
                 fetchWithAuth(url, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ challenge, userAnswers: userAnswers.current })
+                    body: JSON.stringify({ challengeId: challenge.id, userAnswers: userAnswers.current })
                 });
             }
         }
