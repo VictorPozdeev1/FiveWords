@@ -38,7 +38,9 @@ public class WordTranslationsChallengeResultsController : ControllerBase
             exclusive: false
             );
 
-        channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes("hello from fivewords)"));
+        var queueMessageData = new { User = currentUser, Challenge = userChallenge, challengeResults.UserAnswers };
+        var queueMessageString = JsonSerializer.Serialize(queueMessageData, serializingOptionsProvider?.Get("Internal"));
+        channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes(queueMessageString));
 
         return Ok(userChallenge);
     }
