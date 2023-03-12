@@ -1,13 +1,15 @@
+using FiveWords.CommonModels.Backend;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Text.Json;
 
 namespace FiveWords.ChallengeResultsSaverService
 {
-    public class ChallengeResultsSaver : BackgroundService
+    internal class RabbitMqListener : BackgroundService
     {
-        private readonly ILogger<ChallengeResultsSaver> _logger;
+        private readonly ILogger<RabbitMqListener> _logger;
 
         private readonly IConnection _connection;
         private readonly IModel _channel;
@@ -15,8 +17,9 @@ namespace FiveWords.ChallengeResultsSaverService
         private readonly string _queueName;
         private readonly EventingBasicConsumer _consumer;
         private string? _consumerTag;
+        private IChallengeResultsSaver _challengeResultsSaver;
 
-        public ChallengeResultsSaver(ILogger<ChallengeResultsSaver> logger, IOptions<RabbitQueuesOptions> rabbitQueuesOptions)
+        public RabbitMqListener(ILogger<RabbitMqListener> logger, IOptions<RabbitQueuesOptions> rabbitQueuesOptions, IChallengeResultsSaver challengeResultsSaver)
         {
             _logger = logger;
             _connection = new ConnectionFactory().CreateConnection();
@@ -29,17 +32,28 @@ namespace FiveWords.ChallengeResultsSaverService
                 );*/
             _queueName = rabbitQueuesOptions.Value.ChallengeResultsSavingQueueName;
             _consumer = new EventingBasicConsumer(_channel);
+            _challengeResultsSaver = challengeResultsSaver;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             if (stoppingToken.IsCancellationRequested)
                 return;
+            await Task.Yield();
 
             _consumer.Received += (sender, e) =>
             {
-                Console.WriteLine($"{_consumer.IsRunning}, {_consumer.ConsumerTags.Length}, {_consumer.ConsumerTags.FirstOrDefault()}");
-                Console.WriteLine($"Received message: {Encoding.UTF8.GetString(e.Body.ToArray())}");
+                var messageBody = e.Body.ToArray();
+                var messageBodyString = Encoding.UTF8.GetString(messageBody);
+                try
+                {
+                    var messageBodyData = JsonSerializer.Deserialize<ChoosingRightOptionChallengePassedByUser>(messageBodyString);
+                    _challengeResultsSaver.AppendChallengeResultsAsync(messageBodyData!);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Deserialize failed. Body string: {messageBodyString}");
+                }
             };
 
             _consumerTag = _channel.BasicConsume(_queueName, autoAck: true, _consumer);
@@ -51,10 +65,11 @@ namespace FiveWords.ChallengeResultsSaverService
             }*/
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _channel.BasicCancelNoWait(_consumerTag);
-            return base.StopAsync(cancellationToken);
+            await Task.Yield();
+            _channel.BasicCancel(_consumerTag);
+            await base.StopAsync(cancellationToken);
         }
 
         public override void Dispose()

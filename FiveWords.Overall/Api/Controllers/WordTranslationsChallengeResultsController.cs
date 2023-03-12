@@ -1,4 +1,5 @@
 ﻿using FiveWords.CommonModels;
+using FiveWords.CommonModels.Backend;
 using FiveWords.Overall.Infrastructure.RabbitMQ;
 using FiveWords.Repository.Interfaces;
 using FiveWords.Utils;
@@ -38,7 +39,7 @@ public class WordTranslationsChallengeResultsController : ControllerBase
             exclusive: false
             );
 
-        var queueMessageData = new { User = currentUser, Challenge = userChallenge, challengeResults.UserAnswers };
+        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, challengeResults.UserAnswers);
         var queueMessageString = JsonSerializer.Serialize(queueMessageData, serializingOptionsProvider?.Get("Internal"));
         channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes(queueMessageString));
 
