@@ -1,4 +1,4 @@
-﻿using FiveWords.CommonModels.Backend;
+﻿using FiveWords.CommonModels.SavingChallengeResults;
 
 namespace FiveWords.ChallengeResultsSaverService;
 

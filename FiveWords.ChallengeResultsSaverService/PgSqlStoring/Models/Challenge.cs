@@ -1,4 +1,4 @@
-﻿using FiveWords.CommonModels.Backend;
+﻿using FiveWords.CommonModels.SavingChallengeResults;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FiveWords.ChallengeResultsSaverService.PgSqlStoring.Models;

@@ -1,4 +1,4 @@
-﻿namespace FiveWords.CommonModels.Backend;
+﻿namespace FiveWords.CommonModels.SavingChallengeResults;
 
 public record ChoosingRightOptionChallengeCompletedByUser<TQuestion, TAnswerOption>(
     Guid Id,

@@ -1,4 +1,4 @@
-using FiveWords.CommonModels.Backend;
+using FiveWords.CommonModels.SavingChallengeResults;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;

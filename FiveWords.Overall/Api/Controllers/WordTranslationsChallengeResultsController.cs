@@ -1,5 +1,5 @@
 ﻿using FiveWords.CommonModels;
-using FiveWords.CommonModels.Backend;
+using FiveWords.CommonModels.SavingChallengeResults;
 using FiveWords.Overall.Infrastructure.RabbitMQ;
 using FiveWords.Overall.Utils;
 using FiveWords.Repository.Interfaces;
