@@ -1,6 +1,7 @@
 ﻿using FiveWords.CommonModels;
 using FiveWords.CommonModels.Backend;
 using FiveWords.Overall.Infrastructure.RabbitMQ;
+using FiveWords.Overall.Utils;
 using FiveWords.Repository.Interfaces;
 using FiveWords.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,12 @@ public class WordTranslationsChallengeResultsController : ControllerBase
 {
     [HttpPost]
     [Authorize]
-    public IActionResult PostChallengeResult([FromBody] ChoosingRightOptionChallengeResult challengeResult, [FromServices] IUsersRepository usersRepository, [FromServices] IOptionsSnapshot<RabbitQueuesOptions> rabbitQueuesOptions)
+    public IActionResult PostChallengeResult(
+        [FromBody] ChoosingRightOptionChallengeResult challengeResult,
+        [FromServices] IDateTimeProvider dateTimeProvider,
+        [FromServices] IUsersRepository usersRepository,
+        [FromServices] IOptionsSnapshot<RabbitQueuesOptions> rabbitQueuesOptions
+        )
     {
         var serializingOptionsProvider = HttpContext.RequestServices.GetRequiredService<IOptionsSnapshot<JsonSerializerOptions>>();
         var userChallenge = HttpContext.Session.GetUserChallenge<ChoosingTranslationUserChallenge>(challengeResult.ChallengeId, serializingOptionsProvider);
@@ -39,7 +45,7 @@ public class WordTranslationsChallengeResultsController : ControllerBase
             exclusive: false
             );
 
-        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, challengeResult.UserAnswers);
+        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, dateTimeProvider.UtcNow, challengeResult.UserAnswers);
         var queueMessageString = JsonSerializer.Serialize(queueMessageData, serializingOptionsProvider?.Get("Internal"));
         channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes(queueMessageString));
 

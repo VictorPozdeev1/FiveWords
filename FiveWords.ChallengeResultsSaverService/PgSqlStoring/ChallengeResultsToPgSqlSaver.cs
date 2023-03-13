@@ -1,4 +1,5 @@
-﻿using FiveWords.CommonModels.Backend;
+﻿using FiveWords.ChallengeResultsSaverService.PgSqlStoring.Models;
+using FiveWords.CommonModels.Backend;
 
 namespace FiveWords.ChallengeResultsSaverService.PgSqlStoring;
 
@@ -10,6 +11,10 @@ internal class ChallengeResultsToPgSqlSaver : IChallengeResultsSaver
     {
         using var scope = serviceProvider.CreateScope();
         using var dbContext = scope.ServiceProvider.GetRequiredService<ChallengeResultsDbContext>();
+
+        Challenge challenge = new(challengePassedByUser.Challenge.Id, challengePassedByUser.User.Guid, challengePassedByUser.CompletedAt);
+
+        dbContext.CompletedChallenges.Add(challenge);
         await dbContext.SaveChangesAsync();
     }
 }

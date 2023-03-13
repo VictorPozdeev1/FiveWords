@@ -2,6 +2,7 @@ using FiveWords.Api;
 using FiveWords.Infrastructure.Authentication;
 using FiveWords.Infrastructure.TelegramAlerting;
 using FiveWords.Overall.Infrastructure.RabbitMQ;
+using FiveWords.Overall.Utils;
 using FiveWords.Repository;
 using FiveWords.Repository.Csv;
 using FiveWords.Repository.Interfaces;
@@ -35,6 +36,8 @@ builder.Services.AddOptions<JsonSerializerOptions>("Web")
     });
 
 builder.Services.Configure<RabbitQueuesOptions>(builder.Configuration.GetSection("RabbitMQ"));
+
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
 builder.Services.AddAuthorization();
 

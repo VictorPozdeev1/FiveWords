@@ -17,7 +17,6 @@ internal class ChallengeResultsDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<AnswerOption>().HasKey(answerOption => new { answerOption.ChallengeUnitId, answerOption.Index });
     }
 }
