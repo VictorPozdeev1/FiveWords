@@ -47,8 +47,8 @@ namespace FiveWords.ChallengeResultsSaverService
                 var messageBodyString = Encoding.UTF8.GetString(messageBody);
                 try
                 {
-                    var messageBodyData = JsonSerializer.Deserialize<ChoosingRightOptionChallengePassedByUser>(messageBodyString);
-                    Guid challengeGuid = messageBodyData.Challenge.Id;
+                    var messageBodyData = JsonSerializer.Deserialize<ChoosingRightOptionChallengeCompletedByUser<string, string>>(messageBodyString);
+                    Guid challengeGuid = messageBodyData!.Id;
                     _logger.LogInformation($"Saving {challengeGuid} started at {DateTime.Now:HH.mm.ss.fff}");
                     await _challengeResultsSaver.AppendChallengeResultsAsync(messageBodyData!);
                     _logger.LogInformation($"Saving {challengeGuid} completed at {DateTime.Now:HH.mm.ss.fff}");

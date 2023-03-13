@@ -4,5 +4,5 @@ namespace FiveWords.ChallengeResultsSaverService;
 
 internal interface IChallengeResultsSaver
 {
-    Task AppendChallengeResultsAsync(ChoosingRightOptionChallengePassedByUser challengePassedByUser);
+    Task AppendChallengeResultsAsync(ChoosingRightOptionChallengeCompletedByUser<string, string> challengePassedByUser);
 }

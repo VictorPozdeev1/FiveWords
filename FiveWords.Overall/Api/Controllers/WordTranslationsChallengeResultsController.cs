@@ -45,7 +45,20 @@ public class WordTranslationsChallengeResultsController : ControllerBase
             exclusive: false
             );
 
-        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, dateTimeProvider.UtcNow, challengeResult.UserAnswers);
+        var queueMessageData = new ChoosingRightOptionChallengeCompletedByUser<string, string>(
+            userChallenge.Id,
+            userChallenge.Units
+                .Select((unit, unitIndex) => new ChoosingRightOptionChallengeUnitCompletedByUser<string, string>
+                (
+                    unit.Question,
+                    unit.AnswerOptions,
+                    unit.RightOptionIndex,
+                    challengeResult.UserAnswers[unitIndex]
+                ))
+                .ToArray(),
+            currentUser.Guid,
+            dateTimeProvider.UtcNow
+            );
         var queueMessageString = JsonSerializer.Serialize(queueMessageData, serializingOptionsProvider?.Get("Internal"));
         channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes(queueMessageString));
 

@@ -1,15 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using FiveWords.CommonModels.Backend;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FiveWords.ChallengeResultsSaverService.PgSqlStoring.Models;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 [Table("challenges")]
 internal class Challenge
 {
-    public Challenge(Guid Id, Guid UserGuid, DateTime CompletedAt)
+    public Challenge() { }
+
+    public Challenge(ChoosingRightOptionChallengeCompletedByUser<string, string> dataToCopy)
     {
-        this.Id = Id;
-        this.UserGuid = UserGuid;
-        this.CompletedAt = CompletedAt;
+        Id = dataToCopy.Id;
+        UserGuid = dataToCopy.UserGuid;
+        CompletedAt = dataToCopy.CompletedAt;
+        ChallengeUnits = dataToCopy.Units
+                .Select((unit, unitIndex) => new ChallengeUnit(unit, unitIndex)).ToArray();
     }
 
     [Column("id")]
@@ -23,3 +29,4 @@ internal class Challenge
 
     public ICollection<ChallengeUnit> ChallengeUnits { get; set; }
 }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
