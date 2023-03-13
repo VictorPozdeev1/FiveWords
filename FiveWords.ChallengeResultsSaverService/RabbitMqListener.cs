@@ -41,14 +41,17 @@ namespace FiveWords.ChallengeResultsSaverService
                 return;
             await Task.Yield();
 
-            _consumer.Received += (sender, e) =>
+            _consumer.Received += async (sender, e) =>
             {
                 var messageBody = e.Body.ToArray();
                 var messageBodyString = Encoding.UTF8.GetString(messageBody);
                 try
                 {
                     var messageBodyData = JsonSerializer.Deserialize<ChoosingRightOptionChallengePassedByUser>(messageBodyString);
-                    _challengeResultsSaver.AppendChallengeResultsAsync(messageBodyData!);
+                    Guid challengeGuid = messageBodyData.Challenge.Id;
+                    _logger.LogInformation($"Saving {challengeGuid} started at {DateTime.Now:HH.mm.ss.fff}");
+                    await _challengeResultsSaver.AppendChallengeResultsAsync(messageBodyData!);
+                    _logger.LogInformation($"Saving {challengeGuid} completed at {DateTime.Now:HH.mm.ss.fff}");
                 }
                 catch (Exception ex)
                 {

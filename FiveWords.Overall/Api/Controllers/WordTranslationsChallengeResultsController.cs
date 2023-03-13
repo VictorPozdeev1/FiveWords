@@ -18,13 +18,13 @@ public class WordTranslationsChallengeResultsController : ControllerBase
 {
     [HttpPost]
     [Authorize]
-    public IActionResult PostChallengeResults([FromBody] ChoosingRightOptionChallengeResults challengeResults, [FromServices] IUsersRepository usersRepository, [FromServices] IOptionsSnapshot<RabbitQueuesOptions> rabbitQueuesOptions)
+    public IActionResult PostChallengeResult([FromBody] ChoosingRightOptionChallengeResult challengeResult, [FromServices] IUsersRepository usersRepository, [FromServices] IOptionsSnapshot<RabbitQueuesOptions> rabbitQueuesOptions)
     {
         var serializingOptionsProvider = HttpContext.RequestServices.GetRequiredService<IOptionsSnapshot<JsonSerializerOptions>>();
-        var userChallenge = HttpContext.Session.GetUserChallenge<ChoosingTranslationUserChallenge>(challengeResults.ChallengeId, serializingOptionsProvider);
+        var userChallenge = HttpContext.Session.GetUserChallenge<ChoosingTranslationUserChallenge>(challengeResult.ChallengeId, serializingOptionsProvider);
 
         if (userChallenge is null)
-            return BadRequest(new { Error = new ActionError($"Не найден тест с Id {challengeResults.ChallengeId}", challengeResults.ChallengeId) });
+            return BadRequest(new { Error = new ActionError($"Не найден тест с Id {challengeResult.ChallengeId}", challengeResult.ChallengeId) });
 
         var currentUserName = User.Identity!.Name!;
         var currentUser = usersRepository.Get(currentUserName)!;
@@ -39,7 +39,7 @@ public class WordTranslationsChallengeResultsController : ControllerBase
             exclusive: false
             );
 
-        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, challengeResults.UserAnswers);
+        var queueMessageData = new ChoosingRightOptionChallengePassedByUser(currentUser, userChallenge, challengeResult.UserAnswers);
         var queueMessageString = JsonSerializer.Serialize(queueMessageData, serializingOptionsProvider?.Get("Internal"));
         channel.BasicPublish("", queue.QueueName, body: Encoding.UTF8.GetBytes(queueMessageString));
 

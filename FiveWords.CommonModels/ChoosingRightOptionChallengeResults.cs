@@ -1,4 +1,4 @@
 ﻿namespace FiveWords.CommonModels;
 
-public record ChoosingRightOptionChallengeResults(Guid ChallengeId, ChoosingRightOptionChallengeUnitUserAnswer[] UserAnswers) : ChallengeResults<ChoosingRightOptionChallengeUnitUserAnswer>(ChallengeId, UserAnswers)
+public record ChoosingRightOptionChallengeResult(Guid ChallengeId, ChoosingRightOptionChallengeUnitUserAnswer[] UserAnswers) : ChallengeResult<ChoosingRightOptionChallengeUnitUserAnswer>(ChallengeId, UserAnswers)
 { }
