@@ -9,8 +9,7 @@ internal class ChallengeResultsDbContext : DbContext
         : base(options)
 
     {
-        Database.EnsureDeleted();
-        Database.EnsureCreated();
+        Database.Migrate();
     }
 
     public DbSet<Challenge> CompletedChallenges => Set<Challenge>();
