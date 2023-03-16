@@ -12,7 +12,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
     const [needsAssessment, setNeedsAssessment] = useState(false);
     const [challenge, setChallenge] = useState(null);
     const [challengeFetchError, setChallengeFetchError] = useState(null);
-    const selectedAnswerOptionIndices = useRef([]);
+    const userAnswers = useRef([]);
 
     useEffect(() => {
         async function fetchChallenge() {
@@ -46,19 +46,29 @@ const TranslationChallenge = ({ dictionaryName }) => {
         }
     }, [challenge, setChallenge]);
 
-    const handleAnswerOptionSelect = useCallback(selectedAnswerOptionIndex => {
-        selectedAnswerOptionIndices.current.push(selectedAnswerOptionIndex);
+    const handleAnswerOptionSelect = useCallback((selectedAnswerOptionIndex, answerTimeInMilliseconds) => {
+        userAnswers.current.push({ selectedAnswerOptionIndex, answerTimeInMilliseconds });
         if (currentUnitNumber < challenge.units.length - 1) {
             setCurrentUnitNumber(currentUnitNumber => currentUnitNumber + 1);
         }
         else {
             setNeedsAssessment(true);
+            if (isAuthenticated()) {
+                const url = new URL(`WordTranslationsChallengeResults`, location.origin);
+                // Можно не ждать ответа, т.к. его результаты в данном случае не важны.
+                // const response = await fetchWithAuth(...);
+                fetchWithAuth(url, {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ challengeId: challenge.id, userAnswers: userAnswers.current })
+                });
+            }
         }
-    }, [selectedAnswerOptionIndices.current, currentUnitNumber, challenge]);
+    }, [userAnswers.current, currentUnitNumber, challenge]);
 
     const handleOneMoreTimeButtonClick = useCallback(() => {
         setChallenge(null);
-        selectedAnswerOptionIndices.current = [];
+        userAnswers.current = [];
         setNeedsAssessment(false);
     }, []);
 
@@ -82,7 +92,7 @@ const TranslationChallenge = ({ dictionaryName }) => {
             <React.Fragment>
                 <TranslationChallengeAssessment
                     challenge={challenge}
-                    selectedAnswerOptionIndices={selectedAnswerOptionIndices.current}
+                    userAnswers={userAnswers.current}
                     handleOneMoreTimeButtonClick={handleOneMoreTimeButtonClick}
                 />
                 {!isAuthenticated() &&

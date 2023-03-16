@@ -1,6 +1,6 @@
 users-data/
 users-list/
-front-end/dist/
+FiveWords.Overall/front-end/dist/
 static-files/
 
 # [For Artem] Ignore executable files and settings
